@@ -58,9 +58,9 @@ class Timenotify extends Command
                     }
                     //处理回调日志
 
-                    $deviceModel->updateDeviceStatus($deviceWhere, $deviceUpdate);
+//                    $deviceModel->updateDeviceStatus($deviceWhere, $deviceUpdate);
                     //循环处理超时订单以及解锁相应得设备
-                    $orderModel->where('apiMerchantOrderNo', '=', $val['apiMerchantOrderNo'])->update($updateStepOneData);
+//                    $orderModel->where('apiMerchantOrderNo', '=', $val['apiMerchantOrderNo'])->update($updateStepOneData);
                 }
             }
 
