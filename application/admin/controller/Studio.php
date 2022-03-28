@@ -55,7 +55,7 @@ class Studio extends Base
         if(request()->isPost()) {
 
             $param = input('post.');
-            var_dump($param);exit;
+//            var_dump($param);exit;
             $validate = new StudioValidate();
             if(!$validate->check($param)) {
                 return ['code' => -1, 'data' => '', 'msg' => $validate->getError()];
