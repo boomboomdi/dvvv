@@ -148,7 +148,7 @@ class Device extends Base
             $id = input('param.id');
 
             $device = new DeviceModel();
-            $res = $device->delAdmin($id);
+            $res = $device->delDevice($id);
 
             Log::write(session("admin_role_id") . ":" . session("admin_user_name") . "删除设备：" . $id);
 
