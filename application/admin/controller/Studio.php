@@ -55,13 +55,12 @@ class Studio extends Base
         if(request()->isPost()) {
 
             $param = input('post.');
-//            var_dump($param);exit;
             $validate = new StudioValidate();
             if(!$validate->check($param)) {
                 return ['code' => -1, 'data' => '', 'msg' => $validate->getError()];
             }
 
-            $param['admin_password'] = makePassword($param['admin_password']);
+//            $param['studio_password'] = makePassword($param['studio_password']);
 
             $studio = new StudioModel();
             $res = $studio->addStudio($param);
