@@ -66,7 +66,7 @@ class Device extends Base
         return $this->fetch();
     }
 
-    // 添加商户
+    // 添加设备
     public function addDevice()
     {
         if (request()->isPost()) {
@@ -75,6 +75,7 @@ class Device extends Base
 
             $validate = new DeviceValidate();
             $param['studio'] = session("admin_user_name");
+            $param['add_time'] = time();
             if (!$validate->check($param)) {
                 return ['code' => -1, 'data' => '', 'msg' => $validate->getError()];
             }
