@@ -38,6 +38,7 @@ class Device extends Controller
             $deviceModel = new DeviceModel();
             $updateParam['account'] = $param['account'];
             $updateParam['heart_time'] = time();
+            $updateParam['device_status'] = 1;
             $updateParam['studio'] = $param['studio'];
             $res = $deviceModel->updateDeviceQrUrl($updateParam);
 
