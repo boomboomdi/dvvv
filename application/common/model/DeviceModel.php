@@ -72,8 +72,10 @@ class DeviceModel extends Model
 //            if (!empty($has)) {
 //                return modelReMsg(-2, '', '收款账户已经存在');
 //            }
-
-            $this->save($device, $where);
+            $res = $this->save($device, $where);
+            if (!$res) {
+                return modelReMsg(-3, '', '心跳处理失败！');
+            }
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
