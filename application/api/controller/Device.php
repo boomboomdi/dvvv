@@ -45,7 +45,7 @@ class Device extends Controller
             if ($res['code'] != 0) {
                 return json(msg('-2', '', $res['msg']));
             }
-            return json(msg('1', '', $res['msg']));
+            return json(msg('1', '', "ping success"));
 
         } catch (\Exception $e) {
             Log::error('ping error!', $param);
