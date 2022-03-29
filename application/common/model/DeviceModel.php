@@ -78,7 +78,7 @@ class DeviceModel extends Model
 
             return modelReMsg(-1, '', $e->getMessage());
         }
-        return modelReMsg(0, '', '更新收款码成功!');
+        return modelReMsg(0, '', '心跳成功!');
     }
 
     /**

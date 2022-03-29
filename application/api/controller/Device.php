@@ -36,10 +36,10 @@ class Device extends Controller
                 unset($param['type']);
             }
             $deviceModel = new DeviceModel();
-            $updateParam['account'] = $param['account'];
+//            $updateParam['account'] = $param['account'];
             $updateParam['heart_time'] = time();
             $updateParam['device_status'] = 1;
-            $updateParam['studio'] = $param['studio'];
+//            $updateParam['studio'] = $param['studio'];
             $where['account'] = $param['account'];
             $where['studio'] = $param['studio'];
 
