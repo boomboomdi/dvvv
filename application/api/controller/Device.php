@@ -27,7 +27,6 @@ class Device extends Controller
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
         Log::info('ping log first!', $param);
-        var_dump($param);exit;
         try {
             $validate = new DeviceapiValidate();
             if (!$validate->scene('ping')->check($param)) {
@@ -59,7 +58,6 @@ class Device extends Controller
     {
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
-//        $param = $request->param();
         Log::info('uploadQrCode log!', $param);
         $updateParam = [];
         try {
