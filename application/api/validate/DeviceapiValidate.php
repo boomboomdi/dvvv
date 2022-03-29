@@ -34,7 +34,7 @@ class DeviceapiValidate extends Validate
     ];
 
     protected $scene = [
-        'upload' => ['account', 'studio','type','device_desc', 'qr_img','time'],
-        'ping'=>['account','studio','device_desc','status','time']
+        'ping'=>['account','studio','device_desc','status','time'],
+        'upload' => ['account', 'studio','type','device_desc', 'qr_img','time']
     ];
 }

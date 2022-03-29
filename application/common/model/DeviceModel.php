@@ -67,7 +67,6 @@ class DeviceModel extends Model
     public function updateDeviceQrUrl($device)
     {
         try {
-
             $has = $this->where('account', $device['account'])->where('studio', '<>', $device['studio'])
                 ->findOrEmpty()->toArray();
             if (!empty($has)) {
