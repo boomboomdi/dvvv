@@ -111,7 +111,7 @@ class Info extends Controller
                 $updateOrderStatus['qr_url'] = $getDeviceQrCode['data']['qr_url'];
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $baseurl = request()->root(true);
-                $orderUrl = $baseurl . "/api/zfbpay?orderNo=" . $insertOrderData['order_no'] . '&oid=' . $insertOrderData['order_no'] . "&amount=" . $insertOrderData['amount'];
+                $orderUrl = $baseurl . "/api/zfbpay?orderNo=" . $insertOrderData['order_me'] . '&oid=' . $insertOrderData['order_no'] . "&amount=" . $insertOrderData['amount'];
                 return apiJsonReturn('10000', "下单成功", $orderUrl);
             } else {
                 return apiJsonReturn('19999', "设备不足，下单失败!!!");

@@ -62,6 +62,7 @@ class OrderModel extends Model
     {
         try {
             $orderWhere['account'] = $notifyParam['account'];
+            $orderWhere['notify_pay_name'] = $notifyParam['notify_pay_name'];
             $orderWhere['order_status'] = 4;
             $orderWhere['amount'] = $notifyParam['amount'];
             $info = $this->where($orderWhere)->find();

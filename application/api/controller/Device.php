@@ -25,6 +25,7 @@ class Device extends Controller
     {
         $param = $request->param();
         $updateParam = [];
+        Log::info('ping error!', $param);
         try {
             $validate = new DeviceapiValidate();
             if (!$validate->scene('ping')->check($param)) {
@@ -42,7 +43,7 @@ class Device extends Controller
                 return json(msg('-2', '', $res['msg']));
             }
         } catch (\Exception $e) {
-            Log::error('uploadQrCode error!', $param);
+            Log::error('ping error!', $param);
             return json(msg('-11', '', 'saveBase64toImg error!' . $e->getMessage()));
         }
     }
@@ -196,16 +197,15 @@ class Device extends Controller
         $param = $request->param();
         Log::info('order notify log!', $param);
         try {
-
             $validate = new NotifylogValidate();
             if (!$validate->check($param)) {
                 return json(msg(-1, '', $validate->getError()));
             }
             $notifyParam = $param;
-             
+
             $notifyParam['status'] = 2;
             $notifyParam['add_time'] = time();
-            $notifyParam['add_time'] = time();
+            $notifyParam['notify_pay_name'] = mb_substr($param['pay_name'], -1, 1, 'utf-8');;
             $notifyParam['payment'] = "alipay(aa)";
             $notifyParam['notify_log_desc'] = "alipay(aa) notify";
             $notifyLogModel = new NotifylogModel();

@@ -113,6 +113,7 @@ class Device extends Base
             if (isset($param['studio'])) {
                 $param['studio'] = $param['studio'];
             }
+
             if (isset($param['thumbnail']) && !empty($param['thumbnail'])) {
                 $imgUrl = request()->root(true) . $param['thumbnail'];
                 $qrcode = new QrReader($imgUrl);
