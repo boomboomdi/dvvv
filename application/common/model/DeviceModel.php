@@ -64,6 +64,28 @@ class DeviceModel extends Model
      * @param $device
      * @return array
      */
+    public function devicePing($where, $device)
+    {
+        try {
+//            $has = $this->where('account', $where['account'])->where('studio', '<>', $device['studio'])
+//                ->findOrEmpty()->toArray();
+//            if (!empty($has)) {
+//                return modelReMsg(-2, '', '收款账户已经存在');
+//            }
+
+            $this->save($device, $where);
+        } catch (\Exception $e) {
+
+            return modelReMsg(-1, '', $e->getMessage());
+        }
+        return modelReMsg(0, '', '更新收款码成功!');
+    }
+
+    /**
+     * 更新收款账户收款码
+     * @param $device
+     * @return array
+     */
     public function updateDeviceQrUrl($device)
     {
         try {

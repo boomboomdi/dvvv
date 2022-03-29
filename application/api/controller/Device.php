@@ -40,7 +40,10 @@ class Device extends Controller
             $updateParam['heart_time'] = time();
             $updateParam['device_status'] = 1;
             $updateParam['studio'] = $param['studio'];
-            $res = $deviceModel->updateDeviceQrUrl($updateParam);
+            $where['account'] = $param['account'];
+            $where['studio'] = $param['studio'];
+
+            $res = $deviceModel->devicePing($where, $updateParam);
 
             if ($res['code'] != 0) {
                 return json(msg('-2', '', $res['msg']));
