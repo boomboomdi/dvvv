@@ -40,9 +40,12 @@ class Device extends Controller
             $updateParam['heart_time'] = time();
             $updateParam['studio'] = $param['studio'];
             $res = $deviceModel->updateDeviceQrUrl($updateParam);
+
             if ($res['code'] != 0) {
                 return json(msg('-2', '', $res['msg']));
             }
+            return json(msg('1', '', $res['msg']));
+
         } catch (\Exception $e) {
             Log::error('ping error!', $param);
             return json(msg('-11', '', 'saveBase64toImg error!' . $e->getMessage()));
@@ -87,6 +90,8 @@ class Device extends Controller
             if ($res['code'] != 0) {
                 return json(msg('-2', '', $res['msg']));
             }
+            return json(msg('1', '', $res['msg']));
+
         } catch (\Exception $e) {
             Log::error('uploadQrCode error!', $param);
             return json(msg('-11', '', 'saveBase64toImg error!' . $e->getMessage()));
