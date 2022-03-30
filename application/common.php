@@ -31,9 +31,9 @@ function makePassword($password)
 function getCookieAccount($cookie)
 {
     $cookie = str_replace(" ", '', $cookie);
-    $start = strrpos($cookie, 'sessionid=');
-
-    return mb_stripos($cookie, $start, 32);
+    $start = strpos($cookie, 'sessionid=');
+    $return = substr($cookie, $start, 42);
+    return $return;
 }
 
 /**
