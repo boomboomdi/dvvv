@@ -89,7 +89,7 @@ class Cookie extends Base
                 foreach ($cookieContentsArray as $key => $v) {
                     $getCookieAccount = getCookieAccount($v);
                     if ($getCookieAccount) {
-                        $addCookieParam['last_use_time'] = date("Y-m-d H:i:S", time());
+                        $addCookieParam['last_use_time'] = date("Y-m-d H:i:s", time());
                         $addCookieParam['cookie'] = $v;
                         $addCookieParam['cookie_sign'] = $param['cookie_sign'];
                         $addCookieParam['account'] = $getCookieAccount;

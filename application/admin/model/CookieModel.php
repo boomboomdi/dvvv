@@ -46,11 +46,11 @@ class CookieModel extends Model
             $has = $this->where('account', $cookie['account'])->findOrEmpty()->toArray();
             if (!empty($has)) {
                 $code = 1;
-                $cookie['last_use_time'] = date("Y-m-d H:i:S", time());
+                $cookie['last_use_time'] = date("Y-m-d H:i:s", time());
                 $this->where('account', $cookie['account'])->update($cookie);
             } else {
                 $code = 0;
-                $cookie['add_time'] = date("Y-m-d H:i:S", time());
+                $cookie['add_time'] = date("Y-m-d H:i:s", time());
                 $this->insert($cookie);
             }
         } catch (\Exception $e) {
