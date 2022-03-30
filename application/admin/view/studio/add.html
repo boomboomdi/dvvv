@@ -82,24 +82,7 @@
             , admin = layui.admin
             , element = layui.element
             , form = layui.form;
-        // 上传图片
-        layui.use('upload', function () {
-            var upload = layui.upload;
 
-            //执行实例
-            var uploadInst = upload.render({
-                elem: '#test1' //绑定元素
-                , url: "{:url('device/uploadQrImg')}" //上传接口
-                , done: function (res) {
-                    //上传完毕回调
-                    $("#thumbnail").val(res.data.src);
-                    $("#sm").html('<img src="' + res.data.src + '" style="width:40px;height: 40px;"/>');
-                }
-                , error: function () {
-                    //请求异常回调
-                }
-            });
-        });
 
         form.on('submit(component-form-element)', function (data) {
 

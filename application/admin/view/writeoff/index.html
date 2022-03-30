@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>工作室管理</title>
+    <title>核销管理</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -15,16 +15,11 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
+
                 <div class="layui-inline">
-                    <label class="layui-form-label">工作室名称</label>
+                    <label class="layui-form-label">核销商标识</label>
                     <div class="layui-input-block">
-                        <input type="text" name="studio_name" placeholder="请输入" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">工作室标识</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="studio" placeholder="请输入" autocomplete="off" class="layui-input">
+                        <input type="text" name="write_off_sign" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -36,7 +31,7 @@
         </div>
 
         <div class="layui-card-body">
-            {if (buttonAuth('studio/addstudio'))}
+            {if (buttonAuth('writeoff/addwriteoff'))}
             <div style="padding-bottom: 10px;">
                 <button class="layui-btn layuiadmin-btn-admin" data-type="add"><i class="layui-icon">&#xe654;</i> 添加</button>
             </div>
@@ -50,10 +45,10 @@
                 {{#  } }}
             </script>
             <script type="text/html" id="table-seller-admin">
-                {if (buttonAuth('studio/editstudio'))}
+                {if (buttonAuth('writeoff/editwriteoff'))}
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
                 {/if}
-                {if (buttonAuth('studio/delstudio'))}
+                {if (buttonAuth('writeoff/delwriteoff'))}
                 {{#  if(d.admin_id == '1'){ }}
                 <a class="layui-btn layui-btn-disabled layui-btn-xs"><i class="layui-icon layui-icon-delete"></i>删除</a>
                 {{#  } else { }}
@@ -80,7 +75,7 @@
         var active = {
 
             add: function() {
-                layTool.open( "{:url('studio/addStudio')}", "添加工作室", '50%', '50%');
+                layTool.open( "{:url('writeoff/addWriteoff')}", "添加核销", '50%', '50%');
             }
         };
 
@@ -103,16 +98,16 @@
     renderTable();
     // 渲染表格
     function renderTable() {
-        layTool.table("#LAY-user-table", "/admin/studio/index", [
+        layTool.table("#LAY-user-table", "/admin/writeoff/index", [
             [{
-                field: "studio_id",
-                title: "管理员ID"
+                field: "write_off_id",
+                title: "核销商ID"
             }, {
-                field: "studio_name",
-                title: "管理员名称",
+                field: "write_off_username",
+                title: "后台登录名",
             }, {
-                field: "studio",
-                title: "标识",
+                field: "write_off_sign",
+                title: "核销商标识",
             }, {
                 field: "status",
                 title: "状态",
@@ -144,7 +139,7 @@
                                 btn: ['确定', '取消']
                             }, function() {
 
-                                $.getJSON('{:url("studio/delStudio")}', {id: e.data.studio_id}, function (res) {
+                                $.getJSON('{:url("writeoff/delWriteoff")}', {write_off_id: e.data.write_off_id}, function (res) {
 
                                     if(0 == res.code) {
 
@@ -162,7 +157,7 @@
                         });
                     } else if ("edit" === e.event) {
 
-                        layTool.open("/admin/studio/editStudio/studio_id/" + e.data.admin_id, "编辑工作室", '50%', '50%');
+                        layTool.open("/admin/writeoff/editWriteoff/write_off_id/" + e.data.write_off_id, "编辑核销", '50%', '50%');
                     }
                 });
         });

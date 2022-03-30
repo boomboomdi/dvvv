@@ -21,9 +21,11 @@ class Info extends Controller
      * @param Request $request
      * @return void
      */
-    public function createOrder(Request $request)
+    public function order(Request $request)
     {
-        $message = $request->param();
+        $data = @file_get_contents('php://input');
+        $message = json_decode($data, true);
+        Log::info('order first!', $message);
         $updateParam = [];
         try {
             $validate = new OrderaaValidate();
@@ -34,28 +36,30 @@ class Info extends Controller
             //验证商户
             $token = $db::table('bsa_merchant')->where('merchant_sign', '=', $message['merchant_sign'])->find()['token'];
             if (empty($token)) {
-                return apiJsonReturn('10016', "验签失败！");
+                return apiJsonReturn('100161', "商户验证失败！");
             }
             $sig = md5($message['merchant_sign'] . $token . $message['order_no'] . $message['amount'] . $message['time']);
             if ($sig != $message['sign']) {
                 Log::info("create_order_10006!", $message);
                 return apiJsonReturn('10006', "验签失败！");
             }
-            $orderFind = $db::table('s_order')->where('order_no', '=', $message['order_no'])->count();
+            $orderFind = $db::table('bsa_order')->where('order_no', '=', $message['order_no'])->count();
             if ($orderFind > 0) {
                 return apiJsonReturn('11001', "单号重复！");
             }
 
-            $user_id = $message['user_id'];  //用户标识
+//            $user_id = $message['user_id'];  //用户标识
             // 根据user_id  未付款次数 限制下单 end
 
             $deviceModel = new DeviceModel();
-            $deviceCount = $db->table("bsa_device")->leftJoin("bsa_studio", "bsa_device.studio=bsa_studio.studio")
+            $deviceCount = $db::table("bsa_device")
+                ->leftJoin("bsa_studio", "bsa_device.studio = bsa_studio.studio")
                 ->where([
                     "bsa_device.status" => 1,
                     "bsa_device.device_status" => 1,
                     "bsa_studio.status" => 1,
                 ])->count();
+
             if ($deviceCount == 0) {
                 return apiJsonReturn('10009', "设备不足，下单失败!");
             }
@@ -83,22 +87,17 @@ class Info extends Controller
 
             $orderModel = new \app\common\model\OrderModel();
             $createOrderOne = $orderModel->addOrder($insertOrderData);
-            if (!isset($createOrderOne['code']) || $createOrderOne['code'] != '10000') {
-                return apiJsonReturn('10008', $createOrderOne['msg']);
+            if (!isset($createOrderOne['code']) || $createOrderOne['code'] != '0') {
+                return apiJsonReturn('10008', $createOrderOne['msg'] . $createOrderOne['code']);
             }
             //2、分配设备
 
             $getDeviceQrCode = $deviceModel->getZfbUseDevice($insertOrderData);
             if (!isset($getDeviceQrCode['code']) || $getDeviceQrCode['code'] != 0) {
-                $updateOrderStatus['qr_url'] = 4;
+                $updateOrderStatus['qr_url'] = "";
+                $updateOrderStatus['order_status'] = 3;
                 //修改订单为下单失败状态。
                 $updateOrderStatus['update_time'] = time();
-                if (isset($getDeviceQrCode['data'])) {
-                    if (isset($getDeviceQrCode['data']['account']) && !empty($getDeviceQrCode['data']['account'])) {
-                        $updateOrderStatus['account'] = $getDeviceQrCode['data']['account'];
-                        $updateOrderStatus['qr_url'] = $getDeviceQrCode['data']['qr_url'];
-                    }
-                }
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
                 logs(json_encode(['getDeviceQrCode' => $getDeviceQrCode, 'updateOrderStatus' => $updateOrderStatus, 'lastSql' => $lastSql]), 'create_order_get_url_fail');
@@ -109,6 +108,7 @@ class Info extends Controller
 
                 $updateOrderStatus['account'] = $getDeviceQrCode['data']['account'];
                 $updateOrderStatus['qr_url'] = $getDeviceQrCode['data']['qr_url'];
+                $updateOrderStatus['order_status'] = 4;
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $baseurl = request()->root(true);
                 $orderUrl = $baseurl . "/api/zfbpay?orderNo=" . $insertOrderData['order_me'] . '&oid=' . $insertOrderData['order_no'] . "&amount=" . $insertOrderData['amount'];
@@ -116,9 +116,12 @@ class Info extends Controller
             } else {
                 return apiJsonReturn('19999', "设备不足，下单失败!!!");
             }
+        } catch (\Error $e) {
+            Log::error('order error!', $message);
+            return json(msg('-22', '', 'create order error!' . $e->getMessage() . $e->getLine()));
         } catch (\Exception $e) {
-            Log::error('uploadQrCode error!', $message);
-            return json(msg('-11', '', 'create order error!' . $e->getMessage()));
+            Log::error('order Exception!', $message);
+            return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
     }
 

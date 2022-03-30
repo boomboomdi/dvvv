@@ -17,7 +17,7 @@ class NotifylogValidate extends Validate
         'account' => 'require',
         'amount' => 'require',
         'pay_time' => 'require',
-        'pay_name' => 'require',
+//        'pay_name' => 'require',
         'order_pay' => 'require',
 //        'notify_log_desc' => 'require',
         'client_id' => 'require',
@@ -27,7 +27,7 @@ class NotifylogValidate extends Validate
     protected $message = [
         'account.require' => 'account.require',
         'amount.require' => 'amount.require',
-        'pay_name.require' => 'amount.require',
+//        'pay_name.require' => 'pay_name.require',
         'time.require' => 'time.require',
         'client_id.require' => 'client_id.require',
         'order_pay.require' => 'order_pay.require',

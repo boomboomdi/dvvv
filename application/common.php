@@ -24,6 +24,19 @@ function makePassword($password)
 }
 
 /**
+ * cookie  去除 douyin  account
+ * @param $cookie
+ * @return false|int
+ */
+function getCookieAccount($cookie)
+{
+    $cookie = str_replace(" ", '', $cookie);
+    $start = strrpos($cookie, 'sessionid=');
+
+    return mb_stripos($cookie, $start, 32);
+}
+
+/**
  * 检测密码
  * @param $dbPassword
  * @param $inPassword
@@ -57,7 +70,8 @@ function getMysqlVersion()
  * @param $data
  * @return array
  */
-function makeTree($data) {
+function makeTree($data)
+{
 
     $res = [];
     $tree = [];
@@ -71,7 +85,7 @@ function makeTree($data) {
 
     // 查询子孙
     foreach ($res as $key => $vo) {
-        if($vo['pid'] != 0){
+        if ($vo['pid'] != 0) {
             $res[$vo['pid']]['children'][] = &$res[$key];
         }
     }
@@ -79,7 +93,7 @@ function makeTree($data) {
     // 去除杂质
 //    var_dump($res);exit;
     foreach ($res as $key => $vo) {
-        if($vo['pid'] == 0){
+        if ($vo['pid'] == 0) {
 //            var_dump($vo);
             $tree[] = $vo;
         }
@@ -247,9 +261,9 @@ function makeSuccessRate($success, $total)
     if ($total == 0 || $success == 0) {
         return "0.00%";
     }
-    $successRate = round(((int)$success * 100 )/ (int)$total, 2);
+    $successRate = round(((int)$success * 100) / (int)$total, 2);
 //    var_dump($successRate);exit;
-    return $success."/".$total."~".(string)$successRate . "%";
+    return $success . "/" . $total . "~" . (string)$successRate . "%";
 }
 
 /**
@@ -258,8 +272,9 @@ function makeSuccessRate($success, $total)
  */
 function guid12()
 {
-    return  'T'.date('YmdHi').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 4, 7), 1))), 0, 8);
+    return 'T' . date('YmdHi') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 4, 7), 1))), 0, 8);
 }
+
 /**
  * 日志写入
  * @param $data : 数据

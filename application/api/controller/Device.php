@@ -216,7 +216,9 @@ class Device extends Controller
 
             $notifyParam['status'] = 2;
             $notifyParam['add_time'] = time();
-            $notifyParam['notify_pay_name'] = mb_substr($param['pay_name'], -1, 1, 'utf-8');;
+            if (isset($param['pay_name'])) {
+                $notifyParam['notify_pay_name'] = mb_substr($param['pay_name'], -1, 1, 'utf-8');;
+            }
             $notifyParam['payment'] = "alipay(aa)";
             $notifyParam['notify_log_desc'] = "alipay(aa) notify";
             $notifyLogModel = new NotifylogModel();
@@ -237,7 +239,7 @@ class Device extends Controller
             $notifyParam['order_no'] = $matchRes['data']['order_no'];
             $notifyParam['status'] = 1;
             $notifyParam['notify_log_desc'] = "alipay(aa) notify match success";
-//            order_no
+
             $res = $notifyLogModel->addNotifyLog($notifyParam);
             if ($res['code'] != 0) {
                 Log::error('notify addNotifyLog error!' . $res['msg'], $param);

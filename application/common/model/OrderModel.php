@@ -60,12 +60,18 @@ class OrderModel extends Model
      */
     public function orderMatch($notifyParam)
     {
+        $where = [];
         try {
-            $orderWhere['account'] = $notifyParam['account'];
-            $orderWhere['notify_pay_name'] = $notifyParam['notify_pay_name'];
-            $orderWhere['order_status'] = 4;
-            $orderWhere['amount'] = $notifyParam['amount'];
-            $info = $this->where($orderWhere)->find();
+            if (isset($notifyParam['notify_pay_name']) && !empty($notifyParam['notify_pay_name'])) {
+                $where[] = ['notify_pay_name', $notifyParam['notify_pay_name']];
+            }
+
+            $where[] = ['account', $notifyParam['account']];
+            $where[] = ['order_status', 4];
+            $where[] = ['amount', $notifyParam['amount']];
+            $where[] = ['operate_time', 'between', [time() - 3000, time()]];
+
+            $info = $this->where($where)->find();
             if (empty($info)) {
                 return modelReMsg(-2, '', '未匹配到订单');
             }

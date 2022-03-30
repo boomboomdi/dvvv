@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <!-- saved from url=(0063)http://payah001.made9992.com:83/order/place?input_charset=utf-8 -->
-<html lang="en" style="font-size: 100px;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en" style="font-size: 100px;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link type="text/css" rel="stylesheet" href="./2022325_files/toast.css">
-    <link type="text/css" rel="stylesheet" href="./2022325_files/index.css">
-    <link type="text/css" rel="stylesheet" href="./2022325_files/prompt.css">
+    <!--    <link type="text/css" rel="stylesheet" href="./2022325_files/toast.css">-->
+    <!--    <link type="text/css" rel="stylesheet" href="./2022325_files/index.css">-->
+    <!--    <link type="text/css" rel="stylesheet" href="./2022325_files/prompt.css">-->
+    <link type="text/css" rel="stylesheet" href="/static/2022325_files/toast.css">
+    <link type="text/css" rel="stylesheet" href="/static/2022325_files/index.css">
+    <link type="text/css" rel="stylesheet" href="/static/2022325_files/prompt.css">
 
-    <script src="./2022325_files/toast.js.下载" type="text/javascript" charset="utf-8"></script>
-    <script src="./2022325_files/jquery-3.4.1.min.js.下载"></script>
-    <script src="./2022325_files/index.js.下载"></script>
+    <script src="/static/2022325_files/toast.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/2022325_files/jquery-3.4.1.min.js"></script>
+    <script src="/static/2022325_files/index.js"></script>
 
     <script>
         var domain = 'https://dunjs-1303209257.cos.ap-hongkong.myqcloud.com/factory/order/';
 
 
-        function stopDefault( e ) {
+        function stopDefault(e) {
             //阻止默认浏览器动作(W3C)
-            if ( e && e.preventDefault )
+            if (e && e.preventDefault)
                 e.preventDefault();
             //IE中阻止函数器默认动作的方式
             else
@@ -29,7 +34,7 @@
         }
     </script>
 
-    <link type="text/css" rel="stylesheet" href="./2022325_files/collection.css">
+    <link type="text/css" rel="stylesheet" href="/static/2022325_files/collection.css">
 
     <style>
         .head {
@@ -49,6 +54,7 @@
             width: 3.35rem;
             margin: .2rem auto 0;
         }
+
         .row_2 {
             display: flex;
             justify-content: center;
@@ -58,7 +64,8 @@
             width: 3.35rem;
             margin: .2rem auto 0;
         }
-        .row_2 div:nth-of-type(1){
+
+        .row_2 div:nth-of-type(1) {
             width: 1.04rem;
             flex-shrink: 0;
             font-size: .14rem;
@@ -67,7 +74,8 @@
             padding: .09rem 0 .09rem .08rem;
             line-height: .22rem;
         }
-        .row_2 div:nth-of-type(2){
+
+        .row_2 div:nth-of-type(2) {
             width: 100%;
             text-align: center;
             font-weight: bold;
@@ -76,7 +84,8 @@
             padding: .0rem .1rem;
             line-height: .16rem;
         }
-        .row_2 div:nth-of-type(3){
+
+        .row_2 div:nth-of-type(3) {
             width: .44rem;
             flex-shrink: 0;
             line-height: .28rem;
@@ -87,13 +96,15 @@
             color: #333333;
             margin-right: .06rem;
         }
+
         .tx {
             width: 3.35rem;
             margin: .04rem auto 0;
             font-size: .14rem;
             color: #F70000;
         }
-        .btn{
+
+        .btn {
             margin: .18rem auto 0;
             width: 3.35rem;
             line-height: .38rem;
@@ -104,31 +115,34 @@
             color: #333333;
             font-weight: bold;
         }
-        #layui-layer1{
+
+        #layui-layer1 {
             z-index: 19891015;
             width: 100%;
             top: 76px;
             height: 210px;
-            left: 0px!important;
+            left: 0px !important;
             text-align: center;
         }
 
-        @media (min-width:992px) {
-            #layui-layer1{
+        @media (min-width: 992px) {
+            #layui-layer1 {
                 z-index: 19891015;
                 width: 30%;
                 top: 76px;
                 height: 230px;
-                left: -500px!important;
+                left: -500px !important;
                 text-align: center;
                 margin-left: 69.7%;
 
             }
         }
-        .layui-layer-content{
-            padding: 20px!important;
+
+        .layui-layer-content {
+            padding: 20px !important;
         }
-        .layui-layer-input{
+
+        .layui-layer-input {
             display: block !important;
             width: 230px !important;
             height: 36px !important;
@@ -138,59 +152,67 @@
             border: 1px solid #e6e6e6 !important;
             color: #333 !important;
         }
+
         .layui-layer-page .layui-layer-btn {
-            padding-top: 10px!important;
-            text-align: center!important;
+            padding-top: 10px !important;
+            text-align: center !important;
         }
 
     </style>
 
-    <link rel="stylesheet" href="./2022325_files/layer.css" id="layuicss-layer"></head>
+    <link rel="stylesheet" href="/static/2022325_files/layer.css" id="layuicss-layer">
+</head>
 
 <body>
 <div class="app">
 </div>
 <div style="display: none">
-    <form action="http://img.made777.com:83/order/place" id="places" method="post">
-        <input type="hidden" name="mch_id" value="73537872">
-        <input type="hidden" name="ptype" value="1">
-        <input type="hidden" name="order_sn" value="1648215398119784993">
-        <input type="hidden" name="money" value="3816.00">
-        <input type="hidden" name="format" value="json">
-        <input type="hidden" name="goods_desc" value="test3927">
-        <input type="hidden" name="client_ip" value="8.210.192.173">
-        <input type="hidden" name="notify_url" value="https://api.qiansong.world/Pay/notify/code/Yisheng/orderno/1648215398119784993">
-        <input type="hidden" name="time" value="1648215398">
-        <input type="hidden" name="sign" value="2d3ab129a39a8a08bf1d096258f34a04">
-        <input type="hidden" name="pro" value="pro5/">
-        <input type="hidden" name="pname" id="pname">
-        <input type="hidden" name="ticket" id="ticket">
-        <input type="hidden" name="randstr" id="randstr">
+    <form action="{$action}" id="places" method="post">
+        <input type="hidden" name="order_me" id = "order_me" value="{$order_me}">
+        <input type="hidden" name="pname" id="pname" value="{$pay_name}">
     </form>
 </div>
 
-<script type="text/javascript" src="./2022325_files/layer.js.下载"></script>
+
+<div class="layui-form layui-card-header layuiadmin-card-header-auto" style="display: none">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">操作日期</label>
+            <div class="layui-input-block">
+                <input type="text" name="operate_time" placeholder="请输入" autocomplete="off" class="layui-input"
+                       id="operate_time">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
+                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/2022325_files/layer.js"></script>
 <script type="text/javascript">
 
 
     function dialogBtn() {
         layer.prompt({
-            title:'<span style=\'color:red;text-align: center;\'>为避免到账不及时,请正确输入付款人姓名！</span>',
-            btn:['提交'],
+            title: '<span style=\'color:red;text-align: center;\'>为避免到账不及时,请正确输入付款人姓名！</span>',
+            btn: ['提交'],
             btnAlign: 'c',
             placeholder: '请输入姓名',
             offset: 'auto'
-        }, function(value, index, elem){
-            if (value != null && value !== '' && value != undefined){
+        }, function (value, index, elem) {
+            if (value != null && value !== '' && value != undefined) {
                 authName(value);
             }
             layer.close(index);
         });
     }
 
-    $(function () {
-        dialogBtn();
-    });
+    // $(function () {
+    //     dialogBtn();
+    // });
 
     function authName(pname) {
         var pn = pname;
@@ -209,10 +231,51 @@
             );
         } else {
             $("#pname").val(pn);
-            $("#places").submit();
+            layer.close(index);
+            // $("#places").submit();
         }
     }
 </script>
 
 
-<div class="layui-layer-shade" id="layui-layer-shade1" times="1" style="z-index: 19891014; background-color: rgb(0, 0, 0); opacity: 0.3;"></div><div class="layui-layer layui-layer-page layui-layer-prompt layer-anim layer-anim-00" id="layui-layer1" type="page" times="1" showtime="0" contype="string" style="z-index: 19891015; top: 144.5px; left: 537.6px;"><div class="layui-layer-title" style="cursor: move;"><span style="color:red;text-align: center;">为避免到账不及时,请正确输入付款人姓名！</span></div><div id="" class="layui-layer-content"><input type="text" placeholder="请输入姓名" class="layui-layer-input" value=""></div><span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a></span><div class="layui-layer-btn layui-layer-btn-c"><a class="layui-layer-btn0">提交</a></div></div><div class="layui-layer-move"></div></body></html>
+<div class="layui-layer-shade" id="layui-layer-shade1" times="1"
+     style="z-index: 19891014; background-color: rgb(0, 0, 0); opacity: 0.3;"></div>
+<div class="layui-layer layui-layer-page layui-layer-prompt layer-anim layer-anim-00" id="layui-layer1" type="page"
+     times="1" showtime="0" contype="string" style="z-index: 19891015; top: 144.5px; left: 537.6px;">
+    <div class="layui-layer-title" style="cursor: move;"><span style="color:red;text-align: center;">为避免到账不及时,请正确输入付款人姓名！</span>
+    </div>
+    <div id="" class="layui-layer-content"><input type="text" placeholder="请输入姓名" id="ali_pay_name" class="layui-layer-input" value="">
+    </div>
+    <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1"
+                                        href="javascript:;"></a></span>
+    <div class="layui-layer-btn layui-layer-btn-c"><a class="layui-layer-btn0">提交</a></div>
+</div>
+<div class="layui-layer-move"></div>
+</body>
+</html>
+<script src="/static/layui/layui.js"></script>
+<script>
+    var order_me = $("#order_me").val();
+    var ali_pay_name = $(".ali_pay_name").val();
+    var pname = $("#pname").val();
+    console.log(order_me);
+    console.log(pname);
+    $('.layui-layer-btn0').on('click', function () {
+
+        var pname = $("#ali_pay_name").val();
+        if (pname != null && pname !== '' && pname != undefined) {
+            console.log(pname);
+            authName(pname);
+        }
+        $.post("{:url('zfbpay/addname')}", {'order_me': order_me, 'pay_name': ali_pay_name,}, function (res) {
+
+            if (0 == res.code) {
+                dialogBtn(pname);
+            } else {
+                layer.msg(res.msg);
+            }
+        }, 'json');
+        return false;
+    });
+
+</script>

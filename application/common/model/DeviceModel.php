@@ -206,15 +206,19 @@ class DeviceModel extends Model
     {
         try {
             $studio = Db::table("bsa_studio")
-                ->field("studio")->where("status", "=", "1")->toArray();
-            $studio = collection($studio)->toArray();
-            $info = $this->leftJoin("bsa_studio", "bsa_device.studio=bsa_studio.studio")
+//                ->field("studio")
+                ->where("status", "=", "1")->column('studio');
+//                var_dump($studio);exit;
+//            $studio = collection($studio)->toArray();
+            $info = $this
                 ->where([
-                    "bsa_device.status" => 1,
-                    "bsa_device.device_status" => 1,
-                    "bsa_studio.status" => 1,
+                    "status" => 1,
+                    "device_status" => 1,
+                    "order_status" => 1,
                 ])->where("studio", "in", $studio)
-                ->order("bsa_device.lock_time asc")->find();
+                ->order("lock_time asc")->find();
+//            var_dump($info);
+//            exit;
             if (empty($info)) {
                 return modelReMsg(-2, '', "");
             }
@@ -223,7 +227,7 @@ class DeviceModel extends Model
             $this->where(['account' => $info['account']])->update($update);
         } catch (\Exception $e) {
 
-            return modelReMsg(-1, '', $e->getMessage());
+            return modelReMsg(-1, '', $e->getMessage() . $e->getFile() . $e->getLine());
         }
 
         return modelReMsg(0, $info, 'ok');
