@@ -83,7 +83,7 @@ class Cookie extends Base
             $newNum = 0;
             $total = 0;
 //            $cookieContentsArray = explode(PHP_EOL, $param['cookie_contents']);
-            $cookieContentsArray = explode("\r", $param['cookie_contents']);
+            $cookieContentsArray = explode("\n", $param['cookie_contents']);
 
             var_dump($cookieContentsArray);
 
