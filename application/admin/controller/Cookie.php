@@ -41,8 +41,9 @@ class Cookie extends Base
 //            }
             $list = $cookieModel->getCookies($limit, $where);
             $data = empty($list['data']) ? array() : $list['data'];
+//            var_dump($data);exit;
             foreach ($data as $key => $vo) {
-
+                $data[$key]['cookie'] = substr($vo['cookie'], 0, 30);
 ////                $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
 ////                $data[$key]['heart_time'] = date('Y-m-d H:i:s', $vo['heart_time']);
 ////

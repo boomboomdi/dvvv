@@ -25,8 +25,8 @@ class CookieModel extends Model
     {
         $prefix = config('database.prefix');
         try {
-            $res = $this->field($prefix . 'write_off.*')->where($where)
-                ->order('write_off_id', 'desc')->paginate($limit);
+            $res = $this->where($where)
+                ->order('id', 'desc')->paginate($limit);
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
