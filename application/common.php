@@ -238,6 +238,7 @@ function curlPost($url = '', $postData = '', $options = array())
     if (is_array($postData)) {
         $postData = http_build_query($postData);
     }
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -250,6 +251,11 @@ function curlPost($url = '', $postData = '', $options = array())
     //https请求 不验证证书和host
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $headers = [
+        "Content-Type: application/json;charset=UTF-8",
+    ];
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
     $data = curl_exec($ch);
     curl_close($ch);
     return $data;
