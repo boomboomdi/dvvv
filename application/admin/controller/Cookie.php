@@ -84,10 +84,6 @@ class Cookie extends Base
             $total = 0;
 //            $cookieContentsArray = explode(PHP_EOL, $param['cookie_contents']);
             $cookieContentsArray = explode("\n", $param['cookie_contents']);
-
-            var_dump($cookieContentsArray);
-
-            exit;
             if (is_array($cookieContentsArray)) {
                 foreach ($cookieContentsArray as $key => $v) {
                     $getCookieAccount = getCookieAccount($v);
