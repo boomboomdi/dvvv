@@ -539,7 +539,7 @@ class Info extends Controller
         $createParam['account'] = 13283544162;
         $notifyResult = curlPost("http://127.0.0.1:23946/createOrder", $createParam);
 
-        Log::log('1', "notify merchant order ", $notifyResult);
+        Log::log('1', "notify merchant order ".json_encode($notifyResult));
         $result = json_decode($notifyResult, true);
         var_dump($result);exit;
     }
