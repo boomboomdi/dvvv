@@ -94,7 +94,6 @@ class Cookie extends Base
                         $addCookieParam['cookie_sign'] = $param['cookie_sign'];
                         $addCookieParam['account'] = $getCookieAccount;
                         $res = $cookie->addCookie($addCookieParam);
-                        var_dump($res);exit;
                         //更新+1
                         if ($res['code'] == 1) {
                             $updateNum++;
