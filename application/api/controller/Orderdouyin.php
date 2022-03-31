@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\api\validate\OrderdouyinValidate;
 use app\common\model\DeviceModel;
 use app\api\model\OrderLog;
 use app\api\model\TorderModel;
@@ -10,11 +11,10 @@ use app\common\model\PayapiModel;
 use think\Db;
 use think\facade\Log;
 use think\Request;
-use app\api\validate\OrderaaValidate;
 use think\Controller;
 use Zxing\QrReader;
 
-class Info extends Controller
+class Orderdouyin extends Controller
 {
     /**
      * 下单
@@ -25,10 +25,10 @@ class Info extends Controller
     {
         $data = @file_get_contents('php://input');
         $message = json_decode($data, true);
-        Log::info('order first!', $message);
+        Log::info('order douyin first!', $message);
         $updateParam = [];
         try {
-            $validate = new OrderaaValidate();
+            $validate = new OrderdouyinValidate();
             if (!$validate->check($message)) {
                 return json(msg(-1, '', $validate->getError()));
             }
@@ -63,7 +63,6 @@ class Info extends Controller
             if ($deviceCount == 0) {
                 return apiJsonReturn('10009', "设备不足，下单失败!");
             }
-
             $orderMe = guid12();
             for ($x = 0; $x <= 3; $x++) {
                 $orderFind = $db::table('bsa_order')->where('order_me', '=', $orderMe)->find();
@@ -81,7 +80,7 @@ class Info extends Controller
             $insertOrderData['order_me'] = $orderMe; //本平台订单号
             $insertOrderData['amount'] = $message['amount']; //支付金额
             $insertOrderData['payable_amount'] = $message['amount'];  //应付金额
-            $insertOrderData['payment'] = $message['payment']; //alipay
+            $insertOrderData['payment'] = "douyin_ali"; //alipay
             $insertOrderData['add_time'] = time();  //入库时间
             $insertOrderData['notify_url'] = $message['notify_url']; //下单回调地址 player_name payrealname
 
@@ -524,7 +523,6 @@ class Info extends Controller
         }
     }
 
-    
 
     public function testDouyinOrder()
     {
@@ -540,8 +538,9 @@ class Info extends Controller
         $createParam['account'] = 13283544162;
         $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
 
-        Log::log('1', "notify merchant order ".json_encode($notifyResult));
+        Log::log('1', "notify merchant order " . json_encode($notifyResult));
         $result = json_decode($notifyResult, true);
-        var_dump($result);exit;
+        var_dump($result);
+        exit;
     }
 }
