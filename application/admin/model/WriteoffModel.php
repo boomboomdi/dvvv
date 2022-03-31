@@ -48,7 +48,7 @@ class WriteoffModel extends Model
                 return modelReMsg(-2, '', '商户名已经存在');
             }
 
-            $writeoff['add_time'] = date("Y-m-d H:i:S",time());
+            $writeoff['add_time'] = date("Y-m-d H:i:s",time());
             $this->insert($writeoff);
         }catch (\Exception $e) {
 
@@ -90,7 +90,7 @@ class WriteoffModel extends Model
             if(!empty($has)) {
                 return modelReMsg(-2, '', '商户名已经存在');
             }
-            $writeoff['last_update_time'] = date("Y-m-d H:i:S",time());
+            $writeoff['last_update_time'] = date("Y-m-d H:i:s",time());
             $this->save($writeoff, ['write_off_id' => $writeoff['write_off_id']]);
         }catch (\Exception $e) {
 
