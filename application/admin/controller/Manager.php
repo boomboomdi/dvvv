@@ -54,6 +54,7 @@ class Manager extends Base
             }
 
             $param['admin_password'] = makePassword($param['admin_password']);
+            $param['add_time'] = date("Y-m-d H:i:s",time());
 
             $admin = new admin();
             $res = $admin->addAdmin($param);
