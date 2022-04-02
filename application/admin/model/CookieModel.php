@@ -9,6 +9,7 @@
 
 namespace app\admin\model;
 
+use think\facade\Log;
 use think\Model;
 
 class CookieModel extends Model
@@ -61,67 +62,59 @@ class CookieModel extends Model
         return modelReMsg($code, '', '添加核销商成功');
     }
 
+
     /**
-     * 获取核销商信息
-     * @param $writeoffId
+     * 获取可用cookie
+     * @param $account
      * @return array
      */
-    public function getWriteoffById($writeoffId)
+    public function getUseCookie($account = "")
     {
+        $where = [];
         try {
-
-            $info = $this->where('write_off_id', $writeoffId)->findOrEmpty()->toArray();
+            $where["status"] = 1;
+            if (!empty($account)) {
+                $where['account'] = $account;
+            }
+            $info = $this->where($where)->order("last_user_time desc")->findOrEmpty()->toArray();
+            if (!empty($info)) {
+                $update['last_use_time'] = date("Y-m-d H:i:s", time());
+                $update['use_times'] = $info['user_times'] + 1;
+                $this->save($update, ['id' => $info['id']]);
+                return modelReMsg(0, $info, 'ok');
+            }
+            return modelReMsg(-2, "", '无可用下单COOKIE');
         } catch (\Exception $e) {
-
             return modelReMsg(-1, '', $e->getMessage());
+        } catch (\Error $error) {
+            Log::write("/n/t getUseCookie|ERROR /n/t" . $account . "/n/t" . $error->getMessage(), "error");
+            return modelReMsg('-3', "getUseCookie异常" . $error->getMessage());
         }
 
-        return modelReMsg(0, $info, 'ok');
     }
 
     /**
-     * 编辑核销商
-     * @param $writeoff
+     * 修改状态不可用
+     * @param $param
      * @return array
      */
-    public function editWriteoff($writeoff)
+    public function editCookie($where, $update)
     {
         try {
 
-            $has = $this->where('write_off_username', $writeoff['write_off_username'])->where('write_off_id', '<>', $writeoff['write_off_id'])
+            $has = $this->where($where)
                 ->findOrEmpty()->toArray();
-            if (!empty($has)) {
-                return modelReMsg(-2, '', '商户名已经存在');
+            if (empty($has)) {
+                return modelReMsg(-2, '', '管理名已经存在');
             }
-            $writeoff['last_update_time'] = date("Y-m-d H:i:S", time());
-            $this->save($writeoff, ['write_off_id' => $writeoff['write_off_id']]);
+
+            $this->where($where)->update($update);
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
         }
 
-        return modelReMsg(0, '', '编辑核销商户成功');
-    }
-
-    /**
-     * 删除商户
-     * @param $merchantId
-     * @return array
-     */
-    public function delWriteoff($writeOffId)
-    {
-        try {
-            if (1 == $writeOffId) {
-                return modelReMsg(-2, '', '测试核销商户不可删除');
-            }
-
-            $this->where('write_off_id', $writeOffId)->delete();
-        } catch (\Exception $e) {
-
-            return modelReMsg(-1, '', $e->getMessage());
-        }
-
-        return modelReMsg(0, '', '删除成功');
+        return modelReMsg(0, '', '编辑成功');
     }
 
 }

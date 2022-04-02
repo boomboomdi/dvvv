@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use app\admin\model\CookieModel;
 use app\api\model\OrderLog;
 use app\api\validate\OrderinfoValidate;
 use think\Db;
@@ -10,7 +11,7 @@ use think\Model;
 
 class OrderdouyinModel extends Model
 {
-    protected $table = 'bsa_order';
+    protected $table = 'bsa_order_douyin';
 
     /**
      * 获取订单
@@ -66,7 +67,6 @@ class OrderdouyinModel extends Model
             if (isset($notifyParam['notify_pay_name']) && !empty($notifyParam['notify_pay_name'])) {
                 $where[] = ['notify_pay_name', $notifyParam['notify_pay_name']];
             }
-
             $where[] = ['account', $notifyParam['account']];
             $where[] = ['order_status', 4];
             $where[] = ['amount', $notifyParam['amount']];
@@ -80,6 +80,85 @@ class OrderdouyinModel extends Model
             return modelReMsg(-1, '', $e->getMessage());
         }
         return modelReMsg(0, $info, '匹配订单成功');
+    }
+
+    //
+
+    /**
+     * 获取可用付款抖音话单支付链接
+     * @param $where
+     * @return array
+     */
+    public function getUseTorderUrl($where)
+    {
+        $where['status'] = 1;  //0:未使用1:启用中2:已禁用
+        $where['url_status'] = 1;  //0:未使用1:启用中2:已禁用
+        try {
+            //有没有
+            $info = $this->where($where)->order("use_time desc")->find();
+            if (!empty($info)) {
+                return modelReMsg(0, $info, '匹配订单成功');
+            }
+            //或者：请求获取话单支付链接  || 范围为为匹配订单
+            return modelReMsg(-2, '', '未匹配到订单');
+        } catch (\Exception $e) {
+            return modelReMsg(-1, '', $e->getMessage());
+        }
+
+    }
+
+    /**
+     * 获取可用付款抖音话单支付链接
+     * @param $where
+     * @return array
+     */
+    public function getUseTorder($where, $cookie)
+    {
+        $where['status'] = 0;  //0:未使用1:启用中2:已禁用
+        $where['url_status'] = 0;  //0:未使用1:启用中2:已禁用
+        $returnCode = 3;
+        $msg = "失败！";
+        $notifyResult = [];
+        try {
+            //有没有
+            $info = $this->where($where)->order("use_time desc")->find();
+            if (!empty($info)) {
+                $updateWhere['id'] = $info['id'];
+                $update['last_use_time'] = date("Y-m-d H:i:s", time());
+                $update['use_times'] = $info['use_times'] + 1;
+                //获取话单
+                $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
+                $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
+                $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
+                $notifyResult = json_decode($notifyResult, true);
+//                {"msg":"下单成功","order_url":"https://tp-pay.snssdk.com/cashdesk/?app_id=800095745677&encodeType=base64&merchant_id=1200009574&out_order_no=10000017080988975653278733&return_scheme=&return_url=aHR0cHM6Ly93d3cuZG91eWluLmNvbS9wYXk=&sign=976358abfe82f2e06d576dc22aa2dd05&sign_type=MD5&switch=00&timestamp=1648671358&total_amount=5500&trade_no=SP2022033104154330075991127887&trade_type=H5&uid=8b58441a628f2cee4bd6f629ccd9012a","amount":"55","ali_url":"https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_139e2972e1746412b2bc190190e6ee54&alipay_exterface_invoke_assign_sign=_c_d_j6i_r_hoo%2Bue_vw_hdk_uh_m_cn%2B_t2_e_mi_o_vs_orkqhh_m_o_sjk_i6_yo8gwl9_hy_q%3D%3D","code":0,"order_id":"10000017080988975653278733"}
+                if (isset($notifyResult['code'])) {
+                    if ($notifyResult['code'] == 0) {
+                        $returnCode = 0;
+                        $msg = "下单成功！";
+                        //下单成功！
+                        $update['pay_url'] = $notifyResult['ali_url'];
+                        $update['check_url'] = $notifyResult['order_url'];
+                        $update['order_pay'] = $notifyResult['order_url'];
+                        $update['status'] = 1;
+                        $update['order_status'] = 0;
+                    }
+                    if ($notifyResult['code'] == 1) {
+                        $returnCode = 1;
+                        $msg = "下单失败，ck失效！";
+                        //下单失败！
+                    }
+                }
+                log::info("话单下单" . $cookie['account'] . $info['order_no'], $notifyResult);
+                $this->where($updateWhere)->update($update);
+                return modelReMsg($returnCode, $info, $msg);
+            }
+            //没有可下单推单！
+            return modelReMsg(-2, '', '没有可下单推单');
+        } catch (\Exception $e) {
+            return modelReMsg(-1, '', $e->getMessage());
+        }
+
     }
 
     /**
@@ -255,6 +334,58 @@ class OrderdouyinModel extends Model
 
         }
 
+    }
+
+    /**
+     * 根据金额生成 固定次数订单
+     * @return void
+     */
+    public function createOrder($amount = "", $prepareNum = 1)
+    {
+        $total = $prepareNum;
+        $successNum = 0;
+        try {
+            if (empty($amount) || !is_float($amount) || !is_int($prepareNum)) {
+                return modelReMsg('-1', $successNum, "预单金额格式有误！");
+            }
+            //获取CK
+            $data['amount'] = $amount;
+            $data['sucessNum'] = 0;
+            $cookieModel = new CookieModel();
+            $cookieWhere["status"] = 1;
+            $getCookie = $this->where($cookieWhere)->order("last_user_time desc")->findOrEmpty()->toArray();
+            if (empty($getCookie)) {
+                return modelReMsg('-99', $successNum, "无可用ck");
+            }
+            $msg = "预产单失败！";
+            for ($i = 0; $i < $prepareNum; $i++) {
+                $getCookieRes = $cookieModel->getUseCookie();
+                if ($getCookieRes['code'] != 0) {
+                    $msg = $getCookieRes['msg'];
+                    break;
+                }
+                //获取话单
+                $where['amount'] = $amount;
+                $getUesTorderRes = $this->getUseTorder($where, $getCookie['data']);
+                if ($getUesTorderRes['code'] == 1) {
+                    $updateCookieWhere['id'] = $getCookie['data']['id'];
+                    $updateCookieParam['status'] = 2;
+                    $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
+                } else if ($getUesTorderRes['code'] == 0) {
+                    $msg = $amount . "预产成功！" . $successNum . "个";
+                    $successNum++;
+                }
+            }
+//            getUseCookie
+            return modelReMsg('0', "", "金额：", $msg);
+        } catch (\Exception $exception) {
+            Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $$prepareNum . $exception->getMessage(), "exception");
+            return modelReMsg('-11', "", "预产单失败" . $exception->getMessage());
+        } catch (\Error $error) {
+            Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $$prepareNum . $error->getMessage(), "error");
+            return modelReMsg('-22', "", "预产单失败" . $error->getMessage());
+
+        }
     }
 
 

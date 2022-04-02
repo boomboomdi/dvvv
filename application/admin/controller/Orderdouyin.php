@@ -24,19 +24,20 @@ class Orderdouyin extends Base
 //            $apiMerchantOrderNo = input('param.apiMerchantOrderNo');
             $order_no = input('param.order_no');
             $startTime = input('param.start_time');
-            $endTime = input('param.end_time');
+//            $endTime = input('param.end_time');
 
             $where = [];
             if (!empty($order_no)) {
                 $where[] = ['order_no', '=', $order_no];
             }
             if (!empty($startTime)) {
-                $where[] = ['start_time', 'between', [$startTime, $startTime . ' 23:59:59']];
+//                $endTime = stototime($startTime,);
+                $endTime = mktime(date("Y-m-d",$startTime));
+                $where[] = ['add_time', 'between', [$startTime, $startTime . ' 23:59:59']];
             }
             $writeOffNodeId = session("admin_role_id");
             if ($writeOffNodeId == 8) {
                 $where['write_off_sign'] = ['=', session("admin_user_name")];   //默认情况下 登录名就是
-//                $where[] = ['studio', "=", session("admin_user_name")];  //默认情况下 登录名就是
             }
             $TorderModel = new Torderdouyinmodel();
             $list = $TorderModel->getTorders($limit, $where);
