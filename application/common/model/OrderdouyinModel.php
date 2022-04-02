@@ -51,7 +51,7 @@ class OrderdouyinModel extends Model
             return modelReMsg(-1, '', $e->getMessage());
         }
 
-        return modelReMsg(0,"", '添加推单成功');
+        return modelReMsg(0, "", '添加推单成功');
     }
 
     /**
@@ -82,6 +82,21 @@ class OrderdouyinModel extends Model
         return modelReMsg(0, $info, '匹配订单成功');
     }
 
+    /**
+     * @return void
+     */
+    public function getTorderInfo($where)
+    {
+        try {
+            $info = $this->where($where)->find();
+            if (empty($info)) {
+                return modelReMsg(-2, '', '未匹配到订单');
+            }
+        } catch (\Exception $e) {
+            return modelReMsg(-1, '', $e->getMessage());
+        }
+        return modelReMsg(0, $info, '匹配订单成功');
+    }
 
 
     /**
