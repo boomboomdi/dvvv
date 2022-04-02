@@ -95,7 +95,7 @@ class Torder extends Controller
             $res = $orderDouYinModel->getTorderInfo($where);
 
             if ($res['code'] != 0) {
-                return json(msg('-2', '', $res['msg']));
+                return json(msg('-2', $where['order_no'], $res['msg']));
             }
 //            $data['order_status'] = $res['data']['order_status']; // 0：等待付款(使用中)1：已付款2：未到账(使用中) 4：未使用
 //            $data['success_amount'] = $res['data']['success_amount']; // 付款金额  1 整型
