@@ -26,7 +26,7 @@ class Torder extends Controller
 //        Log::log('douyin upload order first test!', $aa);
 
         $data = file_get_contents("php://input");
-//        Log::log('douyin upload order first test!', $data1);
+        Log::log('douyin upload order first test!', $data);
 //        $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
 //        var_dump($param);exit;
