@@ -54,11 +54,11 @@ class Timecheckdouyinhuadan extends Command
                     //请求查单接口
                     $res = $orderModel->orderDouYinNotifyToWriteOff($v);
                     if ($res['code'] != 0) {
-                        $errorNum ++;
+                        $errorNum++;
                     }
                 }
             }
-            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum);
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));
