@@ -44,8 +44,8 @@ class Timecheckdouyinhuadan extends Command
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
 
             $orderData = $orderModel
-                ->where('order_status', '!=', 1)
-                ->where('notify_status', '!=', 0)
+                ->where('order_status', '<>', 1)
+                ->where('notify_status', '<>', 0)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
             $totalNum = count($orderData);
