@@ -3,9 +3,6 @@
 namespace app\api\controller;
 
 use app\admin\model\WriteoffModel;
-use app\common\model\DeviceModel;
-use app\common\model\NotifylogModel;
-use app\api\validate\NotifylogValidate;
 use app\api\validate\OrderdouyinValidate;
 use app\common\model\OrderdouyinModel;
 use app\common\model\OrderModel;
@@ -25,7 +22,8 @@ class Torder extends Controller
      */
     public function uploadOrder(Request $request)
     {
-//        $param = $request->param();
+        $aa = $request->param();
+        Log::log('douyin upload order first test!', $aa);
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
 //        var_dump($param);exit;
