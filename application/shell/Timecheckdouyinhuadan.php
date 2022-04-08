@@ -66,6 +66,5 @@ class Timecheckdouyinhuadan extends Command
 //            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error" . json_encode($orderData));
         }
-
     }
 }
