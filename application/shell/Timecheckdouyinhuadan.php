@@ -44,10 +44,10 @@ class Timecheckdouyinhuadan extends Command
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
 
             $orderData = $orderModel
-                ->where('order_status', "!=", 1)
-                ->where('notify_status', "!=", 0)
-                ->where('add_time', "<", $lockLimit)
-                ->limit($limit)->select()->toArray();
+                ->where('order_status', '!=', 1)
+                ->where('notify_status', '!=', 0)
+                ->where('add_time', '<', $lockLimit)
+                ->limit($limit)->select();
             $totalNum = count($orderData);
 //            if ($totalNum > 0) {
 //                foreach ($orderData as $k => $v) {
@@ -64,7 +64,7 @@ class Timecheckdouyinhuadan extends Command
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));
         } catch (\Error $error) {
 //            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
-            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error" . json_encode($orderData));
         }
 
     }
