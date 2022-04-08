@@ -32,8 +32,8 @@ class Orderdouyin extends Base
             }
             if (!empty($startTime)) {
 //                $endTime = stototime($startTime,);
-                $endTime = mktime(date("Y-m-d",$startTime));
-                $where[] = ['add_time', 'between', [$startTime, $startTime . ' 23:59:59']];
+                $endTime = mktime(date("Y-m-d", $startTime));
+                $where[] = ['add_time', 'between', [strtotime($startTime), strtotime($startTime . ' 23:59:59')]];
             }
             $writeOffNodeId = session("admin_role_id");
             if ($writeOffNodeId == 8) {
