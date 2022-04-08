@@ -56,11 +56,10 @@ class Timecheckdouyinhuadan extends Command
 //            }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
-            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
+//            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));
         } catch (\Error $error) {
-            Log::log('Timecheckdouyinhuadanerror!', "订单总数" . $totalNum . $error->getLine() . $error->getMessage());
-            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
+//            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 
