@@ -11,7 +11,7 @@ use think\Model;
 
 class OrderdouyinModel extends Model
 {
-    protected $table = 'bsa_order_douyin';
+    protected $table = 'bsa_torder_douyin';
 
     /**
      * 获取订单
