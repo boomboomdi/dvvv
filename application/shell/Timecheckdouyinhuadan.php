@@ -12,11 +12,6 @@ use app\common\model\NotifylogModel;
 use think\Db;
 use think\facade\Log;
 
-define('DS', DIRECTORY_SEPARATOR);
-defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . DS);
-defined('ROOT_PATH') or define('ROOT_PATH', dirname(realpath(APP_PATH)) . DS);
-// 支持事先使用静态方法设置Request对象和Config对象
-defined('RUNTIME_PATH') or define('RUNTIME_PATH', ROOT_PATH . 'runtime' . DS);
 
 class Timecheckdouyinhuadan extends Command
 {
@@ -62,10 +57,10 @@ class Timecheckdouyinhuadan extends Command
 //            }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
-//            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
+            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));
         } catch (\Error $error) {
-//            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
+            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 
