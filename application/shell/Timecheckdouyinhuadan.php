@@ -28,6 +28,7 @@ class Timecheckdouyinhuadan extends Command
     protected function execute(Input $input, Output $output)
     {
         $totalNum = 0;
+        $orderData = [];
         try {
             $limit = 10;
             $limitTime = SystemConfigModel::getPayLimitTime();
@@ -40,7 +41,7 @@ class Timecheckdouyinhuadan extends Command
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
 
-            $orderData = $orderModel->where($where)->limit($limit)->select();
+            $orderData = $orderModel->where($where)->limit($limit)->select()->toArray();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
