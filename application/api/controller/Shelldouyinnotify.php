@@ -53,11 +53,11 @@ class Shelldouyinnotify extends Controller
             }
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
         } catch (\Exception $exception) {
-//            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
+            logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
 
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData);
         } catch (\Error $error) {
-//            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
+            logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "error" . json_encode($orderData);
         }
     }
