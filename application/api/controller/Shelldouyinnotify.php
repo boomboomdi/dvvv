@@ -30,15 +30,15 @@ class Shelldouyinnotify extends Controller
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
-            $where[] = ['order_status', "<>", '1'];
-            $where[] = ['notify_status', "<>", '0'];
-            $where[] = ['add_time', "<", $lockLimit];
+//            $where[] = ['order_status', "<>", '1'];
+//            $where[] = ['notify_status', "<>", '0'];
+//            $where[] = ['add_time', "<", $lockLimit];
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
 
             $orderData = $orderModel
-                ->where('order_status', '!=', 1)
-                ->where('notify_status', '!=', 0)
+                ->where('order_status', '<>', 1)
+                ->where('notify_status', '<>', 0)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
             $totalNum = count($orderData);
