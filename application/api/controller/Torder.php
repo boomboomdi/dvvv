@@ -29,7 +29,7 @@ class Torder extends Controller
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
 //        var_dump($param);exit;
-        Log::info('douyin upload order first!', $param);
+        Log::log('douyin upload order first!', $param);
         try {
             $validate = new OrderdouyinValidate();
             if (!$validate->check($param)) {
