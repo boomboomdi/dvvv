@@ -11,8 +11,8 @@ class OrderdouyinValidate extends Validate
         'order_no'   => 'require|max:32',
         'account'   => 'require|max:32',
         'total_amount' => 'require|float',
-        'limit_time' => 'require|time',
-        'notify_url' => 'require|time',
+        'limit_time' => 'require',
+        'notify_url' => 'require',
         'sign' => 'require|length:32',
     ];
 
@@ -26,12 +26,12 @@ class OrderdouyinValidate extends Validate
 //        'client_ip.require' => 'require client_ip',
 //        'client_ip.ip' => 'client_ip format error',
         'notify_url.require' => 'notify_url format error',
-        'notify_url.url' => 'notify_url format error',
+//        'notify_url.url' => 'notify_url format error',
         'payment.require'   => 'require number',
         'total_amount.require'   => 'require total_amount',
         'total_amount.float'   => 'total_amount format float',
         'limit_time.require'   => 'require limit_time',
-        'limit_time.time'   => 'limit_time format error',
+//        'limit_time.time'   => 'limit_time format error',
         'sign.require' => 'require sign',
         'sign.length' => 'sign format error',
     ];
