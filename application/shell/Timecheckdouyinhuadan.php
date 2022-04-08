@@ -29,6 +29,7 @@ class Timecheckdouyinhuadan extends Command
     protected function execute(Input $input, Output $output)
     {
         $totalNum = 0;
+        $errorNum = 0;
         $orderData = [];
         try {
             $limit = 10;
@@ -52,7 +53,9 @@ class Timecheckdouyinhuadan extends Command
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
                     $res = $orderModel->orderDouYinNotifyToWriteOff($v);
-                    Log::log('Timecheckdouyinhuadanexception!', "订单总数", $res);
+                    if ($res['code'] != 0) {
+                        $errorNum ++;
+                    }
                 }
             }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
