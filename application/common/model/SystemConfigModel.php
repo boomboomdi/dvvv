@@ -22,6 +22,15 @@ class SystemConfigModel extends Model
     }
 
     /**
+     * 获取查询订单时间start
+     * @return int
+     */
+    public static function getDouyinPayLimitTime()
+    {
+        return 280;
+    }
+
+    /**
      * 几分钟内的话单可以可以下单
      * @return int
      */
