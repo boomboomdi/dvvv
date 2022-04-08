@@ -46,6 +46,7 @@ class Shelldouyinnotify extends Controller
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
                     $res = $orderModel->orderDouYinNotifyToWriteOff($v);
+                    var_dump($res);exit;
                     if ($res['code'] != 0) {
                         $errorNum++;
                     }
@@ -54,7 +55,6 @@ class Shelldouyinnotify extends Controller
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
-
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData);
         } catch (\Error $error) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
