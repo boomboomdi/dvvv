@@ -27,6 +27,7 @@ class Timecheckdouyinhuadan extends Command
      */
     protected function execute(Input $input, Output $output)
     {
+        $totalNum = 0;
         try {
             $limit = 10;
             $limitTime = SystemConfigModel::getPayLimitTime();
@@ -47,10 +48,10 @@ class Timecheckdouyinhuadan extends Command
             }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
-            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum);
+            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum . $exception->getMessage());
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception");
         } catch (\Error $error) {
-            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum);
+            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum . $error->getMessage());
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 
