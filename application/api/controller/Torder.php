@@ -42,7 +42,9 @@ class Torder extends Controller
             if (empty($writeOff)) {
                 return json(msg(-1, '', '错误的核销商'));
             }
+            $domd5 = md5($param['write_off_sign'] . $param['order_no'] . $param['account'] . $param['total_amount'] . $param['limit_time'] . $param['notify_url'] . $writeOff['token']);
             if (md5($param['write_off_sign'] . $param['order_no'] . $param['account'] . $param['total_amount'] . $param['limit_time'] . $param['notify_url'] . $writeOff['token']) != $param['sign']) {
+                logs(json_encode(['param' => $param, 'md5' => $domd5]), 'uploadOrder_md5');
                 return json(msg(-1, '', 'fuck you!'));
             }
             $orderDouYinModel = new OrderdouyinModel();
@@ -100,12 +102,12 @@ class Torder extends Controller
             }
 //            $data['order_status'] = $res['data']['order_status']; // 0：等待付款(使用中)1：已付款2：未到账(使用中) 4：未使用
 //            $data['success_amount'] = $res['data']['success_amount']; // 付款金额  1 整型
-            return json(msg($res['data']['order_status'],  $where['order_no'], "查询成功！"));
+            return json(msg($res['data']['order_status'], $where['order_no'], "查询成功！"));
 
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             logs(json_encode(['param' => $param, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderInfo_exception');
             return apiJsonReturn('20009', "通道异常" . $exception->getMessage());
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('orderInfo error!', $param);
             return json(msg('-11', '', 'orderInfo error!' . $e->getMessage()));
         }
