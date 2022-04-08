@@ -22,8 +22,11 @@ class Torder extends Controller
      */
     public function uploadOrder(Request $request)
     {
-        $aa = $request->param();
-        Log::log('douyin upload order first test!', $aa);
+//        $aa = $request->param();
+//        Log::log('douyin upload order first test!', $aa);
+
+        $data1 = file_get_contents("php://input");
+        Log::log('douyin upload order first test!', $data1);
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
 //        var_dump($param);exit;
