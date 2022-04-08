@@ -16,7 +16,7 @@ class Timecheckdouyinhuadan extends Command
 {
     protected function configure()
     {
-        $this->setName('Timecheckdouyinhuadan')->setDescription('定时处理（抖音话单）查单回调!');
+        $this->setName('Timecheckdouyinhuadan')->setDescription('定时处理（抖音话单）回调!');
     }
 
     /**
@@ -31,7 +31,7 @@ class Timecheckdouyinhuadan extends Command
         $orderData = [];
         try {
             $limit = 10;
-            $limitTime = SystemConfigModel::getPayLimitTime();
+            $limitTime = SystemConfigModel::getDouyinPayLimitTime();
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
@@ -41,7 +41,11 @@ class Timecheckdouyinhuadan extends Command
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
 
-            $orderData = $orderModel->where($where)->limit($limit)->select()->toArray();
+            $orderData = $orderModel
+                ->where('order_status', "!=", 1)
+                ->where('notify_status', "!=", 0)
+                ->where('add_time', "<", $lockLimit)
+                ->limit($limit)->select()->toArray();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
