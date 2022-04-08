@@ -21,7 +21,7 @@ class Torderdouyinmodel extends Model
         $prefix = config('database.prefix');
         try {
             $res = $this->where($where)
-                ->order('id', 'desc')->paginate($limit);
+                ->order('t_id', 'desc')->paginate($limit);
         } catch (\Exception $e) {
             return modelReMsg(-1, '', $e->getMessage());
         }
