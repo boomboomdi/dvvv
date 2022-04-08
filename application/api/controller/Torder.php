@@ -42,9 +42,10 @@ class Torder extends Controller
             if (empty($writeOff)) {
                 return json(msg(-1, '', '错误的核销商'));
             }
-            $domd5 = md5($param['write_off_sign'] . $param['order_no'] . $param['account'] . $param['total_amount'] . $param['limit_time'] . $param['notify_url'] . $writeOff['token']);
+            $md5Sting = $param['write_off_sign'] . $param['order_no'] . $param['account'] . $param['total_amount'] . $param['limit_time'] . $param['notify_url'] . $writeOff['token'];
+            $doMd5 = md5($md5Sting);
             if (md5($param['write_off_sign'] . $param['order_no'] . $param['account'] . $param['total_amount'] . $param['limit_time'] . $param['notify_url'] . $writeOff['token']) != $param['sign']) {
-                logs(json_encode(['param' => $param, 'md5' => $domd5]), 'uploadOrder_md5');
+                logs(json_encode(['param' => $param, 'md5Sting' => $md5Sting, 'md5' => $doMd5]), 'uploadOrder_md5');
                 return json(msg(-1, '', 'fuck you!'));
             }
             $orderDouYinModel = new OrderdouyinModel();
