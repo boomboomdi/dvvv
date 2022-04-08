@@ -47,13 +47,13 @@ class Timecheckdouyinhuadan extends Command
                 ->where('add_time', "<", $lockLimit)
                 ->limit($limit)->select()->toArray();
             $totalNum = count($orderData);
-            if ($totalNum > 0) {
-                foreach ($orderData as $k => $v) {
-                    //请求查单接口
-                    $res = $orderModel->orderDouYinNotifyToWriteOff($v);
-                    Log::log('Timecheckdouyinhuadanexception!', "订单总数", $res);
-                }
-            }
+//            if ($totalNum > 0) {
+//                foreach ($orderData as $k => $v) {
+//                    //请求查单接口
+//                    $res = $orderModel->orderDouYinNotifyToWriteOff($v);
+//                    Log::log('Timecheckdouyinhuadanexception!', "订单总数", $res);
+//                }
+//            }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
