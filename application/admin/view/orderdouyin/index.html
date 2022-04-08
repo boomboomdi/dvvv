@@ -42,10 +42,10 @@
 
             <table id="LAY-user-table" lay-filter="LAY-user-table"></table>
             <script type="text/html" id="statusTpl">
-                {{#  if(d.status == 1){ }}
-                <button class="layui-btn layui-btn-success layui-btn-xs">收款中</button>
-                {{#  } else { }}
-                <button class="layui-btn layui-btn-danger layui-btn-xs">禁用</button>
+                {{#  if(d.status == 0){ }}
+                <button class="layui-btn layui-btn-success layui-btn-xs">未使用</button>
+                {{#  } else if(d.status == 1) { }}
+                <button class="layui-btn layui-btn-danger layui-btn-xs">使用中</button>
                 {{#  } }}
                 <!--                {if (buttonAuth('torder/changestatus'))}-->
                 <!--                {{#  if(d.status == 1){ }}-->
@@ -120,6 +120,10 @@
             }, {
                 field: "account",
                 title: "充值号",
+            }, {
+                field: "status",
+                title: "状态",
+                templet: '#statusTpl'
             }, {
                 field: "total_amount",
                 title: "充值金额"
