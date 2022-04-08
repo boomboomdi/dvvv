@@ -10,6 +10,7 @@ use think\console\Output;
 use app\common\model\SystemConfigModel;
 use app\common\model\NotifylogModel;
 use think\Db;
+use think\facade\Log;
 
 class Timecheckdouyinhuadan extends Command
 {
@@ -46,10 +47,10 @@ class Timecheckdouyinhuadan extends Command
             }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'TimeouttorderNotify_exception');
+            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum);
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception");
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'TimeouttorderNotify_error');
+            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum);
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 

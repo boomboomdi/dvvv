@@ -43,24 +43,20 @@ class Orderdouyin extends Base
             $list = $TorderModel->getTorders($limit, $where);
             $data = empty($list['data']) ? array() : $list['data'];
             foreach ($data as $key => $vo) {
-                if (!empty($data[$key]['status']) && $data[$key]['status'] == '4') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-info layui-btn-xs">未使用</button>';
+                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '1') {
+                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';
                 }
-                if ($data[$key]['status'] == '1') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';
-                } else if ($data[$key]['status'] == '2') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-important layui-btn-xs">付款失败</button>';
-                } else if ($data[$key]['status'] == '3') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">已手动回调</button>';
-                } else if ($data[$key]['status'] == '5') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-danger layui-btn-xs">已失败回调</button>';
-                } else if ($data[$key]['status'] == '6') {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">支付回调成功</button>';
-                } else {
-                    $data[$key]['status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">等待付款</button>';
+                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '2') {
+
+                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-danger layui-btn-xs">付款失败</button>';
+                }
+                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '3') {
+                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">下单失败</button>';
+                }
+                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '4') {
+                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-primary layui-btn-xs">等待支付</button>';
                 }
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
-
             }
             $list['data'] = $data;
             if (0 == $list['code']) {
