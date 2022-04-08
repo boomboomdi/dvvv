@@ -48,10 +48,10 @@ class Timecheckdouyinhuadan extends Command
             }
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
-            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum . $exception->getLine() . $exception->getMessage());
+            Log::log('Timecheckdouyinhuadanexception!', "订单总数" . $totalNum . $exception->getLine() . $exception->getMessage());
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception");
         } catch (\Error $error) {
-            Log::log('Timecheckdouyinhuadan!', "订单总数" . $totalNum . $error->getLine() . $error->getMessage());
+            Log::log('Timecheckdouyinhuadanerror!', "订单总数" . $totalNum . $error->getLine() . $error->getMessage());
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 
