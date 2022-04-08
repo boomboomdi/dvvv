@@ -59,6 +59,8 @@ class Orderdouyin extends Base
                 } else {
                     $data[$key]['status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">等待付款</button>';
                 }
+                $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
+
             }
             $list['data'] = $data;
             if (0 == $list['code']) {
