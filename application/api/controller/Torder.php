@@ -49,7 +49,8 @@ class Torder extends Controller
                 return json(msg(-1, '', 'fuck you!'));
             }
             $orderDouYinModel = new OrderdouyinModel();
-            $addParam['add_time'] = date("Y-m-d H:i:s", time());
+//            $addParam['add_time'] = date("Y-m-d H:i:s", time());
+            $addParam['add_time'] = time();
             $addParam['status'] = 0;
             $where['account'] = $param['account'];
             $where['order_no'] = $param['order_no'];
