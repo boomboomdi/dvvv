@@ -93,10 +93,17 @@ class OrderdouyinModel extends Model
     {
         $where['status'] = 1;  //0:未使用1:启用中2:已禁用
         $where['url_status'] = 1;  //0:未使用1:启用中2:已禁用
+        $prepareSetWhere['amount'] = $where['amount'];
+
+        $db = new Db();
         try {
             //有没有
             $info = $this->where($where)->order("use_time desc")->find();
             if (!empty($info)) {
+                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->select();
+                $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
+                    ['can_user_num' => $prepare['can_user_num'] - 1]
+                );
                 return modelReMsg(0, $info, '匹配订单成功');
             }
             //或者：请求获取话单支付链接  || 范围为为匹配订单
@@ -139,7 +146,7 @@ class OrderdouyinModel extends Model
                         //下单成功！
                         $update['pay_url'] = $notifyResult['ali_url'];
                         $update['check_url'] = $notifyResult['order_url'];
-                        $update['order_pay'] = $notifyResult['order_url'];
+                        $update['order_pay'] = $notifyResult['order_id'];
                         $update['status'] = 1;
                         $update['order_status'] = 0;
                     }
@@ -277,17 +284,7 @@ class OrderdouyinModel extends Model
             ksort($callbackData);
             $returnMsg = array();
             $callbackData['sign'] = strtoupper(md5(urldecode(http_build_query($callbackData)) . "&key=" . $token));
-//            $sign = md5("merchant_sign=" . $data['merchant_sign'] .
-//                "&client_ip=" . $data['client_ip'] .
-//                "&order_no=" . $data['order_no'] .
-//                "&order_pay=" . $data['order_pay'] .
-//                "&payment=" . $data['payment'] .
-//                "&amount=" . $data['amount'] .
-//                "&actual_amount=" . $data['actual_amount'] .
-//                "&pay_time=" . $data['pay_time'] .
-//                "&returnUrl=" . $data['returnUrl'] .
-//                "&key=" . $data['token']
-//            );
+
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
 

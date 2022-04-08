@@ -20,7 +20,7 @@ use Zxing\QrReader;
 class Orderdouyin extends Controller
 {
     /**
-     * 下单
+     * 下单  抖音
      * @param Request $request
      * @return void
      */
@@ -33,7 +33,7 @@ class Orderdouyin extends Controller
         try {
             $validate = new OrderdouyinValidate();
             if (!$validate->check($message)) {
-                return json(msg(-1, '', $validate->getError()));
+                return apiJsonReturn(msg(-1, '', $validate->getError()));
             }
             $db = new Db();
             //验证商户
@@ -88,7 +88,6 @@ class Orderdouyin extends Controller
                 return apiJsonReturn('10008', $createOrderOne['msg'] . $createOrderOne['code']);
             }
             //2、分配核销单
-
             $orderDouYinModel = new OrderdouyinModel();
             $getDouYinPayUrl['amount'] = $insertOrderData['amount'];
             $getUseTorderUrlRes = $orderDouYinModel->getUseTorderUrl($getDouYinPayUrl);
@@ -101,10 +100,12 @@ class Orderdouyin extends Controller
                 Log::log('1', "order getUseTorderUrlRes " . json_encode($getUseTorderUrlRes));
                 return apiJsonReturn('-2', $getUseTorderUrlRes['msg'], "");
             }
+
             $updateOrderStatus['order_status'] = 4;
             $updateOrderStatus['account'] = $getUseTorderUrlRes['data']['account'];
-            $updateOrderStatus['studio_sign'] = $getUseTorderUrlRes['data']['writre_off_sign'];
-            $updateOrderStatus['qr_url'] = $getUseTorderUrlRes['data']['pay_url'];
+            $updateOrderStatus['studio_sign'] = $getUseTorderUrlRes['data']['write_off_sign'];
+            $updateOrderStatus['qr_url'] = $getUseTorderUrlRes['data']['pay_url'];   //支付订单
+            $updateOrderStatus['order_pay'] = $getUseTorderUrlRes['data']['order_pay']; //抖音订单
             $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
             return apiJsonReturn('10000', "下单成功", $updateOrderStatus['qr_url']);
 
@@ -117,278 +118,6 @@ class Orderdouyin extends Controller
         }
     }
 
-    /**
-     *  商户查单接口
-     * apiMerchantNo    是    string    商户编码
-     * apiMerchantOrderNo    是    string    所查订单编号
-     * sign    是    string    签名
-     * {
-     * apiMerchantNo:76153933,
-     * apiMerchantOrderNo:"TA1626885076531"
-     * sign:"2151EBF75C25FA24937FF723898294FB"
-     * }
-     * @return JSON
-     *
-     * {
-     * "code": "2100",
-     * "msg": "查询成功",
-     * "orderStatus": 0,
-     * "officialMsg": "已付款",
-     * "amount": 500,
-     * "cardNo": "1000111100014749155",
-     * "orderCreateDate": "2021-07-22 02:48:50",
-     * "orderExpireDate": "2021-07-22 02:58:50",
-     * "orderDiscount": 0.9500
-     * }
-     */
-    public function status()
-    {
-        try {
-            $data = @file_get_contents('php://input');
-            $param = json_decode($data, true);
-            Log::write("/n/t TOrder/status: /n/t" . json_encode($param) . "/n/t", "Log");
-            //                var_dump($param);exit();
-            if (!isset($param['apiMerchantNo']) || empty($param['apiMerchantNo'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.apiMerchantNo must be require";
-                return json_encode($returnMsg);
-            }
-            if (!isset($param['apiMerchantOrderNo']) || empty($param['apiMerchantOrderNo'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.apiMerchantOrderNo must be require";
-                return json_encode($returnMsg);
-            }
-            if (!isset($param['sign']) || empty($param['sign'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.sign must be require";
-                return json_encode($returnMsg);
-            }
-
-            $db = new Db();
-            $where['merchant_sign'] = $param['apiMerchantNo'];
-            //验证商户
-            $validatetmerchant = $db::table('bsa_tmerchant')->where($where)->find();
-            if (empty($validatetmerchant)) {
-                $returnMsg['code'] = 2004;
-                $returnMsg['msg'] = "无效商户!";
-                $returnMsg['orderStatus'] = 0;
-                $returnMsg['officialMsg'] = "";
-                $returnMsg['amount'] = "";
-                $returnMsg['cardNo'] = "";
-                $returnMsg['orderCreateDate'] = date(time());
-                $returnMsg['orderExpireDate'] = date(time());
-                $returnMsg['orderDiscount'] = "0.00";
-                return json_encode($returnMsg);
-            }
-            //验签
-            $orderSign = $param['sign'];
-            unset($param['sign']);
-            ksort($param);
-            $returnMsg = array();
-            if ($orderSign != strtoupper(md5(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token']))) {
-//                var_dump(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token']);
-//                var_dump(strtoupper(md5(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token'])));
-//                exit;
-                $returnMsg['code'] = 2101;
-                $returnMsg['msg'] = "签名无效!";
-                return json_encode($returnMsg);
-            }
-            //查询推单
-            $torderWhere['apiMerchantOrderNo'] = $param['apiMerchantOrderNo'];
-            $torderWhere['apiMerchantNo'] = $param['apiMerchantNo'];
-//            $torderWhere['orderStatus'] = 0;
-//            $torderWhere['status'] = 4;
-            $tOrderModel = new TorderModel();
-            $has = $tOrderModel->getTorderByWhere($torderWhere);
-            if ($has['code'] != 0) {
-                $returnMsg['code'] = 2102;
-                $returnMsg['msg'] = "订单不存在!";
-//                $returnMsg['msg'] = "订单不存在!".$db::table("bas_torder")->getLastSql();
-                $returnMsg['orderDiscount'] = "0.00";
-                $returnMsg['orderExpireDate'] = date(time());
-                return json_encode($returnMsg);
-            }
-            $tOrderData = $has['data'];
-            $returnMsg['code'] = 2100;
-            $returnMsg['msg'] = "查单成功!";
-            $tOrderData['orderStatus'] = 2;
-            if ($tOrderData['orderStatus'] == 4) {
-                $tOrderData['orderStatus'] = 0;
-            }
-            if ($tOrderData['orderStatus'] == 1 || $tOrderData['orderStatus'] == 3) {
-                $tOrderData['orderStatus'] = 1;
-            }
-            $returnMsg['orderStatus'] = $tOrderData['orderStatus'];
-            $returnMsg['officialMsg'] = $tOrderData['apiMerchantOrderOfficialMsg'];
-            $returnMsg['amount'] = $tOrderData['apiMerchantOrderAmount'];
-            $returnMsg['cardNo'] = $tOrderData['apiMerchantOrderCardNo'];
-            $returnMsg['orderCreateDate'] = date('Y-m-d h:i:s', $tOrderData['orderCreateDate']);
-            $returnMsg['orderExpireDate'] = date('Y-m-d h:i:s', $tOrderData['orderExpireDate']);
-            $returnMsg['orderDiscount'] = $tOrderData['orderDiscount'];
-            return json_encode($returnMsg);
-        } catch (\Exception $e) {
-            $returnMsg['code'] = 1009;
-            $returnMsg['msg'] = "系统错误错误!" . $e->getMessage();
-            return json_encode($returnMsg);
-        }
-    }
-
-    /**
-     *  商户by amount 获取接口
-     * amount    是    string    商户编码
-     * sign    是    string    签名
-     * {
-     * amount:100
-     * }
-     * @return JSON
-     *
-     * {
-     * "code": "2100",
-     * "msg": "查询成功",
-     * "orderStatus": 0,
-     * "officialMsg": "已付款",
-     * "amount": 500,
-     * "cardNo": "1000111100014749155",
-     * "orderCreateDate": "2021-07-22 02:48:50",
-     * "orderExpireDate": "2021-07-22 02:58:50",
-     * "orderDiscount": 0.9500
-     * }
-     */
-    public function get(Request $request)
-    {
-        try {
-            $data = @file_get_contents('php://input');
-            $param = json_decode($data, true);
-            //                var_dump($param);exit();
-            $db = new Db();
-
-            if (!isset($param['amount']) || empty($param['amount'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.apiMerchantOrderAmount must be require";
-                return json_encode($returnMsg);
-            }
-            //查询推单
-            $torderWhere['apiMerchantOrderAmount'] = $param['amount'];
-            $tOrderModel = new TorderModel();
-            $field = "apiMerchantOrderCardNo,apiMerchantOrderNo,apiMerchantOrderAmount";
-            $has = $tOrderModel->getTorderForGet($torderWhere, $field);
-            if ($has['code'] != 0) {
-                $returnMsg['code'] = 2102;
-                $returnMsg['msg'] = "无可用 no useful order!";
-                return json_encode($returnMsg);
-            }
-            $db::startTrans();//开启事务
-            $db::table('bsa_torder')->where($torderWhere)->lock();
-            $updateParam['status'] = 1;
-            $db::table('bsa_torder')->where($torderWhere)->update($updateParam);
-            $db::commit();
-
-            $returnMsg['code'] = 1000;
-            $returnMsg['msg'] = "查单成功!";
-//            $returnMsgData = json_encode($has['data']);
-//            ltrim($returnMsgData, "[");
-//            rtrim($returnMsgData, "]");
-//            $returnMsg['data'] = $returnMsgData;
-            $returnMsg['data'] = $has['data'];
-            return json_encode($returnMsg);
-        } catch (\Exception $e) {
-            $returnMsg['code'] = 1009;
-            $returnMsg['msg'] = "系统错误! system error" . $e->getMessage();
-            return json_encode($returnMsg);
-        }
-    }
-
-    /**
-     * 余额
-     * @return false|string
-     */
-    public function balance(Request $request)
-    {
-        try {
-            $param = $request->get();
-//            $param = json_decode($data, true);
-            if (!isset($param['apiMerchantNo']) || empty($param['apiMerchantNo'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.apiMerchantNo must be require";
-                return json_encode($returnMsg);
-            }
-
-            if (!isset($param['sign']) || empty($param['sign'])) {
-                $returnMsg['code'] = 2002;
-                $returnMsg['msg'] = "参数错误!.sign must be require";
-                return json_encode($returnMsg);
-            }
-
-            $db = new Db();
-            $where['merchant_sign'] = $param['apiMerchantNo'];
-            //验证商户
-            $validatetmerchant = $db::table('bsa_tmerchant')->where($where)->find();
-            if (empty($validatetmerchant)) {
-                $returnMsg['code'] = 2004;
-                $returnMsg['msg'] = "无效商户!";
-                $returnMsg['balance'] = "0.00";
-                return json_encode($returnMsg);
-            }
-            //验签
-            $orderSign = $param['sign'];
-            unset($param['sign']);
-            ksort($param);
-            $returnMsg = array();
-            if ($orderSign != strtoupper(md5(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token']))) {
-//                var_dump(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token']);
-//                var_dump(strtoupper(md5(urldecode(http_build_query($param)) . "&key=" . $validatetmerchant['token'])));
-//                exit;
-                $returnMsg['code'] = 2006;
-                $returnMsg['msg'] = "签名无效!";
-                return json_encode($returnMsg);
-            }
-            //查询推单
-            $torderWhere['apiMerchantNo'] = $param['apiMerchantNo'];
-            $torderWhere['orderStatus'] = 1;
-//            $torderWhere['status'] = 1;
-            $tOrderModel = new TorderModel();
-            $has = $tOrderModel->getTmerchangBalanceByWhere($torderWhere);
-//            var_dump($has);exit;
-            if ($has['code'] != 0) {
-                $returnMsg['code'] = 2102;
-                $returnMsg['msg'] = "订单不存在!";
-                $returnMsg['balance'] = "0.00";
-                return json_encode($returnMsg);
-            }
-            $tOrderData = $has['data'];
-            $returnMsg['code'] = 2100;
-            $returnMsg['msg'] = "查单成功!";
-            $returnMsg['balance'] = $has['data'];
-            return json_encode($returnMsg);
-        } catch (\Exception $e) {
-            $returnMsg['code'] = 1009;
-            $returnMsg['msg'] = "系统错误错误!" . $e->getMessage();
-            $returnMsg['balance'] = '0.00';
-            return json_encode($returnMsg);
-        }
-    }
-
-    public function shell_exec1()
-    {
-
-//        require __DIR__ . "https://attach.52pojie.cn/forum/202004/01/140413wyewb2uf2yw0xfa3.png";
-
-        $img = "https://attach.52pojie.cn/forum/202004/01/140413wyewb2uf2yw0xfa3.png";
-        $qrcode = new QrReader($img);
-        $text = $qrcode->text(); //return decoded text from QR Code
-        var_dump($text);
-        exit;
-        $img = "https://attach.52pojie.cn/forum/202004/01/140413wyewb2uf2yw0xfa3.png";
-        $res = shel_exec($img);
-        var_dump($res);
-        exit;
-    }
-
-
-    /**
-     * zfb固额下单
-     * @return bool|false|string
-     */
     public function index()
     {
         $data = @file_get_contents('php://input');

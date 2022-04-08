@@ -12,4 +12,5 @@
 return [
 //    'app\shell\TimeouttorderNotify',
     'app\shell\Timedevice',  //定时解锁超时设备
+    'app\shell\Prepareorder',  //预先生成
 ];

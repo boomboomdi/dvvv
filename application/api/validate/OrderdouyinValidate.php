@@ -9,7 +9,7 @@ class OrderdouyinValidate extends Validate
         'write_off_sign'  => 'require|max:25',
 //        'client_ip'  => 'require|ip',
         'order_no'   => 'require|max:32',
-        'account'   => 'require|length:32',
+        'account'   => 'require|max:32',
         'total_amount' => 'require|float',
         'limit_time' => 'require|time',
         'notify_url' => 'require|time',
