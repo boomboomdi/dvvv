@@ -385,5 +385,86 @@ class OrderdouyinModel extends Model
         }
     }
 
+    /**
+     * {
+     * "write_off_sign":"lisi", //string
+     * "order_no":"e10adc3949ba59abbe56e057f20f883e",  //推单单号|string
+     * "account":"13388888888",      //充值账号|string
+     * "total_amount":"1.00",        //金额|float保留两位
+     * "success_amount":"1.00",        //充值金额|float保留两位
+     * "pay_time":"Y-m-d H:i:s",    //支付时间|2022-4-1 12:21:12
+     * "sign":"" |string
+     * }
+     * 回调核销后台
+     * @param $tOrderData
+     * @return void
+     */
+    public function orderDouYinNotifyToWriteOff($tOrderData)
+    {
+
+        $db = new Db();
+        $notifyUrl = $tOrderData['notify_url'];
+        if (!validateURL($notifyUrl)) {
+            $db::table('bsa_torder_douyin')->where($tOrderData['order_no'])
+                ->update([
+                    'status' => 2,
+                    'url_status' => 2,
+                    'notify_status' => 2
+                ]);
+            return modelReMsg('0', "", "回调地址有误！");
+        }
+        $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
+        try {
+            $notifyUrl = $tOrderData['notify_url'];
+            if (!validateURL($notifyUrl)) {
+                return modelReMsg('0', "", "回调地址有误！");
+            }
+            $db = new Db();
+
+            $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
+            $token = $db::table("bsa_write_off")->where($notifyParam['write_off_sign'])->find();
+
+            $notifyParam['order_no'] = $tOrderData['order_no'];
+            $notifyParam['account'] = $tOrderData['account'];
+            $notifyParam['total_amount'] = $tOrderData['total_amount'];
+            $notifyParam['success_amount'] = $tOrderData['success_amount'];
+            $notifyParam['order_status'] = $tOrderData['order_status'];
+            if ($tOrderData['pay_time'] != 0) {
+                $notifyParam['time'] = date("Y-m-d H:i:s", $tOrderData['pay_time']);
+            } else {
+                $notifyParam['time'] = date("Y-m-d H:i:s", time());
+            }
+            $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
+            $notifyParam['sign'] = md5($md5Sting);
+
+            $nitifyResult = curlPost($notifyUrl, $notifyParam);
+            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $nitifyResult);
+            $result = json_decode($nitifyResult, true);
+            //通知失败
+            if ($result != 1) {
+                $db::table('bsa_torder_douyin')->where($notifyParam['order_no'])
+                    ->update([
+                        'status' => 2,
+                        'url_status' => 2,
+                        'notify_status' => 2
+                    ]);
+            } else {
+                $db::table('bsa_torder_douyin')->where($notifyParam['order_no'])
+                    ->update([
+                        'status' => 2,
+                        'url_status' => 2,
+                        'notify_status' => 1
+                    ]);
+            }
+            return modelReMsg('0', "", $nitifyResult['msg']);
+        } catch (\Exception $exception) {
+            Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
+            return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
+        } catch (\Error $error) {
+            Log::log('orderDouYinNotifyToWriteOffError!', $tOrderData);
+            return modelReMsg('-11', "", "回调失败" . $error->getMessage());
+
+        }
+    }
 
 }

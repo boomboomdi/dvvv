@@ -11,11 +11,11 @@ use app\common\model\SystemConfigModel;
 use app\common\model\NotifylogModel;
 use think\Db;
 
-class Timecheckdouyin extends Command
+class Timecheckdouyinhuadan extends Command
 {
     protected function configure()
     {
-        $this->setName('Timecheckdouyin')->setDescription('定时处理（抖音）查单回调!');
+        $this->setName('Timecheckdouyinhuadan')->setDescription('定时处理（抖音话单）查单回调!');
     }
 
     /**
@@ -32,27 +32,25 @@ class Timecheckdouyin extends Command
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
-            $notifyLogModel = new NotifylogModel();
-            $notifyLogWhere['status'] = 2;
-            $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
-            $where[] = ['order_status', '4'];
+            $where[] = ['order_status', "!=", '1'];
+            $where[] = ['notify_status', "!=", '0'];
+            $where[] = ['limit_time', "<", date('Y-m-d H:i:s', time())];
             //查询下单之前280s 到现在之前20s的等待付款订单
-            $orderData = $orderModel->where($where)->select();
+            $orderData = $orderModel->where($where)->limit(20)->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
-                    
-                       //请求查单接口
-//                    $checkParam[''] = $v[''];
+                    //请求查单接口
+                    $orderModel->orderDouYinNotifyToWriteOff($v);
                 }
             }
-            $output->writeln("Timecheckdouyin:订单总数" . $totalNum);
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum);
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'TimeouttorderNotify_exception');
-            $output->writeln("Timecheckdouyin:订单总数" . $totalNum . "exception");
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception");
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'TimeouttorderNotify_error');
-            $output->writeln("Timecheckdouyin:订单总数" . $totalNum . "error");
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "error");
         }
 
     }
