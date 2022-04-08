@@ -27,7 +27,7 @@ class SystemConfigModel extends Model
      */
     public static function getDouyinPayLimitTime()
     {
-        return 280;
+        return 160;
     }
 
     /**
