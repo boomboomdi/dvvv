@@ -152,6 +152,8 @@ class Orderinfo extends Controller
             return apiJsonReturn('20009', "通道异常" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['message' => $message, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'hbdhtestCreateCybIndexOrder_error');
+            return apiJsonReturn('20009', "通道异常" . $error->getMessage());
+
         }
     }
 
