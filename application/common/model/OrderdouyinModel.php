@@ -469,7 +469,7 @@ class OrderdouyinModel extends Model
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
-            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $notifyResult]), 'orderDouYinNotifyToWriteOff');
+//            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $notifyResult]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
             if ($notifyResult != "success") {
@@ -479,7 +479,7 @@ class OrderdouyinModel extends Model
                         'url_status' => 2,
                         'notify_status' => 2,
                         'notify_time' => time(),
-                        'order_desc' => "核销回调|".$notifyResult
+                        'order_desc' => "核销回调|" . $notifyResult
                     ]);
                 Log::log('orderDouYinNotifyToWriteOffFail!', $notifyResult);
 
@@ -490,7 +490,7 @@ class OrderdouyinModel extends Model
                         'url_status' => 2,
                         'notify_status' => 1,
                         'notify_time' => time(),
-                        'order_desc' => "核销回调|".$notifyResult
+                        'order_desc' => "核销回调|" . $notifyResult
                     ]);
             }
             return modelReMsg('0', "", json_encode($notifyResult));

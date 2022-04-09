@@ -58,7 +58,7 @@ class Timecheckdouyinhuadan extends Command
                     $doNum++;
                 }
             }
-            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "处理" . $errorNum);
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "处理" . $doNum);
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));
