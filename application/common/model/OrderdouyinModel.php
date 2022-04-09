@@ -394,13 +394,13 @@ class OrderdouyinModel extends Model
                 }
             }
 //            getUseCookie
-            return modelReMsg(0, "", "金额：", $msg);
+            return modelReMsg(0, $successNum, "金额：", $msg);
         } catch (\Exception $exception) {
             Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $$prepareNum . $exception->getMessage(), "exception");
-            return modelReMsg('-11', "", "预产单失败" . $exception->getMessage());
+            return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
         } catch (\Error $error) {
             Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $$prepareNum . $error->getMessage(), "error");
-            return modelReMsg('-22', "", "预产单失败" . $error->getMessage());
+            return modelReMsg('-22', $successNum, "预产单失败" . $error->getMessage());
 
         }
     }

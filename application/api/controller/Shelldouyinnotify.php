@@ -87,7 +87,7 @@ class Shelldouyinnotify extends Controller
             $lockLimit = $now - $limitTime;
 
             //获取CK
-            $cookieModel = new CookieModel();
+//            $cookieModel = new CookieModel();
 //            getUseCookie
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
