@@ -454,14 +454,16 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
-                        'notify_status' => 2
+                        'notify_status' => 2,
+                        'order_desc'=>$notifyResult
                     ]);
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
-                        'notify_status' => 1
+                        'notify_status' => 1,
+                        'order_desc'=>$notifyResult
                     ]);
             }
             return modelReMsg('0', "", $result['msg']);
