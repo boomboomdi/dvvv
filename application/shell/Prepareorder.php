@@ -46,13 +46,11 @@ class Prepareorder extends Command
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
-
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
-
 //                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
                         for ($i = 1; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
                             $res = $orderDouYinModel->createOrder($v['order_amount'], ($v['prepare_num'] - $v['can_use_num']));
-                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
+//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
 
                             if ($res['code'] == 0) {
                                 $prepareSetWhere['id'] = $v['id'];
@@ -67,11 +65,11 @@ class Prepareorder extends Command
             }
             $output->writeln("Prepareorder:预先生成||" . $msg);
         } catch (\Exception $exception) {
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timedevice exception');
-            $output->writeln("Prepareorder:总应强制超时订单数" . $totalNum . "exception");
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
+            $output->writeln("Prepareorder:订单总数" . $totalNum . "exception");
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timedevice  error');
-            $output->writeln("Prepareorder:总应强制超时订单数" . $totalNum . "error");
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
+            $output->writeln("Prepareorder:订单总数" . $totalNum . "error");
         }
 
     }
