@@ -73,7 +73,7 @@ class Prepare extends Base
     }
 
     // 编辑预拉单
-    public function editAdmin()
+    public function editPrepare()
     {
         if (request()->isPost()) {
 
