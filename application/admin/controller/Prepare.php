@@ -30,7 +30,20 @@ class Prepare extends Base
 
             $model = new PrepareModel();
             $list = $model->getPrepareLists($limit, $where);
+            $data = empty($list['data']) ? array() : $list['data'];
+            foreach ($data as $key => $vo) {
+                $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
+                $data[$key]['heart_time'] = date('Y-m-d H:i:s', $vo['heart_time']);
 
+                if (!empty($data[$key]['qr_update_time']) && $data[$key]['qr_update_time'] != 0) {
+                    $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['qr_update_time']);
+                }
+
+                //订单状态 :是否可用1：可用2：不可用（心跳正常且开启情况下是否可下单）
+                //设备状态：是否开启1：开启中2已关闭
+                //心跳2：离线  1在线
+            }
+            $list['data'] = $data;
             if (0 == $list['code']) {
 
                 return json(['code' => 0, 'msg' => 'ok', 'count' => $list['data']->total(), 'data' => $list['data']->all()]);
