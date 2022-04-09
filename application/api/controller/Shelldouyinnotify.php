@@ -80,6 +80,7 @@ class Shelldouyinnotify extends Controller
         $errorNum = 0;
         $msg = "";
         $db = new Db();
+        echo "kaishi";
         try {
             //时间差  话单时间差生成订单时间差
             $limitTime = SystemConfigModel::getTorderLimitTime();
