@@ -41,16 +41,16 @@ class Orderdouyin extends Controller
             //验证商户
             $token = $db::table('bsa_merchant')->where('merchant_sign', '=', $message['merchant_sign'])->find()['token'];
             if (empty($token)) {
-                return apiJsonReturn('100161', "商户验证失败！");
+                return apiJsonReturn(10001, "商户验证失败！");
             }
             $sig = md5($message['merchant_sign'] . $message['order_no'] . $message['amount'] . $message['time'] . $token);
             if ($sig != $message['sign']) {
                 Log::info("create_order_10006!", $message);
-                return apiJsonReturn('10006', "验签失败！");
+                return apiJsonReturn(10006, "验签失败！");
             }
             $orderFind = $db::table('bsa_order')->where('order_no', '=', $message['order_no'])->count();
             if ($orderFind > 0) {
-                return apiJsonReturn('11001', "单号重复！");
+                return apiJsonReturn(11001, "单号重复！");
             }
 
             //$user_id = $message['user_id'];  //用户标识
@@ -59,7 +59,7 @@ class Orderdouyin extends Controller
             $cookieModel = new CookieModel();
             $getCookie = $cookieModel->getUseCookie();
             if ($getCookie != 0) {
-                return apiJsonReturn('10009', $getCookie['msg']);
+                return apiJsonReturn(10009, $getCookie['msg']);
             }
 
             $orderMe = guid12();
@@ -87,7 +87,7 @@ class Orderdouyin extends Controller
             $orderModel = new \app\common\model\OrderModel();
             $createOrderOne = $orderModel->addOrder($insertOrderData);
             if (!isset($createOrderOne['code']) || $createOrderOne['code'] != '0') {
-                return apiJsonReturn('10008', $createOrderOne['msg'] . $createOrderOne['code']);
+                return apiJsonReturn(10008, $createOrderOne['msg'] . $createOrderOne['code']);
             }
             //2、分配核销单
             $orderDouYinModel = new OrderdouyinModel();
@@ -100,7 +100,7 @@ class Orderdouyin extends Controller
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
                 Log::log('1', "order getUseTorderUrlRes " . json_encode($getUseTorderUrlRes));
-                return apiJsonReturn('-2', $getUseTorderUrlRes['msg'], "");
+                return apiJsonReturn(100010, $getUseTorderUrlRes['msg'], "");
             }
 
             $updateOrderStatus['order_status'] = 4;
