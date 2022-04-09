@@ -106,7 +106,7 @@ class Shelldouyinnotify extends Controller
                 foreach ($prepareAmountList as $k => $v) {
                     if ($v['prepare_num'] - $v['can_use_num'] > 0) {
                         for ($i = 1; $i < $v['prepare_num'] - $v['can_use_num']; $i++) {
-                            $res = $orderDouYinModel->createOrder($v['amount'], $v['prepare_num'] - $v['can_use_num']);
+                            $res = $orderDouYinModel->createOrder($v['order_amount'], $v['prepare_num'] - $v['can_use_num']);
 //                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['amount'], 'res' => json_encode($res)]), 'Prepareorderapi');
 
                             if ($res['code'] == 0) {

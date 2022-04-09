@@ -382,7 +382,7 @@ class OrderdouyinModel extends Model
                     break;
                 }
                 //获取话单
-                $where['amount'] = $amount;
+                $where['total_amount'] = $amount;
                 $getUesTorderRes = $this->getUseTorder($where, $getCookie['data']);
                 if ($getUesTorderRes['code'] == 1) {
                     $updateCookieWhere['id'] = $getCookie['data']['id'];
