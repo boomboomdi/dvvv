@@ -26,18 +26,17 @@ class Shelldouyinnotify extends Controller
 
         $totalNum = 0;
         $errorNum = 0;
+        $doNum = 0;
         $orderData = [];
-        echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
-        exit;
-
         try {
             $limit = 10;
-            $limitTime = 900;
+            $limitTime = SystemConfigModel::getDouyinPayLimitTime();
+//            $limitTime = 900;
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
-//            $where[] = ['order_status', "<>", '1'];
-//            $where[] = ['notify_status', "<>", '0'];
+//            $where[] = ['order_status', "!=", '1'];
+//            $where[] = ['notify_status', "!=", '0'];
 //            $where[] = ['add_time', "<", $lockLimit];
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
@@ -45,24 +44,17 @@ class Shelldouyinnotify extends Controller
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('add_time', '<', $lockLimit)->select();
-//            var_dump($orderData);
-
-//            var_dump(Db::table('bsa_torder_douyin')->getLastSql());exit;
+                ->where('add_time', '<', $lockLimit)
+                ->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
-
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
-                    $res = $orderModel->orderDouYinNotifyToWriteOff($v);
-//                    var_dump($res);exit;
-                    if ($res['code'] != 0) {
-                        $errorNum++;
-                    }
+                    $orderModel->orderDouYinNotifyToWriteOff($v);
+                    $doNum++;
                 }
             }
-
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
