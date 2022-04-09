@@ -25,6 +25,8 @@ class Shelldouyinnotify extends Controller
         $totalNum = 0;
         $errorNum = 0;
         $orderData = [];
+        echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;exit;
+
         try {
             $limit = 10;
             $limitTime = 900;
