@@ -41,7 +41,7 @@ class Shelldouyinnotify extends Controller
                 ->where('notify_status', '<>', 1)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
-            var_dump($orderData);
+//            var_dump($orderData);
 //            var_dump(Db::table('bsa_torder_douyin')->getLastSql());exit;
             $totalNum = count($orderData);
             if ($totalNum > 0) {
