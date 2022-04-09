@@ -388,7 +388,7 @@ class OrderdouyinModel extends Model
                 $where['total_amount'] = $amount;
                 $getUesTorderRes = $this->getUseTorder($where, $getCookie);
                 if ($getUesTorderRes['code'] == 1) {
-                    $updateCookieWhere['id'] = $getCookie['data']['id'];
+                    $updateCookieWhere['id'] = $getCookieRes['data']['id'];
                     $updateCookieParam['status'] = 2;
                     $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
                 } else if ($getUesTorderRes['code'] == 0) {
