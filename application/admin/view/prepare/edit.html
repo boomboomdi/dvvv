@@ -21,7 +21,7 @@
                         <input type="hidden" name="id" value="{$prepare['id']}"/>
                         <div class="layui-row layui-col-space10 layui-form-item">
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">预拉单金额：</label>
+                                <label class="layui-form-label">预拉金额：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="order_amount" lay-verify="required" placeholder=""
                                            autocomplete="off" class="layui-input" value="{$prepare['order_amount']}">
@@ -30,10 +30,12 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">数量：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="prepare_num" autocomplete="off"
-                                           class="layui-input" value="{$prepare['prepare_num']}">
+                                    <input type="text" name="prepare_num" lay-verify="required" placeholder=""
+                                           autocomplete="off" class="layui-input" value="{$prepare['prepare_num']}">
                                 </div>
                             </div>
+
+
 
                             <div class="layui-col-lg6">
 
