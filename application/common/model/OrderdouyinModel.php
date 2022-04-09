@@ -443,9 +443,9 @@ class OrderdouyinModel extends Model
 
             $notifyResult = curlPost($notifyUrl, $notifyParam);
 
-            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
+//            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
             $result = json_decode($notifyResult, true);
-            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "orderDouYinNotifyToWriteOff", "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
+            logs(json_encode(['totalNum' => $tOrderData,  "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
             if ($result != 1) {
