@@ -98,7 +98,7 @@ class OrderdouyinModel extends Model
         $db = new Db();
         try {
             //有没有
-            $info = $this->where($where)->order("use_time desc")->find();
+            $info = $this->where($where)->order("add_time desc")->find();
             if (!empty($info)) {
                 $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->select();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
@@ -164,7 +164,6 @@ class OrderdouyinModel extends Model
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
-
             return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Exception $e) {
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
@@ -401,10 +400,10 @@ class OrderdouyinModel extends Model
 //            getUseCookie
             return modelReMsg(0, $successNum, "金额：", $msg);
         } catch (\Exception $exception) {
-            Log::write("/n/t OrderdouyinModel/createOrder: " . $exception->getFile() . $exception->getLine() . $exception->getMessage(), "exception");
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'OrderdouyinModelcreateOrderexception');
             return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
         } catch (\Error $error) {
-            Log::write("/n/t OrderdouyinModel/createOrder: " . $error->getFile() . $error->getLine() . $error->getMessage(), "error");
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'OrderdouyinModelcreateOrdererror');
             return modelReMsg('-22', $successNum, "预产单失败" . $error->getMessage());
 
         }

@@ -84,10 +84,11 @@ class CookieModel extends Model
                 return modelReMsg(0, $info, 'ok');
             }
             return modelReMsg(-2, "", '无可用下单COOKIE');
-        } catch (\Exception $e) {
-            return modelReMsg(-1, '', $e->getMessage());
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseCookie_exception');
+            return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Error $error) {
-            Log::write("/n/t getUseCookie|ERROR /n/t" . $account . "/n/t" . $error->getMessage(), "error");
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'getUseCookie_error');
             return modelReMsg('-3', "getUseCookie异常" . $error->getMessage());
         }
 
