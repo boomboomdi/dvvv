@@ -149,6 +149,7 @@ class OrderdouyinModel extends Model
                         $update['order_pay'] = $notifyResult['order_id'];
                         $update['status'] = 1;
                         $update['order_status'] = 0;
+                        $this->where($updateWhere)->update($update);
                     }
                     if ($notifyResult['code'] == 1) {
                         $returnCode = 1;
@@ -157,7 +158,6 @@ class OrderdouyinModel extends Model
                     }
                 }
                 logs(json_encode(['account' => $cookie['account'], json_encode($notifyResult)]), 'getUseTorder_$notifyResult');
-                $this->where($updateWhere)->update($update);
                 return modelReMsg($returnCode, $info, $msg);
             }
             //没有可下单推单！
