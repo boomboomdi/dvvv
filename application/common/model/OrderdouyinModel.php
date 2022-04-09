@@ -162,8 +162,15 @@ class OrderdouyinModel extends Model
             }
             //没有可下单推单！
             return modelReMsg(-2, '', '没有可下单推单');
-        } catch (\Exception $e) {
-            return modelReMsg(-1, '', $e->getMessage());
+        } catch (\Exception $exception) {
+            logs(json_encode(['where' => $where, 'cookie' => $cookie,  'file' => $exception->getFile(),'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
+
+
+            return modelReMsg(-1, '', $exception->getMessage());
+        }catch (\Exception $e) {
+            logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
+
+            return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
 
     }
