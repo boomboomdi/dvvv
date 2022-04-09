@@ -49,13 +49,13 @@ class Prepareorder extends Command
                     }
                 }
             }
-            $output->writeln("Prepareorder:预先生成");
+            $output->writeln("Prepareorder:浴场处理成功");
         } catch (\Exception $exception) {
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
-            $output->writeln("Prepareorder:订单总数" . $totalNum . "exception" . $exception->getMessage());
+//            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
+            $output->writeln("Prepareorder:浴场处理失败！" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
-            $output->writeln("Prepareorder:订单总数" . $totalNum . "error");
+//            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
+            $output->writeln("Prepareorder:浴场处理失败！！" . $totalNum . "error");
         }
 
     }
