@@ -97,8 +97,6 @@ class Shelldouyinnotify extends Controller
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
             $prepareWhere['status'] = 1;
-
-
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
             logs(json_encode([ 'totalNum' => $totalNum, 'prepareAmountList' => json_encode($prepareAmountList)]), 'Prepareorderapi');
 
