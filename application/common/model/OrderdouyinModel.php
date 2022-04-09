@@ -454,6 +454,7 @@ class OrderdouyinModel extends Model
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 2,
+                        'notify_time' => time(),
                         'order_desc' => $notifyResult
                     ]);
                 Log::log('orderDouYinNotifyToWriteOffFail!', $result);
@@ -464,6 +465,7 @@ class OrderdouyinModel extends Model
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 1,
+                        'notify_time' => time(),
                         'order_desc' => $notifyResult
                     ]);
             }
