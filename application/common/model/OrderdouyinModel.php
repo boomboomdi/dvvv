@@ -414,6 +414,7 @@ class OrderdouyinModel extends Model
                     'url_status' => 2,
                     'notify_status' => 2
                 ]);
+            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "validateURLerror"]), 'validateURLerror');
             return modelReMsg('0', "", "回调地址有误！");
         }
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
