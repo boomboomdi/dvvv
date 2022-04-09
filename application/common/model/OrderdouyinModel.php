@@ -373,7 +373,7 @@ class OrderdouyinModel extends Model
             $data['sucessNum'] = 0;
             $cookieModel = new CookieModel();
             $cookieWhere["status"] = 1;
-            $getCookie = $this->where($cookieWhere)->order("last_use_time desc")->find();
+            $getCookie = $cookieModel->where($cookieWhere)->order("last_use_time desc")->find();
             if (empty($getCookie)) {
                 return modelReMsg('-99', $successNum, "无可用ck");
             }
