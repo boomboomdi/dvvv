@@ -368,9 +368,6 @@ class OrderdouyinModel extends Model
         try {
             logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
 
-            if (empty($v['order_amount']) || !is_float($v['order_amount']) || !is_int($v['order_amount'])) {
-                return modelReMsg('-1', $successNum, "预单金额格式有误！");
-            }
             $amount = $v['order_amount'];
             //获取CK
             $cookieModel = new CookieModel();
