@@ -401,7 +401,7 @@ class OrderdouyinModel extends Model
      */
     public function orderDouYinNotifyToWriteOff($tOrderData)
     {
-        logs(json_encode(['totalNum' => $tOrderData,  'errorMessage' => "orderDouYinNotifyToWriteOffFIRST"]), 'orderDouYinNotifyToWriteOffFIRST');
+        logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "orderDouYinNotifyToWriteOffFIRST"]), 'orderDouYinNotifyToWriteOffFIRST');
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
         $db = new Db();
@@ -441,9 +441,12 @@ class OrderdouyinModel extends Model
             $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
 
-            $nitifyResult = curlPost($notifyUrl, $notifyParam);
-            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $nitifyResult);
-            $result = json_decode($nitifyResult, true);
+            $notifyResult = curlPost($notifyUrl, $notifyParam);
+
+            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
+            $result = json_decode($notifyResult, true);
+            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "orderDouYinNotifyToWriteOff", "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
+
             //通知失败
             if ($result != 1) {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
