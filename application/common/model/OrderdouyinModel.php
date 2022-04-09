@@ -419,9 +419,9 @@ class OrderdouyinModel extends Model
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {
             $notifyUrl = $tOrderData['notify_url'];
-            if (!validateURL($notifyUrl)) {
-                return modelReMsg('0', "", "回调地址有误！");
-            }
+//            if (!validateURL($notifyUrl)) {
+//                return modelReMsg('0', "", "回调地址有误！");
+//            }
             $db = new Db();
 
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
