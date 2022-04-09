@@ -128,12 +128,12 @@ class OrderdouyinModel extends Model
         $notifyResult = [];
         try {
             //有没有
-            $info = $this->where($where)->order("add_time desc")->find();
+            $info = $this->where($where)->order("last_use_time desc")->find();
             logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
 
             if (!empty($info)) {
                 $updateWhere['t_id'] = $info['t_id'];
-                $update['last_use_time'] = date("Y-m-d H:i:s", time());
+                $update['last_use_time'] = time();
                 $update['use_times'] = $info['use_times'] + 1;
                 //获取话单
                 $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
