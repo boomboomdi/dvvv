@@ -368,6 +368,8 @@ class OrderdouyinModel extends Model
         $total = $prepareNum;
         $successNum = 0;
         try {
+            logs(json_encode(['v' => $v, 'prepareNum' => prepareNum]), 'getUesTorderfirst');
+
             if (empty($v['total_amount']) || !is_float($v['total_amount']) || !is_int($v['total_amount'])) {
                 return modelReMsg('-1', $successNum, "预单金额格式有误！");
             }
