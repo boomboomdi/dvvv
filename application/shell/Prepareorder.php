@@ -60,7 +60,7 @@ class Prepareorder extends Command
                     }
                 }
             }
-            $output->writeln("Prepareorder:预先生成||" . $msg);
+            $output->writeln("Prepareorder:预先生成");
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
             $output->writeln("Prepareorder:订单总数" . $totalNum . "exception" . $exception->getMessage());
