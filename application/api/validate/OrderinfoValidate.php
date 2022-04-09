@@ -35,7 +35,7 @@ class OrderinfoValidate extends Validate
         'payment.require'   => 'require number',
         'amount.require'   => 'require amount',
         'amount.float'   => 'amount format float',
-        'time.require'   => 'require pay_time',
+        'time.require'   => 'require time',
         'time.integer'   => 'time format error',
         'sign.require' => 'require sign',
         'sign.max' => 'sign format error',

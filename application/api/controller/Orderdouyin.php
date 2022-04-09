@@ -21,7 +21,7 @@ use Zxing\QrReader;
 class Orderdouyin extends Controller
 {
     /**
-     * 下单  抖音
+     * 抖音下单四方正式入口
      * @param Request $request
      * @return void
      */
