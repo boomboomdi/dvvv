@@ -34,7 +34,7 @@ class Orderdouyin extends Controller
         try {
             $validate = new OrderinfoValidate();
             if (!$validate->check($message)) {
-                return apiJsonReturn(msg(-1, '', $validate->getError()));
+                return apiJsonReturn(-1, '', $validate->getError());
             }
             $db = new Db();
             //验证商户
