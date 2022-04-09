@@ -163,13 +163,11 @@ class OrderdouyinModel extends Model
             //没有可下单推单！
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
-            logs(json_encode(['where' => $where, 'cookie' => $cookie,  'file' => $exception->getFile(),'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
-
+            logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
 
             return modelReMsg(-1, '', $exception->getMessage());
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
-
             return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
 
@@ -403,10 +401,10 @@ class OrderdouyinModel extends Model
 //            getUseCookie
             return modelReMsg(0, $successNum, "金额：", $msg);
         } catch (\Exception $exception) {
-            Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $prepareNum . $exception->getMessage().$exception->getLine(), "exception");
+            Log::write("/n/t OrderdouyinModel/createOrder: " . $exception->getFile() . $exception->getLine() . $exception->getMessage(), "exception");
             return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
         } catch (\Error $error) {
-            Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $prepareNum . $error->getMessage().$error->getLine(), "error");
+            Log::write("/n/t OrderdouyinModel/createOrder: " . $error->getFile() . $error->getLine() . $error->getMessage(), "error");
             return modelReMsg('-22', $successNum, "预产单失败" . $error->getMessage());
 
         }
