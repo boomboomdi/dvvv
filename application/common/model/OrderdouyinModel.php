@@ -156,7 +156,7 @@ class OrderdouyinModel extends Model
                         //下单失败！
                     }
                 }
-                log::info("话单下单" . $cookie['account'] . $info['order_no'], $notifyResult);
+                logs(json_encode(['account' => $cookie['account'], json_encode($notifyResult)]), 'getUseTorder_$notifyResult');
                 $this->where($updateWhere)->update($update);
                 return modelReMsg($returnCode, $info, $msg);
             }
