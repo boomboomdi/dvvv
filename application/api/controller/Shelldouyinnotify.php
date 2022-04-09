@@ -104,13 +104,13 @@ class Shelldouyinnotify extends Controller
 
             if (!empty($prepareAmountList)) {
                 foreach ($prepareAmountList as $k => $v) {
-                    if ($v['prepare_num'] - $v['can_user_num'] > 0) {
-                        for ($i = 1; $i < $v['prepare_num'] - $v['can_user_num']; $i++) {
-                            $res = $orderDouYinModel->createOrder($v['amount'], $v['prepare_num'] - $v['can_user_num']);
-//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_user_num'], 'amount' => $v['amount'], 'res' => json_encode($res)]), 'Prepareorderapi');
+                    if ($v['prepare_num'] - $v['can_use_num'] > 0) {
+                        for ($i = 1; $i < $v['prepare_num'] - $v['can_use_num']; $i++) {
+                            $res = $orderDouYinModel->createOrder($v['amount'], $v['prepare_num'] - $v['can_use_num']);
+//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['amount'], 'res' => json_encode($res)]), 'Prepareorderapi');
 
                             if ($res['code'] == 0) {
-                                $db::table("bsa_prepare_set")->where($v['id'])->update(['can_user_num' => $v['can_user_num'] + 1]);
+                                $db::table("bsa_prepare_set")->where($v['id'])->update(['can_use_num' => $v['can_use_num'] + 1]);
                                 $msg .= $res['msg'] . "||";
                             }else{
                                 $msg .= $res['msg'] . "||";
