@@ -41,6 +41,7 @@ class Shelldouyinnotify extends Controller
                 ->where('notify_status', '<>', 0)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
+            var_dump($orderData);exit;
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
