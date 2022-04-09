@@ -38,7 +38,6 @@ class Prepareorder extends Command
             $lockLimit = $now - $limitTime;
 
             //获取CK
-
             $cookieModel = new CookieModel();
 //            getUseCookie
             $orderDouYinModel = new OrderdouyinModel();

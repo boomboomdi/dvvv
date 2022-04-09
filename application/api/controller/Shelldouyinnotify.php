@@ -2,10 +2,12 @@
 
 namespace app\api\controller;
 
+use app\admin\model\CookieModel;
 use app\common\model\DeviceModel;
 use app\common\model\OrderdouyinModel;
 
 //use app\common\model\SystemConfigModel;
+use app\common\model\SystemConfigModel;
 use think\Db;
 use think\facade\Log;
 use think\Request;
@@ -25,7 +27,8 @@ class Shelldouyinnotify extends Controller
         $totalNum = 0;
         $errorNum = 0;
         $orderData = [];
-        echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;exit;
+        echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
+        exit;
 
         try {
             $limit = 10;
@@ -67,6 +70,52 @@ class Shelldouyinnotify extends Controller
         } catch (\Error $error) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timecheckdouyinhuadanerror');
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "error" . json_encode($orderData);
+        }
+    }
+
+    public function Prepareorder()
+    {
+        $totalNum = 0;
+        $successNum = 0;
+        $errorNum = 0;
+        $msg = "";
+        $db = new Db();
+        try {
+            //时间差  话单时间差生成订单时间差
+            $limitTime = SystemConfigModel::getTorderLimitTime();
+            $now = time();
+            $lockLimit = $now - $limitTime;
+
+            //获取CK
+            $cookieModel = new CookieModel();
+//            getUseCookie
+            $orderDouYinModel = new OrderdouyinModel();
+            //下单金额
+            $prepareWhere['status'] = 1;
+            $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
+            if (!empty($prepareAmountList)) {
+                foreach ($prepareAmountList as $k => $v) {
+                    if ($v['prepare_num'] - $v['can_user_num'] > 0) {
+                        for ($i = 1; $i < $v['prepare_num'] - $v['can_user_num']; $i++) {
+                            $res = $orderDouYinModel->createOrder($v['amount'], $v['prepare_num'] - $v['can_user_num']);
+                            if ($res['code'] == 0) {
+                                $db::table("bsa_prepare_set")->where($v['id'])->update(['can_user_num' => $v['can_user_num'] + 1]);
+                                $msg .= $res['msg'] . "||";
+                            }
+                        }
+                    }
+                }
+            }
+            echo "Prepareorder:订单总数" . $msg;
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timedevice exception');
+            echo "Prepareorder:总应强制超时订单数" . $totalNum . "exception" . $exception->getMessage();
+//            $output->writeln("Prepareorder:总应强制超时订单数" . $totalNum . "exception");
+        } catch (\Error $error) {
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Timedevice  error');
+
+            echo "Prepareorder:" . $totalNum . "exception" . $error->getMessage();
+            //            $output->writeln("Prepareorder:总应强制超时订单数" . $totalNum . "error");
         }
     }
 
