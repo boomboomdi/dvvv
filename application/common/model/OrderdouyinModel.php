@@ -448,7 +448,7 @@ class OrderdouyinModel extends Model
             logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
-            if ($result != 1) {
+            if (!isset($result['code']) || $result['code'] != 1) {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -456,6 +456,8 @@ class OrderdouyinModel extends Model
                         'notify_status' => 2,
                         'order_desc' => $notifyResult
                     ]);
+                Log::log('orderDouYinNotifyToWriteOffFail!', $tOrderData);
+
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([

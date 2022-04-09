@@ -49,7 +49,7 @@ class Shelldouyinnotify extends Controller
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
                     $res = $orderModel->orderDouYinNotifyToWriteOff($v);
-                    var_dump($res);exit;
+//                    var_dump($res);exit;
                     if ($res['code'] != 0) {
                         $errorNum++;
                     }
