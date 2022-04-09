@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\common\model\DeviceModel;
 use app\common\model\OrderdouyinModel;
+
 //use app\common\model\SystemConfigModel;
 use think\Db;
 use think\facade\Log;
@@ -38,7 +39,7 @@ class Shelldouyinnotify extends Controller
 
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
-                ->where('notify_status', '<>', 1)
+                ->where('notify_status', '=', 0)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
 //            var_dump($orderData);
