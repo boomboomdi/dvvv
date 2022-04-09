@@ -401,7 +401,6 @@ class OrderdouyinModel extends Model
      */
     public function orderDouYinNotifyToWriteOff($tOrderData)
     {
-        logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "orderDouYinNotifyToWriteOffFIRST"]), 'orderDouYinNotifyToWriteOffFIRST');
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
         $db = new Db();
@@ -441,12 +440,13 @@ class OrderdouyinModel extends Model
             }
             $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
+            logs(json_encode(['totalNum' => $tOrderData, 'notifyParam' => $notifyParam]), 'orderDouYinNotifyToWriteOffFIRST');
 
             $notifyResult = curlPost($notifyUrl, $notifyParam);
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
             $result = json_decode($notifyResult, true);
-            logs(json_encode(['totalNum' => $tOrderData,  "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
+            logs(json_encode(['totalNum' => $tOrderData, "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
             if ($result != 1) {
@@ -455,7 +455,7 @@ class OrderdouyinModel extends Model
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 2,
-                        'order_desc'=>$notifyResult
+                        'order_desc' => $notifyResult
                     ]);
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
@@ -463,7 +463,7 @@ class OrderdouyinModel extends Model
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 1,
-                        'order_desc'=>$notifyResult
+                        'order_desc' => $notifyResult
                     ]);
             }
             return modelReMsg('0', "", $result['msg']);
