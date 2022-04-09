@@ -440,13 +440,12 @@ class OrderdouyinModel extends Model
             }
             $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
-            logs(json_encode(['totalNum' => $tOrderData, 'notifyParam' => $notifyParam]), 'orderDouYinNotifyToWriteOffFIRST');
 
             $notifyResult = curlPost($notifyUrl, $notifyParam);
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
             $result = json_decode($notifyResult, true);
-            logs(json_encode(['totalNum' => $tOrderData, "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
+            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
             if ($result != 1) {
