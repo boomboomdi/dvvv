@@ -46,6 +46,8 @@ class Shelldouyinnotify extends Controller
 //            var_dump(Db::table('bsa_torder_douyin')->getLastSql());exit;
             $totalNum = count($orderData);
             if ($totalNum > 0) {
+                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
+
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
                     $res = $orderModel->orderDouYinNotifyToWriteOff($v);
@@ -55,7 +57,6 @@ class Shelldouyinnotify extends Controller
                     }
                 }
             }
-            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
 
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
         } catch (\Exception $exception) {
