@@ -424,7 +424,6 @@ class OrderdouyinModel extends Model
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
         $db = new Db();
-        $notifyUrl = $tOrderData['notify_url'];
         $orderWhere['order_no'] = $tOrderData['order_no'];
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {

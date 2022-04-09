@@ -171,7 +171,8 @@ class OrderModel extends Model
             //参与回调参数
             $callbackData['merchant_sign'] = $data['merchant_sign'];
             $callbackData['order_no'] = $data['order_no'];
-//            $callbackData['order_pay'] = $data['order_me'];
+            $callbackData['order_status'] = 1;
+            $callbackData['order_pay'] = $data['order_me'];
             $callbackData['payment'] = $data['payment'];
             $callbackData['amount'] = $data['amount'];
             $callbackData['actual_amount'] = $data['actual_amount'];
@@ -181,7 +182,7 @@ class OrderModel extends Model
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
 
             $returnMsg = array();
-            $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['order_pay'] . $callbackData['payment'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
+            $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
             $callbackData['sign'] = md5($doMd5String);
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
@@ -191,7 +192,7 @@ class OrderModel extends Model
             //通知失败
 
             $orderWhere['order_no'] = $callbackData['order_no'];
-            if ($result != "SUCCESS") {
+            if ($result != "success") {
                 Db::table('bsa_torder')->where($orderWhere)
                     ->update([
                         'info' => json_encode($notifyResult)

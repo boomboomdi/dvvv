@@ -5,6 +5,7 @@ namespace app\api\controller;
 use app\admin\model\CookieModel;
 use app\admin\model\WriteoffModel;
 use app\api\validate\OrderdouyinValidate;
+use app\api\validate\OrderinfoValidate;
 use app\common\model\DeviceModel;
 use app\api\model\OrderLog;
 use app\api\model\TorderModel;
@@ -31,7 +32,7 @@ class Orderdouyin extends Controller
         Log::info('order douyin first!', $message);
         $updateParam = [];
         try {
-            $validate = new OrderdouyinValidate();
+            $validate = new OrderinfoValidate();
             if (!$validate->check($message)) {
                 return apiJsonReturn(msg(-1, '', $validate->getError()));
             }
@@ -41,7 +42,7 @@ class Orderdouyin extends Controller
             if (empty($token)) {
                 return apiJsonReturn('100161', "商户验证失败！");
             }
-            $sig = md5($message['merchant_sign'] . $token . $message['order_no'] . $message['amount'] . $message['time']);
+            $sig = md5($message['merchant_sign'] . $message['order_no'] . $message['amount'] . $message['time'] . $token);
             if ($sig != $message['sign']) {
                 Log::info("create_order_10006!", $message);
                 return apiJsonReturn('10006', "验签失败！");
@@ -107,7 +108,7 @@ class Orderdouyin extends Controller
             $updateOrderStatus['qr_url'] = $getUseTorderUrlRes['data']['pay_url'];   //支付订单
             $updateOrderStatus['order_pay'] = $getUseTorderUrlRes['data']['order_pay']; //抖音订单
             $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
-            return apiJsonReturn('10000', "下单成功", $updateOrderStatus['qr_url']);
+            return apiJsonReturn(10000, "下单成功", $updateOrderStatus['qr_url']);
 
         } catch (\Error $e) {
             Log::error('order error!', $message);
