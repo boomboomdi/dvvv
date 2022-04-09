@@ -24,14 +24,14 @@
                                 <label class="layui-form-label">预拉单金额：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="order_amount" lay-verify="required" placeholder=""
-                                           autocomplete="off" class="layui-input" value="{$order['order_amount']}">
+                                           autocomplete="off" class="layui-input" value="{$prepare['order_amount']}">
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">数量：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="prepare_num" placeholder="输入则为重置" autocomplete="off"
-                                           class="layui-input">
+                                    <input type="text" name="prepare_num" autocomplete="off"
+                                           class="layui-input" value="{$prepare['prepare_num']}">
                                 </div>
                             </div>
 
@@ -39,11 +39,12 @@
 
                                 <div class="layui-col-lg6">
                                     <label class="layui-form-label">是否启用：</label>
-                                    <div class="layui-input-block">
+                                    <div class="layui-input-block">{if $device['status'] eq 1}
                                         <input type="radio" name="status" value="1" title="启用" {if $prepare['status'] eq
-                                        1} checked {/if}>
+                                        1}
+                                        checked {/if}>
                                         <input type="radio" name="status" value="0" title="禁用" {if $prepare['status'] eq
-                                        0} checked {/if}>
+                                        2}
                                     </div>
                                 </div>
                             </div>
