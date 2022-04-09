@@ -27,7 +27,7 @@ class Shelldouyinnotify extends Controller
         $orderData = [];
         try {
             $limit = 10;
-            $limitTime = 170;
+            $limitTime = 900;
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
