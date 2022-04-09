@@ -456,7 +456,7 @@ class OrderdouyinModel extends Model
                         'notify_status' => 2,
                         'order_desc' => $notifyResult
                     ]);
-                Log::log('orderDouYinNotifyToWriteOffFail!', $tOrderData);
+                Log::log('orderDouYinNotifyToWriteOffFail!', $result);
 
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
