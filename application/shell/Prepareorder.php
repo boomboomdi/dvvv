@@ -35,10 +35,7 @@ class Prepareorder extends Command
             //时间差  话单时间差生成订单时间差
             $limitTime = SystemConfigModel::getTorderLimitTime();
             $now = time();
-            $lockLimit = $now - $limitTime;
 
-            //获取CK
-            $cookieModel = new CookieModel();
 //            getUseCookie
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
@@ -66,7 +63,7 @@ class Prepareorder extends Command
             $output->writeln("Prepareorder:预先生成||" . $msg);
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
-            $output->writeln("Prepareorder:订单总数" . $totalNum . "exception".$exception->getMessage());
+            $output->writeln("Prepareorder:订单总数" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
             $output->writeln("Prepareorder:订单总数" . $totalNum . "error");
