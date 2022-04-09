@@ -368,15 +368,13 @@ class OrderdouyinModel extends Model
         $total = $prepareNum;
         $successNum = 0;
         try {
-            logs(json_encode(['v' => $v, 'prepareNum' => prepareNum]), 'getUesTorderfirst');
+            logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
 
             if (empty($v['total_amount']) || !is_float($v['total_amount']) || !is_int($v['total_amount'])) {
                 return modelReMsg('-1', $successNum, "预单金额格式有误！");
             }
             $amount = $v['total_amount'];
             //获取CK
-            $data['amount'] = $amount;
-            $data['sucessNum'] = 0;
             $cookieModel = new CookieModel();
             $cookieWhere["status"] = 1;
             $getCookie = $cookieModel->where($cookieWhere)->order("last_use_time desc")->find();
