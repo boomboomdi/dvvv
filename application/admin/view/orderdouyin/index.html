@@ -63,7 +63,7 @@
                 <span class="layui-badge-dot green"></span>回调成功
                 {{#  } else if(d.notify_status == 2){ }}
                 <span class="layui-badge-dot gray"></span>回调失败
-                {{#  } else if(d.notify_status == )0{ }}
+                {{#  } else if(d.notify_status == 0){ }}
                 <span class="layui-badge-dot gray"></span>未回调
                 {{#  } }}
             </script>
@@ -136,7 +136,7 @@
                 templet: '#statusTpl'
             },{
                 field: "notify_status",
-                title: "状态",
+                title: "回调状态",
                 templet: '#notifyStatusTpl'
             }, {
                 field: "total_amount",
