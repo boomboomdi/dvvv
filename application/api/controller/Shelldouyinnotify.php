@@ -73,6 +73,10 @@ class Shelldouyinnotify extends Controller
         }
     }
 
+    /**
+     * 预拉单
+     * @return void
+     */
     public function Prepareorder()
     {
         $totalNum = 0;
@@ -80,7 +84,7 @@ class Shelldouyinnotify extends Controller
         $errorNum = 0;
         $msg = "";
         $db = new Db();
-        echo "kaishi";
+        echo "";
         try {
             //时间差  话单时间差生成订单时间差
             $limitTime = SystemConfigModel::getTorderLimitTime();
