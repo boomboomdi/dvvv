@@ -59,6 +59,8 @@ class Timecheckdouyinhuadan extends Command
                     }
                 }
             }
+            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanexecute');
+
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum);
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
