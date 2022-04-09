@@ -98,10 +98,11 @@ class Shelldouyinnotify extends Controller
             //下单金额
             $prepareWhere['status'] = 1;
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
-            var_dump($prepareAmountList);exit;
-            logs(json_encode([ 'totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
+            var_dump($prepareAmountList);
+            exit;
+            logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
 
-            if (!empty($prepareAmountList)) {
+            if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
                     if ($v['prepare_num'] - $v['can_use_num'] > 0) {
                         for ($i = 1; $i < $v['prepare_num'] - $v['can_use_num']; $i++) {
@@ -111,7 +112,7 @@ class Shelldouyinnotify extends Controller
                             if ($res['code'] == 0) {
                                 $db::table("bsa_prepare_set")->where($v['id'])->update(['can_use_num' => $v['can_use_num'] + 1]);
                                 $msg .= $res['msg'] . "||";
-                            }else{
+                            } else {
                                 $msg .= $res['msg'] . "||";
                             }
                         }
