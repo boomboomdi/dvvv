@@ -18,26 +18,26 @@ class OrderinfoValidate extends Validate
     protected $rule =   [
         'merchant_sign'  => 'require|max:32',
 //        'client_ip'  => 'require|ip',
-        'order_no'   => 'require|length:32',
+        'order_no'   => 'require|max:32',
 //        'order_pay' => 'require|length:32',
         'payment' => 'require',
         'amount' => 'require|float',
 //        'actual_amount' => 'require|float',
         'time' => 'require',
-        'sign' => 'require|length:32',
+        'sign' => 'require|max:32',
     ];
 
     protected $message  =   [
         'merchant_sign.require' => 'require merchant_sign',
         'merchant_sign.max' => 'merchant_sign format error',
         'order_no.require'     => 'require order_no',
-        'order_no.length'     => 'order_no format error',
+        'order_no.max'     => 'order_no format error',
         'payment.require'   => 'require number',
         'amount.require'   => 'require amount',
         'amount.float'   => 'amount format float',
         'time.require'   => 'require pay_time',
-        'time.integer'   => 'pay_time format error',
+        'time.integer'   => 'time format error',
         'sign.require' => 'require sign',
-        'sign.length' => 'sign format error',
+        'sign.max' => 'sign format error',
     ];
 }
