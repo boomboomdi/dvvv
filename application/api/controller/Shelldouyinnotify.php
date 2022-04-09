@@ -55,7 +55,7 @@ class Shelldouyinnotify extends Controller
                     }
                 }
             }
-            logs(json_encode(['orderData' => $orderData, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
+            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
 
             echo "Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum;
         } catch (\Exception $exception) {
