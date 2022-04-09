@@ -418,7 +418,6 @@ class OrderdouyinModel extends Model
 //        }
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {
-            $notifyUrl = $tOrderData['notify_url'];
 //            if (!validateURL($notifyUrl)) {
 //                return modelReMsg('0', "", "回调地址有误！");
 //            }
@@ -441,14 +440,15 @@ class OrderdouyinModel extends Model
             $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
 
-            $notifyResult = curlPost($notifyUrl, $notifyParam);
+            $notifyResult = curlPost($tOrderData['notify_url'], $notifyParam);
+
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
-            $result = json_decode($notifyResult, true);
-            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $result]), 'orderDouYinNotifyToWriteOff');
+//            $result = json_decode($notifyResult, true);
+            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $notifyResult]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
-            if (!isset($result['code']) || $result['code'] != 1) {
+            if ($notifyResult != "success") {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -457,7 +457,7 @@ class OrderdouyinModel extends Model
                         'notify_time' => time(),
                         'order_desc' => $notifyResult
                     ]);
-                Log::log('orderDouYinNotifyToWriteOffFail!', $result);
+                Log::log('orderDouYinNotifyToWriteOffFail!', $notifyResult);
 
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
@@ -469,7 +469,7 @@ class OrderdouyinModel extends Model
                         'order_desc' => $notifyResult
                     ]);
             }
-            return modelReMsg('0', "", $result['msg']);
+            return modelReMsg('0', "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
