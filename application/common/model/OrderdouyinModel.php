@@ -370,10 +370,10 @@ class OrderdouyinModel extends Model
         try {
             logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
 
-            if (empty($v['total_amount']) || !is_float($v['total_amount']) || !is_int($v['total_amount'])) {
+            if (empty($v['order_amount']) || !is_float($v['order_amount']) || !is_int($v['order_amount'])) {
                 return modelReMsg('-1', $successNum, "预单金额格式有误！");
             }
-            $amount = $v['total_amount'];
+            $amount = $v['order_amount'];
             //获取CK
             $cookieModel = new CookieModel();
             $cookieWhere["status"] = 1;
@@ -408,7 +408,7 @@ class OrderdouyinModel extends Model
                 Db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => ($v['can_use_num'] + $successNum)]);
             }
 
-            return modelReMsg(0, $successNum, "金额：", $msg);
+            return modelReMsg(0, $successNum, "预产成功！");
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'OrderdouyinModelcreateOrderexception');
             return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
