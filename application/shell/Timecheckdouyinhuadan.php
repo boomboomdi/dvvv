@@ -48,10 +48,11 @@ class Timecheckdouyinhuadan extends Command
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('add_time', '<', $lockLimit)->select();
+                ->where('add_time', '<', $lockLimit)
+                ->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
-//                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
+                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
                     $orderModel->orderDouYinNotifyToWriteOff($v);
