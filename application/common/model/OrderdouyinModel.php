@@ -128,7 +128,7 @@ class OrderdouyinModel extends Model
         $notifyResult = [];
         try {
             //有没有
-            $info = $this->where($where)->order("use_time desc")->find();
+            $info = $this->where($where)->order("add_time desc")->find();
             if (!empty($info)) {
                 $updateWhere['id'] = $info['id'];
                 $update['last_use_time'] = date("Y-m-d H:i:s", time());
