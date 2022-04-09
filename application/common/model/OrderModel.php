@@ -130,14 +130,11 @@ class OrderModel extends Model
                 ->update([
                     "amount" => Db::raw("amount") + $orderData['amount']
                 ]);
-            //接口使用次数
-            $studioWhere['studio'] = $orderData['studio'];
-            Db::table('bsa_studio')->where($studioWhere)->find();
-            Db::table('bsa_studio')->where($studioWhere)
+            $writeOffWhere['write_off_sign'] = $orderData['write_off_sign'];
+            $writeOff = Db::table('bsa_write_off')->where($writeOffWhere)->find();
+            Db::table('bsa_write_off')->where($writeOffWhere)
                 ->update([
-                    "amount" => Db::raw("amount") + $orderData['amount'],
-                    "blance" => Db::raw("blance") - $orderData['blance'],
-                    "breeze_amount" => Db::raw("breeze_amount") - $orderData['amount']
+                    "amount" => $writeOff['amount'] + $orderData['amount']
                 ]);
             return $this->orderNotifyForMerchant($orderData);
         } catch (\Exception $exception) {
@@ -173,34 +170,19 @@ class OrderModel extends Model
             }
             //参与回调参数
             $callbackData['merchant_sign'] = $data['merchant_sign'];
-            $callbackData['client_ip'] = $data['callback_ip'];
             $callbackData['order_no'] = $data['order_no'];
-            $callbackData['order_pay'] = $data['order_me'];  //
+//            $callbackData['order_pay'] = $data['order_me'];
             $callbackData['payment'] = $data['payment'];
             $callbackData['amount'] = $data['amount'];
             $callbackData['actual_amount'] = $data['actual_amount'];
             $callbackData['pay_time'] = $data['pay_time'];
-            $callbackData['returnUrl'] = $data['returnUrl'];
 
             $merchantWhere['merchant_sign'] = $data['merchant_sign'];
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
-            $callbackData['key'] = $token;
 
-            unset($callbackData['sign']);
-            ksort($callbackData);
             $returnMsg = array();
-            $callbackData['sign'] = strtoupper(md5(urldecode(http_build_query($callbackData)) . "&key=" . $token));
-//            $sign = md5("merchant_sign=" . $data['merchant_sign'] .
-//                "&client_ip=" . $data['client_ip'] .
-//                "&order_no=" . $data['order_no'] .
-//                "&order_pay=" . $data['order_pay'] .
-//                "&payment=" . $data['payment'] .
-//                "&amount=" . $data['amount'] .
-//                "&actual_amount=" . $data['actual_amount'] .
-//                "&pay_time=" . $data['pay_time'] .
-//                "&returnUrl=" . $data['returnUrl'] .
-//                "&key=" . $data['token']
-//            );
+            $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['order_pay'] . $callbackData['payment'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
+            $callbackData['sign'] = md5($doMd5String);
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
 
@@ -239,10 +221,10 @@ class OrderModel extends Model
             $returnMsg['data'] = json_encode($notifyResult);
             return $returnMsg;
         } catch (\Exception $exception) {
-            Log::write("/n/t Orderinfo/callbacktomerchant: /n/t" . json_encode($data) . "/n/t" . $exception->getMessage(), "exception");
+            Log::write("/n/t orderNotifyForMerchant: /n/t" . json_encode($data) . "/n/t" . $exception->getMessage(), "exception");
             return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
         } catch (\Error $error) {
-            Log::write("/n/t Orderinfo/callbacktomerchant: /n/t" . json_encode($data) . "/n/t" . $error->getMessage(), "error");
+            Log::write("/n/t orderNotifyForMerchant: /n/t" . json_encode($data) . "/n/t" . $error->getMessage(), "error");
             return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
 
         }

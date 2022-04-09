@@ -18,7 +18,7 @@ class SystemConfigModel extends Model
      */
     public static function getPayLimitTime()
     {
-        return 280;
+        return 180;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace app\shell;
 
 use app\common\model\OrderdouyinModel;
+use app\common\model\OrderModel;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -31,19 +32,40 @@ class Timecheckdouyin extends Command
             $limitTime = SystemConfigModel::getPayLimitTime();
             $now = time();
             $lockLimit = $now - $limitTime;
-            $orderModel = new OrderdouyinModel();
+            $orderdouyinModel = new OrderdouyinModel();
+            $orderModel = new OrderModel();
             $notifyLogModel = new NotifylogModel();
             $notifyLogWhere['status'] = 2;
             $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
             $where[] = ['order_status', '4'];
             //查询下单之前280s 到现在之前20s的等待付款订单
-            $orderData = $orderModel->where($where)->select();
+            $orderData = $orderdouyinModel->where('order_status', '<>', 1)
+                ->where('url_status', '=', 1)
+                ->where('add_time', '<', $lockLimit)->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
-                    
-                       //请求查单接口
-//                    $checkParam[''] = $v[''];
+                    $getResParam['order_no'] = $v['order_pay'];
+                    $getResParam['order_url'] = $v['check_url'];
+                    $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
+                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
+                        //支付成功
+                        $orderWhere['order_pay'] = $v['order_pay'];
+                        $orderWhere['order_me'] = $v['order_me'];
+                        $orderWhere['status'] = $v['order_me'];
+                        $order = Db::table("bsa_order")->where($orderWhere)->find();
+                        $orderModel->orderNotify($order);
+                        $torderDouyinWhere['order_me'] = $v['order_me'];
+                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                        $torderDouyinUpdate['order_status'] = 1;
+                        $torderDouyinUpdate['status'] = 2;
+                        $torderDouyinUpdate['pay_time'] = time();
+                        $torderDouyinUpdate['last_use_time'] = time();
+                        $torderDouyinUpdate['success_amount'] = $v['amount'];
+                        $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
+                        $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                    }
                 }
             }
             $output->writeln("Timecheckdouyin:订单总数" . $totalNum);

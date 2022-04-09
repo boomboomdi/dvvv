@@ -184,6 +184,26 @@ class OrderdouyinModel extends Model
         return modelReMsg(0, $info, '匹配订单成功');
     }
 
+    public function checkOrderStatus($orderData)
+    {
+//        Log::write("checkOrderStatus:/n/ start: /n" . json_encode($orderData), "info");
+        try {
+            $url = "http://127.0.0.1:23946/queryResult";
+            $getOrderStatus = curlPostJson($url, $orderData);
+
+            Log::log('1', "checkOrderStatus order " . json_encode($getOrderStatus));
+            return json_decode($getOrderStatus, true);
+
+        } catch (\Exception $exception) {
+
+            Log::write("checkOrderStatus:/n  Exception: /n" . $exception->getMessage(), "info");
+            return modelReMsg(-2, '', $exception->getMessage());
+        } catch (\Error $error) {
+            Db::rollback();
+            Log::write("checkOrderStatus:/n  Error: /n" . $error->getMessage(), "info");
+            return modelReMsg(-3, '', $error->getMessage());
+        }
+    }
 
     /**
      * 订单回调 通道/手动回调 总入口
@@ -399,23 +419,13 @@ class OrderdouyinModel extends Model
      * @param $tOrderData
      * @return void
      */
-    public function orderDouYinNotifyToWriteOff($tOrderData)
+    public function orderDouYinNotifyToWriteOff($tOrderData, $order_status = 1)
     {
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
         $db = new Db();
         $notifyUrl = $tOrderData['notify_url'];
         $orderWhere['order_no'] = $tOrderData['order_no'];
-//        if (!validateURL($notifyUrl)) {
-//            $db::table('bsa_torder_douyin')->where($orderWhere)
-//                ->update([
-//                    'status' => 2,
-//                    'url_status' => 2,
-//                    'notify_status' => 2
-//                ]);
-//            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "validateURLerror"]), 'validateURLerror');
-//            return modelReMsg('0', "", "回调地址有误！");
-//        }
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {
 //            if (!validateURL($notifyUrl)) {
@@ -426,7 +436,8 @@ class OrderdouyinModel extends Model
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
             $token = $db::table("bsa_write_off")->where($writeWhere)->find();
-
+            $tOrderDataWhere['order_no'] = $tOrderData['order_no'];
+            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere['order_no'])->find();
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
             $notifyParam['total_amount'] = $tOrderData['total_amount'];
@@ -480,4 +491,27 @@ class OrderdouyinModel extends Model
         }
     }
 
+    /**
+     * 推单成功修改状态
+     * @param $where
+     * @param $torderDouyinUpdate
+     * @return array
+     */
+    public function updateNotifyTorder($where, $torderDouyinUpdate)
+    {
+        try {
+            $res = $this->where($where)->update($torderDouyinUpdate);
+            if (!$res) {
+                return modelReMsg('-1', "", "更新失败");
+            }
+            return modelReMsg('0', "", "更新成功");
+
+        } catch (\Exception $exception) {
+            Log::log('updateNotifyTorderException!', $exception->getMessage(), $torderDouyinUpdate);
+            return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
+        } catch (\Error $error) {
+            Log::log('updateNotifyTorderError!', $error->getMessage(), $torderDouyinUpdate);
+            return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
+        }
+    }
 }

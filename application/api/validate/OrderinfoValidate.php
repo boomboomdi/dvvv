@@ -17,9 +17,9 @@ class OrderinfoValidate extends Validate
 //    }
     protected $rule =   [
         'merchant_sign'  => 'require|max:25',
-        'client_ip'  => 'require|ip',
+//        'client_ip'  => 'require|ip',
         'order_no'   => 'require|length:32',
-        'order_pay' => 'require|length:32',
+//        'order_pay' => 'require|length:32',
         'payment' => 'require',
         'amount' => 'require|float',
         'actual_amount' => 'require|float',
