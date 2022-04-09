@@ -45,7 +45,7 @@
                 {{#  if(d.status == 0){ }}
                 <button class="layui-btn layui-btn-success layui-btn-xs">未使用</button>
                 {{#  } else if(d.status == 1) { }}
-                <button class="layui-btn layui-btn-danger layui-btn-xs">使用中</button>
+                <button class="layui-btn layui-btn-success layui-btn-xs">已使用</button>
                 {{#  } else if(d.status == 2) { }}
                 <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>
                 {{#  } }}
@@ -57,6 +57,15 @@
                 <!--                {{#  } }}-->
                 <!--                {/if}-->
 
+            </script>
+            <script type="text/html" id="notifyStatusTpl">
+                {{#  if(d.notify_status == 1){ }}
+                <span class="layui-badge-dot green"></span>回调成功
+                {{#  } else if(d.notify_status == 2){ }}
+                <span class="layui-badge-dot gray"></span>回调失败
+                {{#  } else if(d.notify_status == )0{ }}
+                <span class="layui-badge-dot gray"></span>未回调
+                {{#  } }}
             </script>
             <script type="text/html" id="table-seller-admin">
 
@@ -125,6 +134,10 @@
                 field: "status",
                 title: "状态",
                 templet: '#statusTpl'
+            },{
+                field: "notify_status",
+                title: "状态",
+                templet: '#notifyStatusTpl'
             }, {
                 field: "total_amount",
                 title: "充值金额"
