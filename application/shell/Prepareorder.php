@@ -49,7 +49,7 @@ class Prepareorder extends Command
                             $res = $orderDouYinModel->createOrder($v['order_amount'], ($v['prepare_num'] - $v['can_use_num']));
 //                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
 
-                            if ($res['code'] == 0) {
+                            if ($res['code'] == 0 && $res['data'] > 0) {
                                 $prepareSetWhere['id'] = $v['id'];
                                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
                                 $msg .= $res['msg'] . "||";
