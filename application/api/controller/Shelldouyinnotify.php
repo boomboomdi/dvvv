@@ -4,7 +4,7 @@ namespace app\api\controller;
 
 use app\common\model\DeviceModel;
 use app\common\model\OrderdouyinModel;
-use app\common\model\SystemConfigModel;
+//use app\common\model\SystemConfigModel;
 use think\Db;
 use think\facade\Log;
 use think\Request;
