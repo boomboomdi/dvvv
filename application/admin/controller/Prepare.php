@@ -86,7 +86,7 @@ class Prepare extends Base
 
 
             $model = new PrepareModel();
-            $res = $model->editAdmin($param);
+            $res = $model->editPrepare($param);
 
             Log::write("编辑预拉单：" . $param['order_amount'] . $param['prepare_num'] . "个");
 
