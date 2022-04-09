@@ -375,7 +375,7 @@ class OrderdouyinModel extends Model
             $data['sucessNum'] = 0;
             $cookieModel = new CookieModel();
             $cookieWhere["status"] = 1;
-            $getCookie = $this->where($cookieWhere)->order("last_use_time desc")->findOrEmpty()->toArray();
+            $getCookie = $this->where($cookieWhere)->order("last_use_time desc")->find();
             if (empty($getCookie)) {
                 return modelReMsg('-99', $successNum, "无可用ck");
             }
@@ -388,7 +388,7 @@ class OrderdouyinModel extends Model
                 }
                 //获取话单
                 $where['total_amount'] = $amount;
-                $getUesTorderRes = $this->getUseTorder($where, $getCookie['data']);
+                $getUesTorderRes = $this->getUseTorder($where, $getCookie);
                 if ($getUesTorderRes['code'] == 1) {
                     $updateCookieWhere['id'] = $getCookie['data']['id'];
                     $updateCookieParam['status'] = 2;
