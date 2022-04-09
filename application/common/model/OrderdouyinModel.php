@@ -363,14 +363,15 @@ class OrderdouyinModel extends Model
      * 根据金额生成 固定次数订单
      * @return void
      */
-    public function createOrder($amount = "", $prepareNum = 1)
+    public function createOrder($v, $prepareNum = 1)
     {
         $total = $prepareNum;
         $successNum = 0;
         try {
-            if (empty($amount) || !is_float($amount) || !is_int($prepareNum)) {
+            if (empty($v['total_amount']) || !is_float($v['total_amount']) || !is_int($v['total_amount'])) {
                 return modelReMsg('-1', $successNum, "预单金额格式有误！");
             }
+            $amount = $v['total_amount'];
             //获取CK
             $data['amount'] = $amount;
             $data['sucessNum'] = 0;
@@ -402,6 +403,11 @@ class OrderdouyinModel extends Model
                 }
             }
 //            getUseCookie
+            $prepareSetWhere['id'] = $v['id'];
+            if ($successNum != 0) {
+                Db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => ($v['can_use_num'] + $successNum)]);
+            }
+
             return modelReMsg(0, $successNum, "金额：", $msg);
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'OrderdouyinModelcreateOrderexception');

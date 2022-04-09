@@ -34,8 +34,8 @@ class Timecheckdouyin extends Command
             $lockLimit = $now - $limitTime;
             $orderdouyinModel = new OrderdouyinModel();
             $orderModel = new OrderModel();
-            $notifyLogModel = new NotifylogModel();
-            $notifyLogWhere['status'] = 2;
+//            $notifyLogModel = new NotifylogModel();
+//            $notifyLogWhere['status'] = 2;
             $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
             $where[] = ['order_status', '4'];
             //查询下单之前280s 到现在之前20s的等待付款订单

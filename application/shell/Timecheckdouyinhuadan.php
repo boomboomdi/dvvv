@@ -30,6 +30,7 @@ class Timecheckdouyinhuadan extends Command
     {
         $totalNum = 0;
         $errorNum = 0;
+        $doNum = 0;
         $orderData = [];
         try {
             $limit = 10;
@@ -50,18 +51,14 @@ class Timecheckdouyinhuadan extends Command
                 ->where('add_time', '<', $lockLimit)->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
-                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
-
+//                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
-                    $res = $orderModel->orderDouYinNotifyToWriteOff($v);
-//                    var_dump($res);exit;
-                    if ($res['code'] != 0) {
-                        $errorNum++;
-                    }
+                    $orderModel->orderDouYinNotifyToWriteOff($v);
+                    $doNum++;
                 }
             }
-            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "失败" . $errorNum);
+            $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "处理" . $errorNum);
         } catch (\Exception $exception) {
             logs(json_encode(['totalNum' => $totalNum, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Timecheckdouyinhuadanexception');
             $output->writeln("Timecheckdouyinhuadan:订单总数" . $totalNum . "exception" . json_encode($orderData));

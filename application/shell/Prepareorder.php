@@ -2,7 +2,6 @@
 
 namespace app\shell;
 
-use app\admin\model\CookieModel;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
@@ -15,7 +14,7 @@ class Prepareorder extends Command
 {
     protected function configure()
     {
-        $this->setName('Prepareorder')->setDescription('预先生成，！');
+        $this->setName('Prepareorder')->setDescription('预先生成！');
     }
 
     /**
@@ -44,18 +43,8 @@ class Prepareorder extends Command
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
-//                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
                         for ($i = 1; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
-                            $res = $orderDouYinModel->createOrder($v['order_amount'], ($v['prepare_num'] - $v['can_use_num']));
-//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
-
-                            if ($res['code'] == 0 && $res['data'] > 0) {
-                                $prepareSetWhere['id'] = $v['id'];
-                                $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-                                $msg .= $res['msg'] . "||";
-                            } else {
-                                $msg .= $res['msg'] . "||";
-                            }
+                            $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
                         }
                     }
                 }
