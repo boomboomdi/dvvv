@@ -130,7 +130,7 @@ class OrderdouyinModel extends Model
             //有没有
             $info = $this->where($where)->order("add_time desc")->find();
             if (!empty($info)) {
-                $updateWhere['id'] = $info['id'];
+                $updateWhere['t_id'] = $info['t_id'];
                 $update['last_use_time'] = date("Y-m-d H:i:s", time());
                 $update['use_times'] = $info['use_times'] + 1;
                 //获取话单
