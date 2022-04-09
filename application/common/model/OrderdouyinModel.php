@@ -404,9 +404,9 @@ class OrderdouyinModel extends Model
 
         $db = new Db();
         $notifyUrl = $tOrderData['notify_url'];
-        $where['order_no'] = $tOrderData['order_no'];
+        $orderWhere['order_no'] = $tOrderData['order_no'];
         if (!validateURL($notifyUrl)) {
-            $db::table('bsa_torder_douyin')->where($where)
+            $db::table('bsa_torder_douyin')->where($orderWhere)
                 ->update([
                     'status' => 2,
                     'url_status' => 2,
@@ -423,7 +423,8 @@ class OrderdouyinModel extends Model
             $db = new Db();
 
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
-            $token = $db::table("bsa_write_off")->where($notifyParam['write_off_sign'])->find();
+            $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
+            $token = $db::table("bsa_write_off")->where($writeWhere)->find();
 
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
@@ -443,14 +444,14 @@ class OrderdouyinModel extends Model
             $result = json_decode($nitifyResult, true);
             //通知失败
             if ($result != 1) {
-                $db::table('bsa_torder_douyin')->where($notifyParam['order_no'])
+                $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 2
                     ]);
             } else {
-                $db::table('bsa_torder_douyin')->where($notifyParam['order_no'])
+                $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
