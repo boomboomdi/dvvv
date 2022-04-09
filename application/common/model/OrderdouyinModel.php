@@ -439,12 +439,11 @@ class OrderdouyinModel extends Model
 //                return modelReMsg('0', "", "回调地址有误！");
 //            }
             $db = new Db();
-
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
             $token = $db::table("bsa_write_off")->where($writeWhere)->find();
             $tOrderDataWhere['order_no'] = $tOrderData['order_no'];
-            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere['order_no'])->find();
+            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->find();
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
             $notifyParam['total_amount'] = $tOrderData['total_amount'];
@@ -490,7 +489,6 @@ class OrderdouyinModel extends Model
             return modelReMsg('0', "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffexception');
-//            Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
