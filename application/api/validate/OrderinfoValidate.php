@@ -23,7 +23,7 @@ class OrderinfoValidate extends Validate
         'payment' => 'require',
         'amount' => 'require|float',
 //        'actual_amount' => 'require|float',
-        'time' => 'require|Length:11',
+        'time' => 'require',
         'sign' => 'require|length:32',
     ];
 

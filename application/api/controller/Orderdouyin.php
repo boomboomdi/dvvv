@@ -29,9 +29,10 @@ class Orderdouyin extends Controller
     {
         $data = @file_get_contents('php://input');
         $message = json_decode($data, true);
-        Log::info('order douyin first!', $message);
         $updateParam = [];
         try {
+
+            Log::info('order douyin first!', $message);
             $validate = new OrderinfoValidate();
             if (!$validate->check($message)) {
                 return apiJsonReturn(-1, '', $validate->getError());
