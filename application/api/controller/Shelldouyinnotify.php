@@ -40,7 +40,7 @@ class Shelldouyinnotify extends Controller
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('add_time', '>', $lockLimit)->select();
+                ->where('add_time', '<', $lockLimit)->select();
 //            var_dump($orderData);
 
 //            var_dump(Db::table('bsa_torder_douyin')->getLastSql());exit;
