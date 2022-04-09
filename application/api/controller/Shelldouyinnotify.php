@@ -97,13 +97,17 @@ class Shelldouyinnotify extends Controller
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
             $prepareWhere['status'] = 1;
+
+
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
+            logs(json_encode([ 'totalNum' => $totalNum, 'prepareAmountList' => json_encode($prepareAmountList)]), 'Prepareorderapi');
+
             if (!empty($prepareAmountList)) {
                 foreach ($prepareAmountList as $k => $v) {
                     if ($v['prepare_num'] - $v['can_user_num'] > 0) {
                         for ($i = 1; $i < $v['prepare_num'] - $v['can_user_num']; $i++) {
                             $res = $orderDouYinModel->createOrder($v['amount'], $v['prepare_num'] - $v['can_user_num']);
-                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_user_num'], 'amount' => $v['amount'], 'res' => json_encode($res)]), 'Prepareorderapi');
+//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_user_num'], 'amount' => $v['amount'], 'res' => json_encode($res)]), 'Prepareorderapi');
 
                             if ($res['code'] == 0) {
                                 $db::table("bsa_prepare_set")->where($v['id'])->update(['can_user_num' => $v['can_user_num'] + 1]);
