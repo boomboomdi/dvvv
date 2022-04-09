@@ -5,7 +5,8 @@
     <title>订单列表</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/static/admin/style/admin.css" media="all">
 </head>
@@ -18,13 +19,15 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-block">
-                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input" id="start_time">
+                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"
+                               id="start_time">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">结束时间</label>
                     <div class="layui-input-block">
-                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input" id="end_time">
+                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"
+                               id="end_time">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -46,9 +49,11 @@
             <script type="text/html" id="table-seller-admin">
                 {if (buttonAuth('order/notify'))}
                 {{#  if(d.admin_id == '1'){ }}
-                <a class="layui-btn layui-btn-disabled layui-btn-xs" style="color: blue"><i class="layui-icon layui-icon-ercifenjian"></i>手动回调</a>
+                <a class="layui-btn layui-btn-disabled layui-btn-xs" style="color: blue"><i
+                        class="layui-icon layui-icon-ercifenjian"></i>手动回调</a>
                 {{#  } else { }}
-                <a class="layui-btn layui-btn-danger layui-btn-xs"  style="color: blue" lay-event="notify"><i class="layui-icon layui-icon-ercifenjian"></i>手动回调</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" style="color: blue" lay-event="notify"><i
+                        class="layui-icon layui-icon-ercifenjian"></i>手动回调</a>
                 {{#  } }}
                 {/if}
             </script>
@@ -62,22 +67,20 @@
 <script>
     layui.config({
         base: '/static/admin/'
-    }).use(['table'], function(){
+    }).use(['table'], function () {
         var $ = layui.$
-            ,form = layui.form
-            ,table = layui.table;
+            , form = layui.form
+            , table = layui.table;
 
-        var active = {
+        var active = {};
 
-        };
-
-        $('.layui-btn.layuiadmin-btn-admin').on('click', function(){
+        $('.layui-btn.layuiadmin-btn-admin').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
 
         // 监听搜索
-        form.on('submit(LAY-user-back-search)', function(data){
+        form.on('submit(LAY-user-back-search)', function (data) {
             var field = data.field;
 
             // 执行重载
@@ -88,6 +91,7 @@
     });
 
     renderTable();
+
     // 渲染表格
     function renderTable() {
 
@@ -95,32 +99,32 @@
             [{
                 field: "merchant_sign",
                 title: "商户"
-            },{
+            }, {
                 field: "order_no",
                 title: "商户单号"
-            },{
+            }, {
                 field: "order_me",
                 title: "支付单号",
-            },{
+            }, {
                 field: "order_status",
                 title: "支付状态",
                 // templet: '#statusTpl'
-            // }, {
-            //     field: "notify_ip",
-            //     title: "客户端IP"
-            // }, {
-            //     field: "order_desc",
-            //     title: "订单描述"
+                // }, {
+                //     field: "notify_ip",
+                //     title: "客户端IP"
+                // }, {
+                //     field: "order_desc",
+                //     title: "订单描述"
             }, {
                 field: "add_time",
                 title: "下单时间"
             }, {
                 field: "pay_time",
                 title: "付款时间"
-            },{
+            }, {
                 field: "update_time",
                 title: "更新时间"
-            },{
+            }, {
                 title: "操作",
                 align: "center",
                 width: 150,
@@ -134,7 +138,7 @@
             let table = layui.table;
 
             table.on("tool(LAY-user-table)",
-                function(e) {
+                function (e) {
                     if ("notify" === e.event) {
 
                         layer.ready(function () {
@@ -142,11 +146,11 @@
                                 title: '友情提示',
                                 icon: 3,
                                 btn: ['确定', '取消']
-                            }, function() {
+                            }, function () {
 
                                 $.getJSON('{:url("order/notify")}', {id: e.data.order_no}, function (res) {
 
-                                    if(1000 == res.code) {
+                                    if (1000 == res.code) {
 
                                         layer.msg(res.msg);
                                         setTimeout(function () {
@@ -156,7 +160,7 @@
                                         layer.alert(res.msg);
                                     }
                                 });
-                            }, function(){
+                            }, function () {
 
                             });
                         });

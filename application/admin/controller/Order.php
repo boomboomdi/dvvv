@@ -46,7 +46,7 @@ class Order extends Base
                     $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
                 }
                 if (!empty($data[$key]['add_time']) && $data[$key]['add_time'] != 0) {
-                    $data[$key]['add_time'] = date('Y-m-d H:i:s', (int)$data[$key]['add_time']);
+                    $data[$key]['add_time'] = date('Y-m-d h:i:s', (int)$data[$key]['add_time']);
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '1') {
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';

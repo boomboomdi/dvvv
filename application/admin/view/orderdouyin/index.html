@@ -16,13 +16,13 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">添加时间</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"
-                               id="operate_time">
-                    </div>
-                </div>
+<!--                <div class="layui-inline">-->
+<!--                    <label class="layui-form-label">添加时间</label>-->
+<!--                    <div class="layui-input-block">-->
+<!--                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"-->
+<!--                               id="operate_time">-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="layui-inline">
                     <label class="layui-form-label">订单编号</label>
                     <div class="layui-input-block">
@@ -123,50 +123,47 @@
         layTool.table("#LAY-user-table", "/admin/orderdouyin/index", [
             [{
                 field: "write_off_sign",
-                title: "核销商"
+                title: "核销标识"
             }, {
                 field: "order_no",
                 title: "订单编号"
             }, {
                 field: "account",
-                title: "充值号",
+                title: "订单账号",
             }, {
                 field: "status",
                 title: "状态",
                 templet: '#statusTpl'
-            },{
+            }, {
+                field: "total_amount",
+                title: "订单金额"
+            }, {
+                field: "success_amount",
+                title: "充值金额",
+            }, {
                 field: "notify_status",
                 title: "回调状态",
                 templet: '#notifyStatusTpl'
             }, {
-                field: "total_amount",
-                title: "充值金额"
-            }, {
-                field: "use_times",
-                title: "下单次数",
-            }, {
                 field: "limit_time",
                 title: "限制时间",
-            },{
-                field: "notify_time",
-                title: "回调时间"
-            }, {
-                field: "notify_url",
-                title: "回调地址"
             }, {
                 field: "add_time",
                 title: "上传时间"
             }, {
+                field: "notify_time",
+                title: "回调时间"
+            }, {
                 field: "order_desc",
                 title: "推单描述"
             }
-            // , {
-            //     title: "操作",
-            //     align: "center",
-            //     width: 150,
-            //     fixed: "right",
-            //     toolbar: "#table-seller-admin"
-            // }
+                // , {
+                //     title: "操作",
+                //     align: "center",
+                //     width: 150,
+                //     fixed: "right",
+                //     toolbar: "#table-seller-admin"
+                // }
             ]
         ]);
 

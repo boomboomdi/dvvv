@@ -30,14 +30,11 @@ class OrderinfoValidate extends Validate
     protected $message  =   [
         'merchant_sign.require' => 'require merchant_sign',
         'merchant_sign.max' => 'merchant_sign format error',
-
         'order_no.require'     => 'require order_no',
         'order_no.length'     => 'order_no format error',
-
         'payment.require'   => 'require number',
         'amount.require'   => 'require amount',
         'amount.float'   => 'amount format float',
-
         'time.require'   => 'require pay_time',
         'time.integer'   => 'pay_time format error',
         'sign.require' => 'require sign',
