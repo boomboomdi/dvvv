@@ -129,6 +129,8 @@ class OrderdouyinModel extends Model
         try {
             //有没有
             $info = $this->where($where)->order("add_time desc")->find();
+            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
+
             if (!empty($info)) {
                 $updateWhere['t_id'] = $info['t_id'];
                 $update['last_use_time'] = date("Y-m-d H:i:s", time());
