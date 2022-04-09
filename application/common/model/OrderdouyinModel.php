@@ -407,16 +407,16 @@ class OrderdouyinModel extends Model
         $db = new Db();
         $notifyUrl = $tOrderData['notify_url'];
         $orderWhere['order_no'] = $tOrderData['order_no'];
-        if (!validateURL($notifyUrl)) {
-            $db::table('bsa_torder_douyin')->where($orderWhere)
-                ->update([
-                    'status' => 2,
-                    'url_status' => 2,
-                    'notify_status' => 2
-                ]);
-            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "validateURLerror"]), 'validateURLerror');
-            return modelReMsg('0', "", "回调地址有误！");
-        }
+//        if (!validateURL($notifyUrl)) {
+//            $db::table('bsa_torder_douyin')->where($orderWhere)
+//                ->update([
+//                    'status' => 2,
+//                    'url_status' => 2,
+//                    'notify_status' => 2
+//                ]);
+//            logs(json_encode(['totalNum' => $tOrderData, 'errorMessage' => "validateURLerror"]), 'validateURLerror');
+//            return modelReMsg('0', "", "回调地址有误！");
+//        }
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {
             $notifyUrl = $tOrderData['notify_url'];
