@@ -464,7 +464,7 @@ class OrderdouyinModel extends Model
                         'notify_status' => 1
                     ]);
             }
-            return modelReMsg('0', "", $nitifyResult['msg']);
+            return modelReMsg('0', "", $result['msg']);
         } catch (\Exception $exception) {
             Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
