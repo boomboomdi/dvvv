@@ -486,7 +486,7 @@ class OrderdouyinModel extends Model
                         'order_desc' => "核销回调|" . $notifyResult
                     ]);
             }
-            return modelReMsg('0', "", json_encode($notifyResult));
+            return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffexception');
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
