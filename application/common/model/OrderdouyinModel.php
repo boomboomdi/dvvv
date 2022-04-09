@@ -404,8 +404,9 @@ class OrderdouyinModel extends Model
 
         $db = new Db();
         $notifyUrl = $tOrderData['notify_url'];
+        $where['order_no'] = $tOrderData['order_no'];
         if (!validateURL($notifyUrl)) {
-            $db::table('bsa_torder_douyin')->where($tOrderData['order_no'])
+            $db::table('bsa_torder_douyin')->where($where)
                 ->update([
                     'status' => 2,
                     'url_status' => 2,
