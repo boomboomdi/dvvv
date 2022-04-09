@@ -33,7 +33,8 @@ class Timecheckdouyinhuadan extends Command
         $orderData = [];
         try {
             $limit = 10;
-            $limitTime = SystemConfigModel::getDouyinPayLimitTime();
+//            $limitTime = SystemConfigModel::getDouyinPayLimitTime();
+            $limitTime = 170;
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
@@ -46,8 +47,7 @@ class Timecheckdouyinhuadan extends Command
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('add_time', '<', $lockLimit)
-                ->limit($limit)->select();
+                ->where('add_time', '<', $lockLimit)->select();
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
