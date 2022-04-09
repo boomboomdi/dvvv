@@ -36,7 +36,7 @@ class SystemConfigModel extends Model
      */
     public static function getTorderLimitTime()
     {
-        return 900;
+        return 170;
     }
 
 
