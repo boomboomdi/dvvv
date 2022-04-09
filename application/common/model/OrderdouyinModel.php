@@ -125,7 +125,6 @@ class OrderdouyinModel extends Model
         $where['url_status'] = 0;  //0:未使用1:启用中2:已禁用
         $returnCode = 3;
         $msg = "失败！";
-        $notifyResult = [];
         try {
             //有没有
             $info = $this->where($where)->order("last_use_time desc")->find();
@@ -141,7 +140,7 @@ class OrderdouyinModel extends Model
                 $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
                 $notifyResult = json_decode($notifyResult, true);
 //                {"msg":"下单成功","order_url":"https://tp-pay.snssdk.com/cashdesk/?app_id=800095745677&encodeType=base64&merchant_id=1200009574&out_order_no=10000017080988975653278733&return_scheme=&return_url=aHR0cHM6Ly93d3cuZG91eWluLmNvbS9wYXk=&sign=976358abfe82f2e06d576dc22aa2dd05&sign_type=MD5&switch=00&timestamp=1648671358&total_amount=5500&trade_no=SP2022033104154330075991127887&trade_type=H5&uid=8b58441a628f2cee4bd6f629ccd9012a","amount":"55","ali_url":"https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_139e2972e1746412b2bc190190e6ee54&alipay_exterface_invoke_assign_sign=_c_d_j6i_r_hoo%2Bue_vw_hdk_uh_m_cn%2B_t2_e_mi_o_vs_orkqhh_m_o_sjk_i6_yo8gwl9_hy_q%3D%3D","code":0,"order_id":"10000017080988975653278733"}
-//                logs(json_encode(['account' => $cookie['account'], 'notifyResult' => $notifyResult]), 'getUseTorder_notifyResult');
+                logs(json_encode(['account' => $cookie['account'], 'notifyResult' => $notifyResult]), 'getUseTorder_notifyResult');
 
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
                     $returnCode = 0;
@@ -365,7 +364,6 @@ class OrderdouyinModel extends Model
      */
     public function createOrder($v, $prepareNum = 1)
     {
-        $total = $prepareNum;
         $successNum = 0;
         try {
             logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
@@ -391,7 +389,7 @@ class OrderdouyinModel extends Model
                 //获取话单
                 $where['total_amount'] = $amount;
                 $getUesTorderRes = $this->getUseTorder($where, $getCookie);
-//                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'getUesTorderRes');
+                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'getUesTorderRes');
 
                 if ($getUesTorderRes['code'] == 1) {
                     $updateCookieWhere['id'] = $getCookieRes['data']['id'];
