@@ -370,7 +370,7 @@ class OrderdouyinModel extends Model
             $data['sucessNum'] = 0;
             $cookieModel = new CookieModel();
             $cookieWhere["status"] = 1;
-            $getCookie = $this->where($cookieWhere)->order("last_user_time desc")->findOrEmpty()->toArray();
+            $getCookie = $this->where($cookieWhere)->order("last_use_time desc")->findOrEmpty()->toArray();
             if (empty($getCookie)) {
                 return modelReMsg('-99', $successNum, "无可用ck");
             }
@@ -394,7 +394,7 @@ class OrderdouyinModel extends Model
                 }
             }
 //            getUseCookie
-            return modelReMsg('0', "", "金额：", $msg);
+            return modelReMsg(0, "", "金额：", $msg);
         } catch (\Exception $exception) {
             Log::write("/n/t OrderdouyinModel/createOrder: /n/t" . $amount . "||" . $$prepareNum . $exception->getMessage(), "exception");
             return modelReMsg('-11', "", "预产单失败" . $exception->getMessage());

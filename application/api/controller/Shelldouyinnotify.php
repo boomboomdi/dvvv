@@ -101,6 +101,8 @@ class Shelldouyinnotify extends Controller
                             if ($res['code'] == 0) {
                                 $db::table("bsa_prepare_set")->where($v['id'])->update(['can_user_num' => $v['can_user_num'] + 1]);
                                 $msg .= $res['msg'] . "||";
+                            }else{
+                                $msg .= $res['msg'] . "||";
                             }
                         }
                     }
