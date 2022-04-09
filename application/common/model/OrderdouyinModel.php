@@ -489,10 +489,11 @@ class OrderdouyinModel extends Model
             }
             return modelReMsg('0', "", json_encode($notifyResult));
         } catch (\Exception $exception) {
-            Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffexception');
+//            Log::log('orderDouYinNotifyToWriteOffException!', $tOrderData);
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
         } catch (\Error $error) {
-            Log::log('orderDouYinNotifyToWriteOffError!', $tOrderData);
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
             return modelReMsg('-11', "", "回调失败" . $error->getMessage());
 
         }
