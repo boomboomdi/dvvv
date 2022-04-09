@@ -38,7 +38,7 @@ class Shelldouyinnotify extends Controller
 
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
-                ->where('notify_status', '<>', 0)
+                ->where('notify_status', '<>', 1)
                 ->where('add_time', '<', $lockLimit)
                 ->limit($limit)->select();
             var_dump($orderData);exit;
