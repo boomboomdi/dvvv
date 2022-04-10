@@ -322,7 +322,7 @@ function logs($data = null, $fileName = null)
         return $out_arr;
     }
 
-    $path = RUNTIME_PATH . 'log/' . $fileName;
+    $path = __DIR__ . '/../runtime/' . 'log/' . $fileName;
 
     if (!is_dir($path)) {
         $mkdir_re = mkdir($path, 0777, TRUE);
