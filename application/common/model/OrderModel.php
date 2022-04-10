@@ -196,8 +196,8 @@ class OrderModel extends Model
             $callbackData['sign'] = md5($doMd5String);
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
+            logs(json_encode(['callbackData' => $data, 'notify_url' => $data['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostForMerchant_log');
 
-            Log::log('1', "notify merchant order ", $notifyResult);
             $result = json_decode($notifyResult, true);
             //通知失败
 
