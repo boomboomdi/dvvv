@@ -129,12 +129,15 @@ class OrderModel extends Model
                 ->update([
                     "amount" => $merchant["amount"] + $orderData['amount']
                 ]);
-            $writeOffWhere['write_off_sign'] = $orderData['write_off_sign'];
-            $writeOff = Db::table('bsa_write_off')->where($writeOffWhere)->find();
-            Db::table('bsa_write_off')->where($writeOffWhere)
-                ->update([
-                    "amount" => $writeOff['amount'] + $orderData['amount']
-                ]);
+            if (!empty($orderData['write_off_sign'])) {
+                $writeOffWhere['studio_sign'] = $orderData['write_off_sign'];
+                $writeOff = Db::table('bsa_write_off')->where($writeOffWhere)->find();
+                Db::table('bsa_write_off')->where($writeOffWhere)
+                    ->update([
+                        "amount" => $writeOff['amount'] + $orderData['amount']
+                    ]);
+            }
+
             $notifyRes = $this->orderNotifyForMerchant($orderData);
             if ($notifyRes['code'] != 1000) {
                 return modelReMsg(-2, '', $notifyRes['msg']);
