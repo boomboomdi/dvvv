@@ -148,7 +148,7 @@
                                 btn: ['确定', '取消']
                             }, function () {
 
-                                $.getJSON('{:url("order/notify")}', {id: e.data.order_no}, function (res) {
+                                $.getJSON('{:url("order/notify")}', {order_no: e.data.order_no}, function (res) {
 
                                     if (1000 == res.code) {
 

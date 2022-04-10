@@ -87,20 +87,20 @@ class Order extends Base
      */
     public function notify()
     {
-        try{
+        try {
             $param = input('post.');
-            if (!isset($param['order_no'])||empty($param['order_no'])) {
+            if (!isset($param['order_no']) || empty($param['order_no'])) {
                 return reMsg(-1, '', "回调错误！");
             }
             //查询订单
-            $order = Db::table("bsa_order")->where("order_no",$param['no'])->find();
+            $order = Db::table("bsa_order")->where("order_no", $param['order_no'])->find();
             $orderModel = new \app\common\model\OrderModel();
-            return $orderModel->orderNotify($order,2);
+            return $orderModel->orderNotify($order, 2);
 
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return reMsg(-2, "", $exception->getMessage());
 
-        }catch (\Error $error){
+        } catch (\Error $error) {
             return reMsg(-2, "", $error->getMessage());
         }
 
