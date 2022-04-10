@@ -100,10 +100,10 @@ class Order extends Base
             return $orderModel->orderNotify($order, 2);
 
         } catch (\Exception $exception) {
-            logs(json_encode(['param' => $param['order_no'], 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
+            logs(json_encode(['param' => $param, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
             return json('20009', "通道异常" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['param' => $param['order_no'], 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
+            logs(json_encode(['param' => $param, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
             return json('20099', "通道异常" . $error->getMessage());
         }
 
