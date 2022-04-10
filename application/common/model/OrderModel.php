@@ -169,6 +169,7 @@ class OrderModel extends Model
             $validate = new OrderinfoValidate();
             //请求参数不完整
             if (!$validate->check($data)) {
+                logs(json_encode(['data' => $data, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_checkfail');
                 $returnMsg['code'] = 1002;
                 $returnMsg['msg'] = "回调参数有误!";
                 $returnMsg['data'] = $validate->getError();
