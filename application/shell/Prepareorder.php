@@ -32,7 +32,8 @@ class Prepareorder extends Command
         $db = new Db();
         try {
             //时间差  话单时间差生成订单时间差
-            $limitTime = SystemConfigModel::getTorderLimitTime();
+//            $limitTime = SystemConfigModel::getTorderLimitTime();
+            $limitTime = 900;
             $now = time();
 
 //            getUseCookie

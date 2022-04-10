@@ -87,8 +87,10 @@ class Order extends Base
      */
     public function notify()
     {
+        $param = input('post.');
         try {
-            $param = input('post.');
+            logs(json_encode(['notify' => "notify", 'param' => $param,]), 'notify_first');
+
             if (!isset($param['order_no']) || empty($param['order_no'])) {
                 return reMsg(-1, '', "回调错误！");
             }
@@ -98,12 +100,12 @@ class Order extends Base
             return $orderModel->orderNotify($order, 2);
 
         } catch (\Exception $exception) {
-            return reMsg(-2, "", $exception->getMessage());
-
+            logs(json_encode(['param' => $param, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
+            return json('20009', "通道异常" . $exception->getMessage());
         } catch (\Error $error) {
-            return reMsg(-2, "", $error->getMessage());
+            logs(json_encode(['param' => $param, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
+            return json('20099', "通道异常" . $error->getMessage());
         }
-
 
     }
 }
