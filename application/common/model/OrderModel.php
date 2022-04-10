@@ -123,7 +123,7 @@ class OrderModel extends Model
             $orderUpdate['pay_time'] = time();
             $orderUpdate['actual_amount'] = (float)$orderData['amount'];
             Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
-            $orderData = Db::table('bsa_order')->where($orderWhere)->find();
+            $orderData = Db::table('bsa_order')->where($orderWhere)->find()->toArray();
 
             //更改商户余额 merchant
             $merchantWhere['merchant_sign'] = $orderData['merchant_sign'];
@@ -237,7 +237,7 @@ class OrderModel extends Model
             return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
             Db::rollback();
-            logs(json_encode(['orde$datarData' => $data, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotifyForMerchant_error');
+            logs(json_encode(['data' => $data, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotifyForMerchant_error');
             return modelReMsg(-3, '', $error->getMessage());
         }
 
