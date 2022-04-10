@@ -386,7 +386,7 @@ class OrderdouyinModel extends Model
                 //获取话单
                 $where['total_amount'] = $amount;
                 $getUesTorderRes = $this->getUseTorder($where, $getCookie);
-//                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'getUesTorderRes');
+                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'getUesTorderRes');
 
                 if ($getUesTorderRes['code'] == 1) {
                     $updateCookieWhere['id'] = $getCookieRes['data']['id'];
