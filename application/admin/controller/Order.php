@@ -98,6 +98,10 @@ class Order extends Base
                 }
                 //查询订单
                 $order = Db::table("bsa_order")->where("id", $id)->find();
+                if (empty($order)) {
+                    return reMsg(-1, '', "回调订单有误");
+
+                }
                 $orderModel = new \app\common\model\OrderModel();
                 logs(json_encode(['notify' => "notify", 'id' => $id]), 'notify_first');
 
