@@ -197,7 +197,6 @@ class OrderModel extends Model
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
             logs(json_encode(['callbackData' => $data, 'notify_url' => $data['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostForMerchant_log');
-
             $result = json_decode($notifyResult, true);
             //通知失败
 

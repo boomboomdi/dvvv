@@ -454,7 +454,7 @@ class OrderdouyinModel extends Model
             } else {
                 $notifyParam['time'] = date("Y-m-d H:i:s", time());
             }
-            $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['order_status'] . $token['token'];
+            $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['order_status'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['time'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
 
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
@@ -462,7 +462,6 @@ class OrderdouyinModel extends Model
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
-//            logs(json_encode(['notifyParam' => $notifyParam, "time" => date('Y-m-d H:i:s'), "notifyResult" => $notifyResult]), 'orderDouYinNotifyToWriteOff');
 
             //通知失败
             if ($notifyResult != "success") {
@@ -474,7 +473,7 @@ class OrderdouyinModel extends Model
                         'notify_time' => time(),
                         'order_desc' => "核销回调|" . $notifyResult
                     ]);
-                Log::log('orderDouYinNotifyToWriteOffFail!', $notifyResult);
+                logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
 
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
