@@ -87,12 +87,11 @@ class Order extends Base
      */
     public function notify()
     {
-        $order_no= input('param.order_no');
+        $order_no = input('param.order_no');
 //        $param = input('post.');
         try {
             logs(json_encode(['notify' => "notify", 'order_no' => $order_no,]), 'notify_first');
-
-            if (!isset($order_no) || empty($order_no)) {
+            if (empty($order_no)) {
                 return reMsg(-1, '', "回调错误！");
             }
             //查询订单
