@@ -87,23 +87,23 @@ class Order extends Base
      */
     public function notify()
     {
-        $order_no = input('param.order_no');
-//        $param = input('post.');
+//        $order_no = input('param.order_no');
+        $param = input('post.');
         try {
-            logs(json_encode(['notify' => "notify", 'order_no' => $order_no,]), 'notify_first');
-            if (empty($order_no)) {
+            logs(json_encode(['notify' => "notify", 'order_no' => $param['order_no']]), 'notify_first');
+            if (!isset($param['order_no']) || empty($param['order_no'])) {
                 return reMsg(-1, '', "回调错误！");
             }
             //查询订单
-            $order = Db::table("bsa_order")->where("order_no", $order_no)->find();
+            $order = Db::table("bsa_order")->where("order_no", $param['order_no'])->find();
             $orderModel = new \app\common\model\OrderModel();
             return $orderModel->orderNotify($order, 2);
 
         } catch (\Exception $exception) {
-            logs(json_encode(['param' => $order_no, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
+            logs(json_encode(['param' => $param['order_no'], 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
             return json('20009', "通道异常" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['param' => $order_no, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
+            logs(json_encode(['param' => $param['order_no'], 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
             return json('20099', "通道异常" . $error->getMessage());
         }
 
