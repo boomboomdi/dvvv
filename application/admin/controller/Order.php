@@ -92,17 +92,22 @@ class Order extends Base
             if (request()->isAjax()) {
                 $id = input('param.id');
 //                $param = input('post.');
-                logs(json_encode(['notify' => "notify", 'id' => $id]), 'notify_first');
+
                 if (empty($id)) {
                     return reMsg(-1, '', "回调错误！");
                 }
                 //查询订单
                 $order = Db::table("bsa_order")->where("id", $id)->find();
                 $orderModel = new \app\common\model\OrderModel();
-                return $orderModel->orderNotify($order, 2);
+                logs(json_encode(['notify' => "notify", 'id' => $id]), 'notify_first');
+
+                $notifyRes = $orderModel->orderNotify($order, 2);
+                if ($notifyRes['code'] != 1000) {
+                    return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
+                }
+                return json(['code' => 1000, 'msg' => '回调成功', 'data' => []]);
             } else {
                 return json('访问错误', "20009");
-
             }
         } catch (\Exception $exception) {
             logs(json_encode(['id' => $id, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
