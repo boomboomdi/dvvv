@@ -120,8 +120,11 @@ class OrderModel extends Model
             }
             $orderUpdate['order_status'] = 6;
             $orderUpdate['update_time'] = time();
+            $orderUpdate['pay_time'] = time();
             $orderUpdate['actual_amount'] = (float)$orderData['amount'];
             Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
+            $orderData = Db::table('bsa_order')->where($orderWhere)->find();
+
             //更改商户余额 merchant
             $merchantWhere['merchant_sign'] = $orderData['merchant_sign'];
             $merchant = Db::table('bsa_merchant')->where($merchantWhere)->find();
@@ -166,15 +169,7 @@ class OrderModel extends Model
     {
         try {
             //$status 决定order_status 是手动回调还是自动完成且回调
-            $validate = new OrderinfoValidate();
-            //请求参数不完整
-            if (!$validate->check($data)) {
-                logs(json_encode(['data' => $data, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_checkfail');
-                $returnMsg['code'] = 1002;
-                $returnMsg['msg'] = "回调参数有误!";
-                $returnMsg['data'] = $validate->getError();
-                return $returnMsg;
-            }
+
             //参与回调参数
             $callbackData['merchant_sign'] = $data['merchant_sign'];
             $callbackData['order_no'] = $data['order_no'];
@@ -183,8 +178,16 @@ class OrderModel extends Model
             $callbackData['payment'] = $data['payment'];
             $callbackData['amount'] = $data['amount'];
             $callbackData['actual_amount'] = $data['actual_amount'];
-            $callbackData['pay_time'] = $data['pay_time'];
-
+            $callbackData['pay_time'] = date("Y-m-d H:i:s", $data['pay_time']);
+            $validate = new OrderinfoValidate();
+            //请求参数不完整
+            if (!$validate->scene('notify')->check($callbackData)) {
+                logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_checkfail');
+                $returnMsg['code'] = 1002;
+                $returnMsg['msg'] = "回调参数有误!";
+                $returnMsg['data'] = $validate->getError();
+                return $returnMsg;
+            }
             $merchantWhere['merchant_sign'] = $data['merchant_sign'];
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
 
