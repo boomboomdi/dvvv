@@ -15,9 +15,6 @@ namespace think;
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 
-//define('DS', DIRECTORY_SEPARATOR);
-//defined('APP_PATH') or define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . DS);
-//defined('ROOT_PATH') or define('ROOT_PATH', dirname(realpath(dirname($_SERVER['SCRIPT_FILENAME']) . DS)) . DS);
 // 支持事先使用静态方法设置Request对象和Config对象
 define('RUNTIME_PATH', __DIR__ . '/../runtime/');
 // 执行应用并响应
