@@ -124,10 +124,10 @@ class OrderModel extends Model
             Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
             //更改商户余额 merchant
             $merchantWhere['merchant_sign'] = $orderData['merchant_sign'];
-            Db::table('bsa_merchant')->where($merchantWhere)->find();
+            $merchant = Db::table('bsa_merchant')->where($merchantWhere)->find();
             Db::table('bsa_merchant')->where($merchantWhere)
                 ->update([
-                    "amount" => Db::raw("amount") + $orderData['amount']
+                    "amount" => $merchant["amount"] + $orderData['amount']
                 ]);
             $writeOffWhere['write_off_sign'] = $orderData['write_off_sign'];
             $writeOff = Db::table('bsa_write_off')->where($writeOffWhere)->find();
