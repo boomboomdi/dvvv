@@ -97,9 +97,9 @@ class Shelldouyinnotify extends Controller
                             if ($res['code'] == 0 && $res['data'] > 0) {
                                 $prepareSetWhere['id'] = $v['id'];
                                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $successNum++ . "个)||/r/n";
+                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||/r/n";
                             } else {
-                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $successNum++ . "个)||/r/n";
+                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||/r/n";
                             }
                         }
                     }
