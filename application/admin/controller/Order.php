@@ -88,22 +88,27 @@ class Order extends Base
     public function notify()
     {
 //        $order_no = input('param.order_no');
-        $param = input('post.');
         try {
-            logs(json_encode(['notify' => "notify", 'param' => $param]), 'notify_first');
-            if (!isset($param['order_no']) || empty($param['order_no'])) {
-                return reMsg(-1, '', "回调错误！");
-            }
-            //查询订单
-            $order = Db::table("bsa_order")->where("order_no", $param['order_no'])->find();
-            $orderModel = new \app\common\model\OrderModel();
-            return $orderModel->orderNotify($order, 2);
+            if (request()->isAjax()) {
+                $id = input('param.id');
+//                $param = input('post.');
+                logs(json_encode(['notify' => "notify", 'id' => $id]), 'notify_first');
+                if (empty($id)) {
+                    return reMsg(-1, '', "回调错误！");
+                }
+                //查询订单
+                $order = Db::table("bsa_order")->where("id", $id)->find();
+                $orderModel = new \app\common\model\OrderModel();
+                return $orderModel->orderNotify($order, 2);
+            } else {
+                return json('访问错误', "20009");
 
+            }
         } catch (\Exception $exception) {
-            logs(json_encode(['param' => $param, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
+            logs(json_encode(['id' => $id, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
             return json('20009', "通道异常" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['param' => $param, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
+            logs(json_encode(['id' => $id, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'order_notify_error');
             return json('20099', "通道异常" . $error->getMessage());
         }
 
