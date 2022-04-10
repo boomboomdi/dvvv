@@ -99,7 +99,6 @@ class OrderModel extends Model
      */
     public function orderNotify($orderData, $status = 1)
     {
-        Log::write("OrderModel:/n/order notify start: /n" . json_encode($orderData), "info");
         Db::startTrans();
         try {
             //更改订单状态 order
@@ -121,7 +120,7 @@ class OrderModel extends Model
             }
             $orderUpdate['order_status'] = 6;
             $orderUpdate['update_time'] = time();
-            $orderUpdate['actual_amount'] = (float)$orderData['actual_amount'];
+            $orderUpdate['actual_amount'] = (float)$orderData['amount'];
             Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
             //更改商户余额 merchant
             $merchantWhere['merchant_sign'] = $orderData['merchant_sign'];
@@ -136,14 +135,18 @@ class OrderModel extends Model
                 ->update([
                     "amount" => $writeOff['amount'] + $orderData['amount']
                 ]);
-            return $this->orderNotifyForMerchant($orderData);
+            $notifyRes = $this->orderNotifyForMerchant($orderData);
+            if ($notifyRes['code'] != 1000) {
+                return modelReMsg(-2, '', $notifyRes['msg']);
+            }
+            return modelReMsg(1000, '', $notifyRes['msg']);
         } catch (\Exception $exception) {
             Db::rollback();
-            Log::write("OrderModel:/n/order notify exception: /n" . json_encode($orderData) . "/n order notify: /n/t exception:" . $exception->getMessage(), "info");
+            logs(json_encode(['orderData' => $orderData, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotify_exception');
             return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
             Db::rollback();
-            Log::write("OrderModel:/n/order notify error: /n" . json_encode($orderData) . "/n order notify: /n/t error:" . $error->getMessage(), "info");
+            logs(json_encode(['orderData' => $orderData, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotify_error');
             return modelReMsg(-3, '', $error->getMessage());
         }
     }
@@ -222,12 +225,13 @@ class OrderModel extends Model
             $returnMsg['data'] = json_encode($notifyResult);
             return $returnMsg;
         } catch (\Exception $exception) {
-            Log::write("/n/t orderNotifyForMerchant: /n/t" . json_encode($data) . "/n/t" . $exception->getMessage(), "exception");
-            return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
+            Db::rollback();
+            logs(json_encode(['data' => $data, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotifyForMerchant_exception');
+            return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
-            Log::write("/n/t orderNotifyForMerchant: /n/t" . json_encode($data) . "/n/t" . $error->getMessage(), "error");
-            return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
-
+            Db::rollback();
+            logs(json_encode(['orde$datarData' => $data, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotifyForMerchant_error');
+            return modelReMsg(-3, '', $error->getMessage());
         }
 
     }
