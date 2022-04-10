@@ -90,7 +90,7 @@ class Order extends Base
 //        $order_no = input('param.order_no');
         $param = input('post.');
         try {
-            logs(json_encode(['notify' => "notify", 'order_no' => $param['order_no']]), 'notify_first');
+            logs(json_encode(['notify' => "notify", 'param' => $param]), 'notify_first');
             if (!isset($param['order_no']) || empty($param['order_no'])) {
                 return reMsg(-1, '', "回调错误！");
             }
