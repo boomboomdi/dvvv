@@ -145,7 +145,7 @@ class OrderModel extends Model
                     ]);
             }
 
-            $notifyRes = $this->orderNotifyForMerchant($orderData);
+            $notifyRes = $this->orderNotifyForMerchant($orderData, $status);
 
             Db::commit();
             if ($notifyRes['code'] != 1000) {
@@ -209,7 +209,6 @@ class OrderModel extends Model
             $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
             if ($notifyResult != "success") {
                 $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
-
                 $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
                 if (!$updateRes) {
                     $returnMsg['code'] = 3000;
