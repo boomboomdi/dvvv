@@ -105,8 +105,12 @@ class Orderdouyin extends Controller
             }
             $updateTorderWhere['order_no'] = $getUseTorderUrlRes['data']['order_pay'];
             $updateTorder['order_me'] = $orderMe;
-            $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //绑定推单 通道订单号
+            $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //绑定推单 通道订单号
+            if (!$bindTorder) {
+                logs(json_encode(['updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder]), 'douyinorder_bindTorderRes');
+                return apiJsonReturn(10011, $getUseTorderUrlRes['msg'], "");
 
+            }
             $updateOrderStatus['order_status'] = 4;
             $updateOrderStatus['account'] = $getUseTorderUrlRes['data']['account'];
             $updateOrderStatus['studio_sign'] = $getUseTorderUrlRes['data']['write_off_sign'];
