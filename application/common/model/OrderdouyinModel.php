@@ -91,15 +91,15 @@ class OrderdouyinModel extends Model
      */
     public function getUseTorderUrl($where)
     {
-        $where['status'] = 1;  //0:未使用1:启用中2:已禁用
-        $where['url_status'] = 1;  //0:未使用1:启用中2:已禁用
-        $where['total_amount'] = $where['amount'];  //
+        $orderWhere['status'] = 1;  //0:未使用1:启用中2:已禁用
+        $orderWhere['url_status'] = 1;  //0:未使用1:启用中2:已禁用
+        $orderWhere['total_amount'] = $where['amount'];  //
         $prepareSetWhere['order_amount'] = $where['amount'];
 
         $db = new Db();
         try {
             //有没有
-            $info = $this->where($where)->order("add_time desc")->find();
+            $info = $this->where($orderWhere)->order("add_time desc")->find();
             if (!empty($info)) {
                 $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->select();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
