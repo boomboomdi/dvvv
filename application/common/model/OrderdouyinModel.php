@@ -99,7 +99,7 @@ class OrderdouyinModel extends Model
         $db = new Db();
         try {
             //有没有
-            $info = $this->where($orderWhere)->order("add_time desc")->find();
+            $info = $this->where($orderWhere)->order("add_time asc")->find();
             if (!empty($info)) {
                 $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->select();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
