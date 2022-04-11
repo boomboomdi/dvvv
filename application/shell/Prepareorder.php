@@ -45,7 +45,7 @@ class Prepareorder extends Command
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
 //                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
-                        for ($i = 1; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
+                        for ($i = 0; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
                             $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
                             logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderres' => $res]), 'Prepareorderapi');
 
