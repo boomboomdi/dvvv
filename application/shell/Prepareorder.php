@@ -47,7 +47,7 @@ class Prepareorder extends Command
 //                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
                         for ($i = 0; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
                             $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
-                            logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderres' => $res]), 'Prepareorderapi');
+                            logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapi_res');
 
                             if ($res['code'] == 0 && $res['data'] > 0) {
                                 $prepareSetWhere['id'] = $v['id'];

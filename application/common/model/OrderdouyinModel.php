@@ -109,9 +109,10 @@ class OrderdouyinModel extends Model
                     ['can_use_num' => ($prepare['can_use_num'] - 1)]
                 );
                 if (!empty($orderMe)) {
-                    $updateTorderWhere['order_pay'] = $info['order_pay'];
+                    $updateTorderWhere['order_no'] = $info['order_no'];
                     $updateTorder['order_me'] = $orderMe;
-                    $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //绑定推单 通道订单号
+                    //绑定推单 通道订单号
+                    $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
                     if (!$bindTorder) {
                         logs(json_encode(['updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder]), 'bindgetUseTorderUrl_fail');
                         return apiJsonReturn(-1, "绑定订单失败", "");
@@ -417,7 +418,7 @@ class OrderdouyinModel extends Model
             }
 //            getUseCookie
             $prepareSetWhere['id'] = $v['id'];
-            if ($successNum != 0) {
+            if ($successNum > 0) {
                 Db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => ($v['can_use_num'] + $successNum)]);
             }
 
