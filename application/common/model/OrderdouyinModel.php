@@ -114,7 +114,7 @@ class OrderdouyinModel extends Model
                     //绑定推单 通道订单号
                     $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
                     if (!$bindTorder) {
-                        logs(json_encode(['updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder]), 'bindgetUseTorderUrl_fail');
+                        logs(json_encode(['matchTorderInfo' => $info,'updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder]), 'bindgetUseTorderUrl_fail');
                         return apiJsonReturn(-1, "绑定订单失败", "");
                     }
                 }
