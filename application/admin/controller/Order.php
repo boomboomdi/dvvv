@@ -22,7 +22,8 @@ class Order extends Base
             $orderNo = input('param.order_no');
             $startTime = input('param.start_time');
             $endTime = input('param.end_time');
-
+            $searchParam = input('param.');
+            logs(json_encode(['searchParam' => $searchParam]), 'orderIndex_log');
             $where = [];
             if (!empty($orderId)) {
                 $where[] = ['order_no', 'like', $orderNo . '%'];

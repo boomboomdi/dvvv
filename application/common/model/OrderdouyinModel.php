@@ -458,7 +458,7 @@ class OrderdouyinModel extends Model
     {
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
-        $db = new Db();
+//        $db = new Db();
         $orderWhere['order_no'] = $tOrderData['order_no'];
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         try {
@@ -485,7 +485,6 @@ class OrderdouyinModel extends Model
             $notifyParam['sign'] = md5($md5Sting);
 
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
-
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
