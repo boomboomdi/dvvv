@@ -113,12 +113,19 @@ class OrderdouyinModel extends Model
                     $updateTorder['order_me'] = $orderMe;
                     //绑定推单 通道订单号
                     $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
-                    logs(json_encode(['matchTorderInfo' => $info, 'updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder, "bindTorder" => $bindTorder]), 'bindgetUseTorderUrl_fail');
-
                     if (!$bindTorder) {
+
                         return apiJsonReturn(-1, "绑定订单失败", "");
                     }
                 }
+                $db::table('bsa_torder_douyin')->where($orderWhere)
+                    ->update([
+                        'status' => 1,
+                        'url_status' => 2,
+                        'last_use_time' => time(),
+                        'order_desc' => "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe
+                    ]);
+                logs(json_encode(['info' => $info, 'bindOrderMe' => $orderMe]), 'torderBindTorder');
                 return modelReMsg(0, $info, '匹配订单成功');
             }
             //或者：请求获取话单支付链接  || 范围为为匹配订单
