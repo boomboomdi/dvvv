@@ -97,7 +97,7 @@ class Orderdouyin extends Controller
                 //修改订单为下单失败状态。
                 $updateOrderStatus['order_status'] = 3;
                 $updateOrderStatus['update_time'] = time();
-                $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
+                $orderModel->where('order_no', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
                 logs(json_encode(['getUseTorderUrlParam' => $message['amount'], 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
 
