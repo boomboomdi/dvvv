@@ -52,15 +52,15 @@ class Prepareorder extends Command
                             if ($res['code'] == 0 && $res['data'] > 0) {
                                 $prepareSetWhere['id'] = $v['id'];
                                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||/r/n";
+                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                             } else {
-                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||/r/n";
+                                $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                             }
                         }
                     }
                 }
             }
-            $output->writeln("Prepareorder:预产单处理成功".$msg);
+            $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
             $output->writeln("Prepareorder:浴场处理失败！" . $totalNum . "exception" . $exception->getMessage());
