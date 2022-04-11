@@ -201,7 +201,7 @@ class OrderModel extends Model
             $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
             $callbackData['sign'] = md5($doMd5String);
             //回调处理
-            $notifyResult = curlPost($data['notify_url'], $callbackData);
+            $notifyResult = curlPostJson($data['notify_url'], $callbackData);
             logs(json_encode(['callbackData' => $callbackData, 'notify_url' => $data['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostForMerchant_log');
 //            $result = json_decode($notifyResult, true);
             //通知失败
