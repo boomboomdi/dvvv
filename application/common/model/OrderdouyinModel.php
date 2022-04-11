@@ -87,9 +87,10 @@ class OrderdouyinModel extends Model
     /**
      * 获取可用付款抖音话单支付链接
      * @param $where
-     * @return array
+     * @param $orderMe
+     * @return array|\think\response\Json
      */
-    public function getUseTorderUrl($where)
+    public function getUseTorderUrl($where, $orderMe = "")
     {
         $orderWhere['status'] = 1;  //0:未使用1:启用中2:已禁用
         $orderWhere['url_status'] = 1;  //0:未使用1:启用中2:已禁用
@@ -107,6 +108,15 @@ class OrderdouyinModel extends Model
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
                     ['can_use_num' => ($prepare['can_use_num'] - 1)]
                 );
+                if (!empty($orderMe)) {
+                    $updateTorderWhere['order_pay'] = $info['order_pay'];
+                    $updateTorder['order_me'] = $orderMe;
+                    $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //绑定推单 通道订单号
+                    if (!$bindTorder) {
+                        logs(json_encode(['updateTorderWhere' => $updateTorderWhere, 'updateTorder' => $updateTorder]), 'bindgetUseTorderUrl_fail');
+                        return apiJsonReturn(-1, "绑定订单失败", "");
+                    }
+                }
                 return modelReMsg(0, $info, '匹配订单成功');
             }
             //或者：请求获取话单支付链接  || 范围为为匹配订单
