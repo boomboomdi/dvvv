@@ -36,13 +36,16 @@ class Timecheckdouyin extends Command
             $orderModel = new OrderModel();
 //            $notifyLogModel = new NotifylogModel();
 //            $notifyLogWhere['status'] = 2;
+            $LimitStartTime = $now - $limitTime;
+            $LimitEndTime = $now - 10;
             $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
             $where[] = ['order_status', '4'];
             //查询下单之前280s 到现在之前20s的等待付款订单
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 2)
-//                ->where('add_time', '', $lockLimit)
+                ->where('add_time', '>', $LimitStartTime)
+                ->where('add_time', '<', $LimitEndTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_list');
 
