@@ -103,6 +103,9 @@ class Orderdouyin extends Controller
                 logs(json_encode(['getUseTorderUrlParam' => $message['amount'], 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
                 return apiJsonReturn(10010, $getUseTorderUrlRes['msg'], "");
             }
+            $updateTorderWhere['order_no'] = $getUseTorderUrlRes['data']['order_pay'];
+            $updateTorder['order_me'] = $orderMe;
+            $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //
 
             $updateOrderStatus['order_status'] = 4;
             $updateOrderStatus['account'] = $getUseTorderUrlRes['data']['account'];
