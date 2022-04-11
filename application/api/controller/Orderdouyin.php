@@ -57,9 +57,9 @@ class Orderdouyin extends Controller
             // 根据user_id  未付款次数 限制下单 end
 
             $cookieModel = new CookieModel();
-            $getCookie = $cookieModel->getUseCookie();
-            if ($getCookie != 0) {
-                return apiJsonReturn(10009, $getCookie['msg']);
+            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find()();
+            if (empty($getCookie)) {
+                return apiJsonReturn(10009, "no useful ck！");
             }
 
             $orderMe = guid12();
@@ -99,8 +99,9 @@ class Orderdouyin extends Controller
                 $updateOrderStatus['update_time'] = time();
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
-                Log::log('1', "order getUseTorderUrlRes " . json_encode($getUseTorderUrlRes));
-                return apiJsonReturn(100010, $getUseTorderUrlRes['msg'], "");
+                logs(json_encode(['getUseTorderUrlParam' => $getDouYinPayUrl, 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
+
+                return apiJsonReturn(10010, $getUseTorderUrlRes['msg'], "");
             }
 
             $updateOrderStatus['order_status'] = 4;
@@ -111,11 +112,12 @@ class Orderdouyin extends Controller
             $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
             return apiJsonReturn(10000, "下单成功", $updateOrderStatus['qr_url']);
 
-        } catch (\Error $e) {
-            Log::error('order error!', $message);
+        } catch (\Error $error) {
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'douyin_order_error');
             return json(msg('-22', '', 'create order error!' . $e->getMessage() . $e->getLine()));
-        } catch (\Exception $e) {
-            Log::error('order Exception!', $message);
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
+
             return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
     }

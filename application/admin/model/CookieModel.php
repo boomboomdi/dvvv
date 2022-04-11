@@ -76,7 +76,7 @@ class CookieModel extends Model
             if (!empty($account)) {
                 $where['account'] = $account;
             }
-            $info = $this->where($where)->order("last_use_time desc")->findOrEmpty()->toArray();
+            $info = $this->where($where)->order("last_use_time asc")->find();
             if (!empty($info)) {
                 $update['last_use_time'] = time();
                 $update['use_times'] = $info['use_times'] + 1;
