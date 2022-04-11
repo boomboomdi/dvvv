@@ -24,7 +24,7 @@ class Order extends Base
             $endTime = input('param.end_time');
             $searchParam = input('param.');
             $where = [];
-            if (!empty($orderId)) {
+            if (isset($searchParam['order_no']) && !empty($searchParam['order_no'])) {
                 $where[] = ['order_no', 'like', $orderNo . '%'];
             }
             if (!empty($startTime)) {
