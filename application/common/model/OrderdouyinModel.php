@@ -100,6 +100,8 @@ class OrderdouyinModel extends Model
         try {
             //有没有
             $info = $this->where($orderWhere)->order("add_time asc")->find();
+            logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_info');
+
             if (!empty($info)) {
                 $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->find();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
@@ -109,8 +111,12 @@ class OrderdouyinModel extends Model
             }
             //或者：请求获取话单支付链接  || 范围为为匹配订单
             return modelReMsg(-2, '', '未匹配到订单');
+        } catch (\Exception $exception) {
+            logs(json_encode(['where' => $where, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorderUrl_exception');
+            return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Exception $e) {
-            return modelReMsg(-1, '', $e->getMessage());
+            logs(json_encode(['where' => $where, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorderUrl_error');
+            return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
 
     }
