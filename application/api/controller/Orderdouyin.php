@@ -91,7 +91,7 @@ class Orderdouyin extends Controller
             }
             //2、分配核销单
             $orderDouYinModel = new OrderdouyinModel();
-            $getDouYinPayUrl['amount'] = $insertOrderData['amount'];
+            $getDouYinPayUrl['amount'] = $message['amount'];
             $getUseTorderUrlRes = $orderDouYinModel->getUseTorderUrl($getDouYinPayUrl);
             if ($getUseTorderUrlRes['code'] != 0) {
                 //修改订单为下单失败状态。
@@ -99,7 +99,7 @@ class Orderdouyin extends Controller
                 $updateOrderStatus['update_time'] = time();
                 $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
-                logs(json_encode(['getUseTorderUrlParam' => $getDouYinPayUrl, 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
+                logs(json_encode(['getUseTorderUrlParam' => $message['amount'], 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
 
                 return apiJsonReturn(10010, $getUseTorderUrlRes['msg'], "");
             }
