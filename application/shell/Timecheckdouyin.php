@@ -43,6 +43,8 @@ class Timecheckdouyin extends Command
                 ->where('notify_status', '=', 0)
                 ->where('status', '=', 2)
                 ->where('add_time', '<', $lockLimit)->select();
+            logs(json_encode(['orderData' => $orderData, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_list');
+
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
