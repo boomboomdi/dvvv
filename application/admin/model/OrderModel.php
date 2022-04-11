@@ -29,7 +29,7 @@ class OrderModel extends Model
 
         try {
             $res = $this->field($prefix . 'order.*')->where($where)
-                ->order('order_no', 'desc')->paginate($limit);
+                ->order('id', 'desc')->paginate($limit);
 
         } catch (\Exception $e) {
 
