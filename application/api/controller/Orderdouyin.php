@@ -100,7 +100,6 @@ class Orderdouyin extends Controller
                 $orderModel->where('order_no', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
                 logs(json_encode(['getUseTorderUrlParam' => $message['amount'], 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
-
                 return apiJsonReturn(10010, $getUseTorderUrlRes['msg'], "");
             }
 

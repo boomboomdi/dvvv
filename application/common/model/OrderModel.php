@@ -197,14 +197,14 @@ class OrderModel extends Model
             //回调处理
             $notifyResult = curlPost($data['notify_url'], $callbackData);
             logs(json_encode(['callbackData' => $data, 'notify_url' => $data['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostForMerchant_log');
-            $result = json_decode($notifyResult, true);
+//            $result = json_decode($notifyResult, true);
             //通知失败
 
             $orderWhere['order_no'] = $callbackData['order_no'];
-            if ($result != "success") {
+            if ($notifyResult != "success") {
                 Db::table('bsa_torder')->where($orderWhere)
                     ->update([
-                        'info' => json_encode($notifyResult)
+                        'order_desc' => "回调失败|" . json_encode($notifyResult)
                     ]);
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "统计成功，回调商户失败!";
@@ -218,12 +218,14 @@ class OrderModel extends Model
                     ->update([
                         'order_status' => 5,
                         'update_time' => time(),
-                        'status' => 1
+                        'status' => 1,
+                        'order_desc' => "手动回调成功|" . json_encode($notifyResult)
                     ]);
             } else {
                 $orderUpdate['order_status'] = 1;
                 $orderUpdate['update_time'] = time();
                 $orderUpdate['status'] = 1;
+                $orderUpdate['order_desc'] = "回调成功|" . json_encode($notifyResult);
                 Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
             }
             $returnMsg['code'] = 1000;
