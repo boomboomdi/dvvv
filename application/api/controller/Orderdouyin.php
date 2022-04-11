@@ -161,7 +161,7 @@ class Orderdouyin extends Controller
             if (empty($token)) {
                 return apiJsonReturn('10016', "验签失败！");
             }
-            $sig = md5($message['merchant_sign'] . $token . $message['order_no'] . $message['amount'] . $message['time']);
+            $sig = md5($message['merchant_sign'] . $message['order_no'] . $message['amount'] . $message['time'] . $token);
             if ($sig != $message['sign']) {
                 Log::info("create_order_10006!", $message);
                 return apiJsonReturn('10006', "验签失败！");
