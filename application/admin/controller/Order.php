@@ -38,15 +38,14 @@ class Order extends Base
             $data = $list['data'];
             foreach ($data as $key => $vo) {
                 // 1、支付成功（下单成功）！2、支付失败（下单成功）！3、下单失败！4、等待支付（下单成功）！5、已手动回调。
-                $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
                 if (!empty($data[$key]['pay_time']) && $data[$key]['pay_time'] != 0) {
-                    $data[$key]['pay_time'] = date('Y-m-d H:i:s', $data[$key]['pay_time']);
+                    $data[$key]['pay_time'] = date('Y-m-d H:i:s', $vo['pay_time']);
                 }
                 if (!empty($data[$key]['update_time']) && $data[$key]['update_time'] != 0) {
-                    $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
+                    $data[$key]['update_time'] = date('Y-m-d H:i:s', $vo['update_time']);
                 }
                 if (!empty($data[$key]['add_time']) && $data[$key]['add_time'] != 0) {
-                    $data[$key]['add_time'] = date('Y-m-d h:i:s', (int)$data[$key]['add_time']);
+                    $data[$key]['add_time'] = date('Y-m-d h:i:s', $vo['add_time']);
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '1') {
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';
