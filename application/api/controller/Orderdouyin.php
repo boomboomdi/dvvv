@@ -97,6 +97,7 @@ class Orderdouyin extends Controller
                 //修改订单为下单失败状态。
                 $updateOrderStatus['order_status'] = 3;
                 $updateOrderStatus['update_time'] = time();
+                $updateOrderStatus['order_desc'] = "下单失败|" . $getUseTorderUrlRes['msg'];
                 $orderModel->where('order_no', $insertOrderData['order_no'])->update($updateOrderStatus);
                 $lastSql = $orderModel->getLastSql();
                 logs(json_encode(['getUseTorderUrlParam' => $message['amount'], 'getUseTorderUrlRes' => $getUseTorderUrlRes]), 'douyinorder_getUseTorderUrlRes');
@@ -108,6 +109,7 @@ class Orderdouyin extends Controller
             $updateOrderStatus['studio_sign'] = $getUseTorderUrlRes['data']['write_off_sign'];
             $updateOrderStatus['qr_url'] = $getUseTorderUrlRes['data']['pay_url'];   //支付订单
             $updateOrderStatus['order_pay'] = $getUseTorderUrlRes['data']['order_pay']; //抖音订单
+            $updateOrderStatus['order_desc'] = "下单成功|" . $getUseTorderUrlRes['msg'];
             $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
             return apiJsonReturn(10000, "下单成功", $updateOrderStatus['qr_url']);
 
