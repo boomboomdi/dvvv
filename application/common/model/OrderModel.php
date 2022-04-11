@@ -202,7 +202,7 @@ class OrderModel extends Model
 
             $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
             if ($notifyResult != "success") {
-                Db::table('bsa_order')->where($orderWhere['order_no'])
+                Db::table('bsa_order')->where($orderWhere)
                     ->update([
                         'order_desc' => "回调失败|" . json_encode($notifyResult)
                     ]);
