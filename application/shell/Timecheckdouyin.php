@@ -62,21 +62,22 @@ class Timecheckdouyin extends Command
                         $torderDouyinUpdate['status'] = 2;
                         $torderDouyinUpdate['pay_time'] = time();
                         $torderDouyinUpdate['last_use_time'] = time();
-                        $torderDouyinUpdate['success_amount'] = $v['amount'];
+                        $torderDouyinUpdate['success_amount'] = $v['total_amount'];
                         $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
                         $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
                         $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
                     }
+                    if ((strtotime($v['limit_time']) - time()) > $limitTime) {
+                        $torderDouyinWhere['order_me'] = $v['order_me'];
+                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                        $torderDouyinUpdate['order_status'] = 2;
+                        $torderDouyinUpdate['status'] = 2;
+                        $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
+                        $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                    }
                 }
-                if ((strtotime($v['limit_time']) - time()) > $limitTime) {
-                    $torderDouyinWhere['order_me'] = $v['order_me'];
-                    $torderDouyinWhere['order_pay'] = $v['order_pay'];
-                    $torderDouyinUpdate['order_status'] = 2;
-                    $torderDouyinUpdate['status'] = 2;
-                    $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
-                    $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                    $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
-                }
+
             }
             $output->writeln("Timecheckdouyin:订单总数" . $totalNum);
         } catch (\Exception $exception) {
