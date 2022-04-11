@@ -67,7 +67,7 @@ class Order extends Base
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-warm layui-btn-xs">等待支付</button>';
                 }
 //                $data[$key]['apiMerchantOrderDate'] = date('Y-m-d H:i:s', $data[$key]['apiMerchantOrderDate']);
-                $data[$key]['pay_time'] = date('Y-m-d H:i:s', $data[$key]['pay_time']);
+//                $data[$key]['pay_time'] = date('Y-m-d H:i:s', $data[$key]['pay_time']);
             }
             $list['data'] = $data;
             if (0 == $list['code']) {
