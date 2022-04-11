@@ -93,7 +93,8 @@ class OrderdouyinModel extends Model
     {
         $where['status'] = 1;  //0:未使用1:启用中2:已禁用
         $where['url_status'] = 1;  //0:未使用1:启用中2:已禁用
-        $prepareSetWhere['amount'] = $where['amount'];
+        $where['total_amount'] = $where['amount'];  //
+        $prepareSetWhere['order_amount'] = $where['amount'];
 
         $db = new Db();
         try {
