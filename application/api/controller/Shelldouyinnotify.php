@@ -92,7 +92,7 @@ class Shelldouyinnotify extends Controller
 //                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
                         for ($i = 1; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
                             $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
-//                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
+                            logs(json_encode(['num' => $v['prepare_num'] - $v['can_use_num'], 'amount' => $v['order_amount'], 'res' => $res]), 'Prepareorderapi');
 
                             if ($res['code'] == 0 && $res['data'] > 0) {
                                 $prepareSetWhere['id'] = $v['id'];
