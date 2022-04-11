@@ -202,12 +202,17 @@ class OrderModel extends Model
 
             $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
             if ($notifyResult != "success") {
-                Db::table('bsa_order')->where($orderWhere)
-                    ->update([
-                        'order_desc' => "回调失败|" . json_encode($notifyResult)
-                    ]);
-                $returnMsg['code'] = 2000;
-                $returnMsg['msg'] = "统计成功，回调商户失败!";
+                $updateData['order_desc'] = "回调成功|" . json_encode($notifyResult);
+
+                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
+                if (!$updateRes) {
+                    $returnMsg['code'] = 3000;
+                    $returnMsg['msg'] = "回调失败!请联系管理员";
+                    $returnMsg['data'] = json_encode($notifyResult);
+                    return $returnMsg;
+                }
+                $returnMsg['code'] = 1000;
+                $returnMsg['msg'] = "回调成功!";
                 $returnMsg['data'] = json_encode($notifyResult);
                 return $returnMsg;
             }
