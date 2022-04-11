@@ -105,7 +105,7 @@ class Orderdouyin extends Controller
             }
             $updateTorderWhere['order_no'] = $getUseTorderUrlRes['data']['order_pay'];
             $updateTorder['order_me'] = $orderMe;
-            $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //
+            $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);  //绑定推单 通道订单号
 
             $updateOrderStatus['order_status'] = 4;
             $updateOrderStatus['account'] = $getUseTorderUrlRes['data']['account'];
