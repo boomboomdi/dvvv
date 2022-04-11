@@ -206,7 +206,7 @@ class OrderModel extends Model
                     ->update([
                         'order_desc' => "回调失败|" . json_encode($notifyResult)
                     ]);
-                $returnMsg['code'] = 1000;
+                $returnMsg['code'] = 2000;
                 $returnMsg['msg'] = "统计成功，回调商户失败!";
                 $returnMsg['data'] = json_encode($notifyResult);
                 return $returnMsg;
@@ -221,17 +221,23 @@ class OrderModel extends Model
                         'status' => 1,
                         'order_desc' => "手动回调成功|" . json_encode($notifyResult)
                     ]);
-            } else {
+                $returnMsg['code'] = 1000;
+                $returnMsg['msg'] = "手动回调成功!";
+                $returnMsg['data'] = json_encode($notifyResult);
+                return $returnMsg;
+            }
+            if ($status == 1) {
                 $orderUpdate['order_status'] = 1;
                 $orderUpdate['update_time'] = time();
                 $orderUpdate['status'] = 1;
                 $orderUpdate['order_desc'] = "回调成功|" . json_encode($notifyResult);
                 Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
+                $returnMsg['code'] = 1000;
+                $returnMsg['msg'] = "回调成功!";
+                $returnMsg['data'] = json_encode($notifyResult);
+                return $returnMsg;
             }
-            $returnMsg['code'] = 1000;
-            $returnMsg['msg'] = "回调商户成功!";
-            $returnMsg['data'] = json_encode($notifyResult);
-            return $returnMsg;
+
         } catch (\Exception $exception) {
             logs(json_encode(['data' => $data, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotifyForMerchant_exception');
             return modelReMsg(-2, '', $exception->getMessage());
