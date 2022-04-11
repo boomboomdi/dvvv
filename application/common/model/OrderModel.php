@@ -116,7 +116,11 @@ class OrderModel extends Model
             $orderUpdate['order_status'] = 6;
 
             if ($orderData['order_status'] == 6) { //手动回调 本地更新未通知四方
-                return $this->orderNotifyForMerchant($orderData, 2);
+                $orderNotifyForMerchantRes = $this->orderNotifyForMerchant($orderData, 2);
+                if ($orderNotifyForMerchantRes['code'] > 0) {
+                    Db::commit();
+                    return $orderNotifyForMerchantRes;
+                }
             }
             $orderUpdate['order_status'] = 6;
             $orderUpdate['update_time'] = time();
@@ -142,6 +146,8 @@ class OrderModel extends Model
             }
 
             $notifyRes = $this->orderNotifyForMerchant($orderData);
+
+            Db::commit();
             if ($notifyRes['code'] != 1000) {
                 return modelReMsg(-2, '', $notifyRes['msg']);
             }
@@ -202,7 +208,7 @@ class OrderModel extends Model
 
             $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
             if ($notifyResult != "success") {
-                $updateData['order_desc'] = "回调成功|" . json_encode($notifyResult);
+                $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
 
                 $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
                 if (!$updateRes) {
@@ -212,7 +218,7 @@ class OrderModel extends Model
                     return $returnMsg;
                 }
                 $returnMsg['code'] = 1000;
-                $returnMsg['msg'] = "回调成功!";
+                $returnMsg['msg'] = "回调失败!";
                 $returnMsg['data'] = json_encode($notifyResult);
                 return $returnMsg;
             }
