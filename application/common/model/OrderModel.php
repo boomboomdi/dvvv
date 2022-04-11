@@ -214,13 +214,17 @@ class OrderModel extends Model
             //如果是手动回调
             $orderWhere['order_no'] = $callbackData['order_no'];
             if ($status == 2) {
-                Db::table('bsa_order')->where($orderWhere)
-                    ->update([
-                        'order_status' => 5,
-                        'update_time' => time(),
-                        'status' => 1,
-                        'order_desc' => "手动回调成功|" . json_encode($notifyResult)
-                    ]);
+                $updateData['order_status'] = 5;
+                $updateData['status'] = 1;
+                $updateData['update_time'] = time();
+                $updateData['order_desc'] = "手动回调成功|" . json_encode($notifyResult);
+                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
+                if (!$updateRes) {
+                    $returnMsg['code'] = 3000;
+                    $returnMsg['msg'] = "手动回调失败!请联系管理员";
+                    $returnMsg['data'] = json_encode($notifyResult);
+                    return $returnMsg;
+                }
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "手动回调成功!";
                 $returnMsg['data'] = json_encode($notifyResult);
@@ -231,7 +235,14 @@ class OrderModel extends Model
                 $orderUpdate['update_time'] = time();
                 $orderUpdate['status'] = 1;
                 $orderUpdate['order_desc'] = "回调成功|" . json_encode($notifyResult);
-                Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
+                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
+
+                if (!$updateRes) {
+                    $returnMsg['code'] = 4000;
+                    $returnMsg['msg'] = "回调失败!请联系管理员";
+                    $returnMsg['data'] = json_encode($notifyResult);
+                    return $returnMsg;
+                }
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "回调成功!";
                 $returnMsg['data'] = json_encode($notifyResult);
