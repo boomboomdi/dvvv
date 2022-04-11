@@ -23,7 +23,6 @@ class Order extends Base
             $startTime = input('param.start_time');
             $endTime = input('param.end_time');
             $searchParam = input('param.');
-            logs(json_encode(['searchParam' => $searchParam]), 'orderIndex_log');
             $where = [];
             if (!empty($orderId)) {
                 $where[] = ['order_no', 'like', $orderNo . '%'];
@@ -36,6 +35,8 @@ class Order extends Base
             }
             $Order = new OrderModel();
             $list = $Order->getOrders($limit, $where);
+
+            logs(json_encode(['searchParam' => $searchParam, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'orderIndex_log');
             $data = $list['data'];
             foreach ($data as $key => $vo) {
                 // 1、支付成功（下单成功）！2、支付失败（下单成功）！3、下单失败！4、等待支付（下单成功）！5、已手动回调。

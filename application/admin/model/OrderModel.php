@@ -25,8 +25,6 @@ class OrderModel extends Model
     {
         $prefix = config('database.prefix');
 
-//        var_dump($res);exit;
-
         try {
             $res = $this->field($prefix . 'order.*')->where($where)
                 ->order('id', 'desc')->paginate($limit);
