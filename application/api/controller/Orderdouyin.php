@@ -45,7 +45,7 @@ class Orderdouyin extends Controller
             }
             $sig = md5($message['merchant_sign'] . $message['order_no'] . $message['amount'] . $message['time'] . $token);
             if ($sig != $message['sign']) {
-                Log::info("create_order_10006!", $message);
+                logs(json_encode(['orderParam' => $message, 'doMd5' => $sig]), 'orderParam_signfail');
                 return apiJsonReturn(10006, "验签失败！");
             }
             $orderFind = $db::table('bsa_order')->where('order_no', '=', $message['order_no'])->count();
@@ -57,7 +57,7 @@ class Orderdouyin extends Controller
             // 根据user_id  未付款次数 限制下单 end
 
             $cookieModel = new CookieModel();
-            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find()();
+            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find();
             if (empty($getCookie)) {
                 return apiJsonReturn(10009, "no useful ck！");
             }
