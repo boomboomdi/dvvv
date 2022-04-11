@@ -19,13 +19,13 @@ class Order extends Base
         if (request()->isAjax()) {
 
             $limit = input('param.limit');
-            $orderId = input('param.order_id');
+            $orderNo = input('param.order_no');
             $startTime = input('param.start_time');
             $endTime = input('param.end_time');
 
             $where = [];
             if (!empty($orderId)) {
-                $where[] = ['order_id', 'like', $orderId . '%'];
+                $where[] = ['order_no', 'like', $orderNo . '%'];
             }
             if (!empty($startTime)) {
                 $where[] = ['add_time', '>', strtotime($startTime)];
