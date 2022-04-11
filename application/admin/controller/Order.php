@@ -25,14 +25,17 @@ class Order extends Base
             $searchParam = input('param.');
             $where = [];
             if (isset($searchParam['order_no']) && !empty($searchParam['order_no'])) {
-                $where[] = ['order_no', 'like', $orderNo . '%'];
+                $where[] = ['order_no', 'like', $searchParam['order_no'] . '%'];
             }
-            if (!empty($startTime)) {
-                $where[] = ['add_time', '>', strtotime($startTime)];
+            if (isset($searchParam['order_me']) && !empty($searchParam['order_me'])) {
+                $where[] = ['order_me', 'like', $searchParam['order_me'] . '%'];
             }
-            if (!empty($endTime)) {
-                $where[] = ['add_time', '<', strtotime($endTime)];
-            }
+//            if (!empty($startTime)) {
+//                $where[] = ['add_time', '>', strtotime($startTime)];
+//            }
+//            if (!empty($endTime)) {
+//                $where[] = ['add_time', '<', strtotime($endTime)];
+//            }
             $Order = new OrderModel();
             $list = $Order->getOrders($limit, $where);
 
