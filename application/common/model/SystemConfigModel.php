@@ -5,6 +5,7 @@
  * Date: 2018/12/26
  * Time: 22:59
  */
+
 namespace app\common\model;
 
 use think\Model;
@@ -18,7 +19,7 @@ class SystemConfigModel extends Model
      */
     public static function getPayLimitTime()
     {
-        return 180;
+        return 900;
     }
 
     /**
@@ -27,7 +28,7 @@ class SystemConfigModel extends Model
      */
     public static function getDouyinPayLimitTime()
     {
-        return 160;
+        return 900;
     }
 
     /**
@@ -38,7 +39,6 @@ class SystemConfigModel extends Model
     {
         return 170;
     }
-
 
 
     /**
@@ -56,18 +56,18 @@ class SystemConfigModel extends Model
      */
     public static function getDisableDeviceLimitMoney()
     {
-        try{
+        try {
             $db = new Db();
-            $orderPayLimitTimeStart = $db::table('s_system_config')->where('config_name','=','disable_device_limit_money')->find()['config_data'];
-            if($orderPayLimitTimeStart){
+            $orderPayLimitTimeStart = $db::table('s_system_config')->where('config_name', '=', 'disable_device_limit_money')->find()['config_data'];
+            if ($orderPayLimitTimeStart) {
                 return $orderPayLimitTimeStart;
             }
             return 50000;
-        }catch (\Exception $exception){
-            logs(json_encode(['file'=>$exception->getFile(),'line'=>$exception->getLine(),'errorMessage'=>$exception->getMessage()]),'getDisableDeviceLimitMoney_exception');
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getDisableDeviceLimitMoney_exception');
             return 50000;
-        }catch (\Error $error){
-            logs(json_encode(['file'=>$error->getFile(),'line'=>$error->getLine(),'errorMessage'=>$error->getMessage()]),'getDisableDeviceLimitMoney_error');
+        } catch (\Error $error) {
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'getDisableDeviceLimitMoney_error');
             return 50000;
         }
     }

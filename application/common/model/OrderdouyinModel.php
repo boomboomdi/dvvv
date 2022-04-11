@@ -474,7 +474,7 @@ class OrderdouyinModel extends Model
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
             $notifyParam['total_amount'] = $tOrderData['total_amount'];
-            $notifyParam['success_amount'] = $tOrderData['success_amount'];
+            $notifyParam['success_amount'] = $tOrderData['total_amount'];
             $notifyParam['order_status'] = $tOrderData['order_status'];
             if ($tOrderData['pay_time'] != 0) {
                 $notifyParam['time'] = date("Y-m-d H:i:s", $tOrderData['pay_time']);
@@ -496,6 +496,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
+                        'success_amount' => $tOrderData['total_amount'],
                         'order_status' => 1,
                         'notify_status' => 2,
                         'notify_time' => time(),
@@ -508,6 +509,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
+                        'success_amount' => $tOrderData['total_amount'],
                         'order_status' => 1,
                         'notify_status' => 1,
                         'notify_time' => time(),
