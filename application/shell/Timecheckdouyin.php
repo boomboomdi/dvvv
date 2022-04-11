@@ -41,8 +41,8 @@ class Timecheckdouyin extends Command
             //查询下单之前280s 到现在之前20s的等待付款订单
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-//                ->where('url_status', '=', 2)
-                ->where('add_time', '<', $lockLimit)
+                ->where('url_status', '=', 2)
+//                ->where('add_time', '', $lockLimit)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_list');
 
