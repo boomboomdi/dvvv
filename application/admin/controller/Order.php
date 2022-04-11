@@ -67,13 +67,13 @@ class Order extends Base
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">下单失败</button>';
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '4') {
-                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-primary layui-btn-xs">等待支付</button>';
+                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-warm layui-btn-xs">等待支付</button>';
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '6') {
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-primary layui-btn-xs">回调中···</button>';
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '5') {
-                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-warm layui-btn-xs">等待支付</button>';
+                    $data[$key]['order_status'] = '<button class="layui-btn label-important layui-btn-xs">手动回调</button>';
                 }
 //                $data[$key]['apiMerchantOrderDate'] = date('Y-m-d H:i:s', $data[$key]['apiMerchantOrderDate']);
 //                $data[$key]['pay_time'] = date('Y-m-d H:i:s', $data[$key]['pay_time']);

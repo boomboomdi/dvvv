@@ -41,6 +41,7 @@ class Timecheckdouyin extends Command
             //查询下单之前280s 到现在之前20s的等待付款订单
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
+                ->where('status', '<>', 2)
                 ->where('add_time', '<', $lockLimit)->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
@@ -66,6 +67,15 @@ class Timecheckdouyin extends Command
                         $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
                         $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
                     }
+                }
+                if ((strtotime($v['limit_time']) - time()) > $limitTime) {
+                    $torderDouyinWhere['order_me'] = $v['order_me'];
+                    $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                    $torderDouyinUpdate['order_status'] = 2;
+                    $torderDouyinUpdate['status'] = 2;
+                    $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
+                    $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                    $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
                 }
             }
             $output->writeln("Timecheckdouyin:订单总数" . $totalNum);
