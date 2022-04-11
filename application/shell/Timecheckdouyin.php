@@ -44,7 +44,7 @@ class Timecheckdouyin extends Command
 //                ->where('url_status', '=', 2)
                 ->where('add_time', '<', $lockLimit)
                 ->select();
-            logs(json_encode(['orderData' => $orderData, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_list');
+            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_list');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
