@@ -52,7 +52,7 @@ class Timecheckdouyin extends Command
                         //支付成功
                         $orderWhere['order_pay'] = $v['order_pay'];
                         $orderWhere['order_me'] = $v['order_me'];
-                        $orderWhere['status'] = $v['order_me'];
+                        $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
                         $orderModel->orderNotify($order);
                         $torderDouyinWhere['order_me'] = $v['order_me'];
