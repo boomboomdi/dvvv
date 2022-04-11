@@ -86,6 +86,8 @@ class Shelldouyinnotify extends Controller
             //下单金额
             $prepareWhere['status'] = 1;
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
+            logs(json_encode(['prepareAmountList' => $prepareAmountList]), 'PrepareorderapiStart');
+
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
