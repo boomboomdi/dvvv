@@ -101,9 +101,9 @@ class OrderdouyinModel extends Model
             //有没有
             $info = $this->where($orderWhere)->order("add_time asc")->find();
             if (!empty($info)) {
-                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->select();
+                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->find();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
-                    ['can_use_num' => $prepare['can_use_num'] - 1]
+                    ['can_use_num' => ($prepare['can_use_num'] - 1)]
                 );
                 return modelReMsg(0, $info, '匹配订单成功');
             }
