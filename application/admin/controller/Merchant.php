@@ -28,7 +28,10 @@ class Merchant extends Base
             if (!empty($merchantName)) {
                 $where[] = ['merchant_name', 'like', $merchantName . '%'];
             }
-
+            $studio = session("admin_role_id");
+            if ($studio == 9) {
+                $where[] = ['merchant_sign', '=', session("admin_user_name")];//默认情况下 登录名就是 工作室标识
+            }
             $admin = new MerchantModel();
             $list = $admin->getMerchants($limit, $where);
             if (0 == $list['code']) {

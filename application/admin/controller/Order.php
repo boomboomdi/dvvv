@@ -36,6 +36,10 @@ class Order extends Base
 //            if (!empty($endTime)) {
 //                $where[] = ['add_time', '<', strtotime($endTime)];
 //            }
+            $studio = session("admin_role_id");
+            if ($studio == '9') {
+                $where[] = ['merchant_sign', '=', session("admin_user_name")];
+            }
             $Order = new OrderModel();
             $list = $Order->getOrders($limit, $where);
 
