@@ -223,7 +223,7 @@ class OrderdouyinModel extends Model
             $url = "http://127.0.0.1:23946/queryResult";
             $getOrderStatus = curlPostJson($url, $orderData);
 
-            Log::log('1', "checkOrderStatus order " . json_encode($getOrderStatus));
+//            Log::log('1', "checkOrderStatus order " . json_encode($getOrderStatus));
             return json_decode($getOrderStatus, true);
 
         } catch (\Exception $exception) {
@@ -484,6 +484,7 @@ class OrderdouyinModel extends Model
             $md5Sting = $notifyParam['write_off_sign'] . $notifyParam['order_no'] . $notifyParam['account'] . $notifyParam['order_status'] . $notifyParam['total_amount'] . $notifyParam['success_amount'] . $notifyParam['time'] . $token['token'];
             $notifyParam['sign'] = md5($md5Sting);
 
+            //回调核销  已经收到款项
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
@@ -495,6 +496,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
+                        'order_status' => 1,
                         'notify_status' => 2,
                         'notify_time' => time(),
                         'order_desc' => "核销回调|" . $notifyResult
@@ -506,6 +508,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
+                        'order_status' => 1,
                         'notify_status' => 1,
                         'notify_time' => time(),
                         'order_desc' => "核销回调|" . $notifyResult
