@@ -43,7 +43,7 @@ class Merchant extends Base
                     //查询商户订单量 总
                     $order_total = (new \app\admin\model\OrderModel())->getAllOrderNumberByMerchantSign($data[$key]['merchant_sign']);
                     $data[$key]['order_total'] = $order_total['data']["order_total"];
-                    logs(json_encode(['order_total' => $order_total, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
+                    logs(json_encode(['order_total' => $order_total['data']["order_total"], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
 
                     //查询商户订单量 支付成功量
                     $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
