@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use app\admin\model\MerchantModel;
 use app\admin\validate\MerchantValidate;
 use app\common\model\OrderModel;
+use think\Db;
 use tool\Log;
 
 class Merchant extends Base
@@ -41,6 +42,8 @@ class Merchant extends Base
                     $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
                     //查询商户订单量 总
                     $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
+                    logs(json_encode(['searchParam' => $vo['merchant_sign'], "order_total" => $data[$key]['order_total'] , "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
+
                     //查询商户订单量 支付成功量
                     $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
                     $data[$key]['success_order_rate'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
