@@ -35,29 +35,30 @@ class Merchant extends Base
             }
             $admin = new MerchantModel();
             $list = $admin->getMerchants($limit, $where);
+            $data = empty($list['data']) ? array() : $list['data'];
+            foreach ($data as $key => $vo) {
+                $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
+                $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
+                //查询商户订单量 总
+                $data[$key]['order_total_amount'] = (new \app\admin\model\OrderModel())->getAllOrderTotalAmountByMerchantSign($data[$key]['merchant_sign'])['data']["order_total_amount"];
+                logs(json_encode(['order_total' => $data[$key]['order_total_amount'], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
+
+                //查询商户订单量 支付成功量
+                $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
+                //成功数量
+                $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
+                //成功率
+                $data[$key]['success_order_rate'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
+
+                $startTime = time() - 300;
+                $data[$key]['order_total5'] = (new \app\admin\model\OrderModel())->getAllOrderNumberByMerchantSign($data[$key]['merchant_sign'], $startTime)['data'];
+                //查询商户订单量 支付成功量 30分钟
+                $data[$key]['success_order_total5'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'], $startTime)['data'];
+                $data[$key]['success_order_rate5'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total5']);
+            }
+            $list['data'] = $data;
             if (0 == $list['code']) {
-                $data = $list['data'];
-                foreach ($data as $key => $vo) {
-                    $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
-                    $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
-                    //查询商户订单量 总
-                    $data[$key]['order_total_amount'] = (new \app\admin\model\OrderModel())->getAllOrderTotalAmountByMerchantSign($data[$key]['merchant_sign'])['data']["order_total_amount"];
-//                    logs(json_encode(['order_total' => $orderTotal['data']["order_total"], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
-
-                    //查询商户订单量 支付成功量
-                    $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
-                    //成功数量
-                    $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
-                    //成功率
-                    $data[$key]['success_order_rate'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
-
-                    $startTime = time() - 300;
-                    $data[$key]['order_total5'] = (new \app\admin\model\OrderModel())->getAllOrderNumberByMerchantSign($data[$key]['merchant_sign'], $startTime)['data'];
-                    //查询商户订单量 支付成功量 30分钟
-                    $data[$key]['success_order_total5'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'], $startTime)['data'];
-                    $data[$key]['success_order_rate5'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
-                }
-                return json(['code' => 0, 'msg' => 'ok', 'count' => $list['data']->total(), 'data' => $data->all()]);
+                return json(['code' => 0, 'msg' => 'ok', 'count' => $list['data']->total(), 'data' => $list['data']->all()]);
             }
 
             return json(['code' => 0, 'msg' => 'ok', 'count' => 0, 'data' => []]);
