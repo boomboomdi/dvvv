@@ -176,7 +176,6 @@ class OrderModel extends Model
                 $info = $info + $totalAmount['totalAmount'];
             }
 
-
         } catch (\Exception $e) {
 
             return modelReMsg(-1, 0, $e->getMessage());
