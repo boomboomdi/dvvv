@@ -62,7 +62,7 @@ class Timecheckdouyin extends Command
                         $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
                         $res = $orderModel->orderNotify($order);
-                        if ($res['code'] != 1000) {
+                        if ($res) {
                             logs(json_encode(['order' => $order, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log');
                         }
 
