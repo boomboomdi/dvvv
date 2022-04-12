@@ -44,7 +44,7 @@ class Timecheckdouyin extends Command
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 2)
-//                ->where('add_time', '>', $LimitStartTime)
+                ->where('add_time', '>', $LimitStartTime)
                 ->where('add_time', '<', $LimitEndTime)
                 ->select();
 //            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
