@@ -175,7 +175,6 @@ class OrderModel extends Model
             if ($totalAmount) {
                 $info = $info + $totalAmount['totalAmount'];
             }
-            logs(json_encode(['handTotalAmount' => $handTotalAmount, 'totalAmount' => $totalAmount, 'info' => $info, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
 
         } catch (\Exception $e) {
