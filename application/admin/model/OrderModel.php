@@ -138,7 +138,7 @@ class OrderModel extends Model
             if (!empty($endTime)) {
                 $where['add_time'] = ['<', $endTime];
             }
-            $info = $this->field('sum("actual_amount") as data')->where('merchant_sign', $merchantSign)->find();
+            $info = $this->field('sum(actual_amount) as order_total')->where('merchant_sign', $merchantSign)->find();
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
