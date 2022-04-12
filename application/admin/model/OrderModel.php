@@ -171,7 +171,7 @@ class OrderModel extends Model
             $where['status'] = 1;
             $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select()['order_total_amount'];
 
-            $info = $handTotalAmount + $totalAmount;
+            $info = (float)$handTotalAmount + (float)$totalAmount;
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
