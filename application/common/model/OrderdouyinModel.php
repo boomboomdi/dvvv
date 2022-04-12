@@ -490,27 +490,28 @@ class OrderdouyinModel extends Model
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
 
+            $order_desc = "支付失败|回调核销|" . $notifyResult;
             //通知失败
             if ($notifyResult != "success") {
+
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
                         'success_amount' => $tOrderData['total_amount'],
-                        'order_status' => 1,
                         'notify_status' => 2,
                         'notify_time' => time(),
-                        'order_desc' => "核销回调|" . $notifyResult
+                        'order_desc' => $order_desc
                     ]);
                 logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
 
             } else {
+                $order_desc = "支付失败|回调核销|" . $notifyResult;
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
                         'success_amount' => $tOrderData['total_amount'],
-                        'order_status' => 1,
                         'notify_status' => 1,
                         'notify_time' => time(),
                         'order_desc' => "核销回调|" . $notifyResult
