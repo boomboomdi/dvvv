@@ -166,7 +166,6 @@ class OrderModel extends Model
             $where['merchant_sign'] = $merchantSign;
 
             $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->select();
-            logs(json_encode(['handTotalAmount' => $handTotalAmount, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
             $where['status'] = 1;
             $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select();
