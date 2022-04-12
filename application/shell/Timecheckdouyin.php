@@ -61,7 +61,11 @@ class Timecheckdouyin extends Command
                         $orderWhere['order_me'] = $v['order_me'];
                         $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
-                        $orderModel->orderNotify($order);
+                        $res = $orderModel->orderNotify($order);
+                        if ($res['code'] != 1000) {
+                            logs(json_encode(['order' => $order, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log');
+                        }
+
                         $torderDouyinWhere['order_me'] = $v['order_me'];
                         $torderDouyinWhere['order_pay'] = $v['order_pay'];
                         $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
