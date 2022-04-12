@@ -164,9 +164,9 @@ class OrderModel extends Model
             }
             $where['merchant_sign'] = $merchantSign;
 
-            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->execute();
+            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->select();
             $where['status'] = 1;
-            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->execute();
+            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select();
 
             $info = $handTotalAmount + $totalAmount['order_total_amount'];
         } catch (\Exception $e) {
