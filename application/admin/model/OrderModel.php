@@ -148,7 +148,7 @@ class OrderModel extends Model
     }
 
     /**
-     * 获取商户成功订单数量
+     * 获取商户成功订单金额
      * @param $merchantSign
      * @return array
      */
@@ -164,9 +164,9 @@ class OrderModel extends Model
             }
             $where['merchant_sign'] = $merchantSign;
 
-            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->find();
+            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->execute();
             $where['status'] = 1;
-            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->find();
+            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->execute();
 
             $info = $handTotalAmount + $totalAmount['order_total_amount'];
         } catch (\Exception $e) {
