@@ -164,14 +164,18 @@ class OrderModel extends Model
                 $where['add_time'] = ['<', $endTime];
             }
             $where['merchant_sign'] = $merchantSign;
-
+            $info = 0;
             $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->select();
-
+            if (!empty($handTotalAmount['order_total_amount'])) {
+                $info += $handTotalAmount;
+            }
             $where['status'] = 1;
             $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select();
+            if (!empty($totalAmount['order_total_amount'])) {
+                $info += $totalAmount;
+            }
             logs(json_encode(['handTotalAmount' => $handTotalAmount, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
-            $info = (float)$handTotalAmount['order_total_amount'] + (float)$totalAmount['order_total_amount'];
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
@@ -195,13 +199,19 @@ class OrderModel extends Model
             if (!empty($endTime)) {
                 $where['add_time'] = ['<', $endTime];
             }
+            $info = 0;
             $where['merchant_sign'] = $merchantSign;
             $handNum = $this->where($where)->where("status", 5)->count();
             $where['status'] = 1;
-            $info = $handNum + $this->where($where)->count();
+            if (!empty($handNum)) {
+                $info += $handNum;
+            }
+            if (!empty($this->where($where)->count()) || 0 != ($this->where($where)->count())) {
+                $info += $this->where($where)->count();
+            }
         } catch (\Exception $e) {
 
-            return modelReMsg(-1, '', $e->getMessage());
+            return modelReMsg(-1, 0, $e->getMessage());
         }
 
         return modelReMsg(0, $info, 'ok');
