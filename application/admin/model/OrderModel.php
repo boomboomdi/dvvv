@@ -163,8 +163,12 @@ class OrderModel extends Model
                 $where['add_time'] = ['<', $endTime];
             }
             $where['merchant_sign'] = $merchantSign;
+
+            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->find();
             $where['status'] = 1;
-            return $this->field('sum(actual_amount) as order_total_amount')->where('merchant_sign', $merchantSign)->count();
+            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->find();
+
+            $info = $handTotalAmount + $totalAmount['order_total_amount'];
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
@@ -191,8 +195,7 @@ class OrderModel extends Model
             $where['merchant_sign'] = $merchantSign;
             $handNum = $this->where($where)->where("status", 5)->count();
             $where['status'] = 1;
-            $returnNum = $handNum + $this->where($where)->count();
-            return $returnNum;
+            $info = $handNum + $this->where($where)->count();
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
