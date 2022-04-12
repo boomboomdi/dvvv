@@ -9,6 +9,7 @@
 
 namespace app\admin\model;
 
+use think\Db;
 use think\Model;
 
 class OrderModel extends Model
@@ -173,6 +174,7 @@ class OrderModel extends Model
 
             return modelReMsg(-1, '', $e->getMessage());
         }
+        logs(json_encode(['info' => $info, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
         return modelReMsg(0, $info, 'ok');
     }
