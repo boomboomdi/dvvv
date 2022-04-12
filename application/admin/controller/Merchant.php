@@ -48,6 +48,8 @@ class Merchant extends Base
                 //成功数量
                 $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
                 //成功率
+                logs(json_encode(['order_total' => $data[$key]['order_total'],'success_order_total' => $data[$key]['success_order_total'], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_3');
+
                 $data[$key]['success_order_rate'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
 
                 $startTime = time() - 300;
