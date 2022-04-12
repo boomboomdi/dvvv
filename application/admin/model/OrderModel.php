@@ -165,16 +165,16 @@ class OrderModel extends Model
             }
             $where['merchant_sign'] = $merchantSign;
             $info = 0;
-            $handTotalAmount = $this->field('sum(actual_amount)')->where($where)->where("order_status", 5)->select()->toArray();
-//            if ($handTotalAmount) {
-//                $info = $info + $handTotalAmount;
-//            }
-//            $where['status'] = 1;
-            $totalAmount = $this->field('sum(actual_amount)')->where($where)->select()->toArray();
+            $handTotalAmount = $this->field('sum(actual_amount) as totalAmount')->where($where)->where("order_status", 5)->toArray();
+            if ($handTotalAmount) {
+                $info = $info + $handTotalAmount['totalAmount'];
+            }
+            $where['status'] = 1;
+            $totalAmount = $this->field('sum(actual_amount) as totalAmount')->where($where)->toArray();
 //
-//            if ($totalAmount) {
-//                $info = $info + $totalAmount;
-//            }
+            if ($totalAmount) {
+                $info = $info + $totalAmount['totalAmount'];
+            }
             logs(json_encode(['handTotalAmount' => $handTotalAmount, 'totalAmount' => $totalAmount, 'info' => $info, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
 
