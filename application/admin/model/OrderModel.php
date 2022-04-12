@@ -171,11 +171,12 @@ class OrderModel extends Model
             }
             $where['status'] = 1;
             $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select()->toArray();
-            logs(json_encode(['handTotalAmount' => $handTotalAmount, 'totalAmount' => $totalAmount, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
             if (!empty($totalAmount['order_total_amount'])) {
                 $info += $totalAmount;
             }
+            logs(json_encode(['handTotalAmount' => $handTotalAmount, 'totalAmount' => $totalAmount,'info' => $info,  "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
+
 
         } catch (\Exception $e) {
 
