@@ -41,7 +41,6 @@ class Merchant extends Base
                 $data[$key]['update_time'] = date('Y-m-d H:i:s', $data[$key]['update_time']);
                 //查询商户订单量 总
                 $data[$key]['order_total_amount'] = (new \app\admin\model\OrderModel())->getAllOrderTotalAmountByMerchantSign($data[$key]['merchant_sign'])['data']["order_total_amount"];
-                logs(json_encode(['order_total' => $data[$key]['order_total_amount'], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
 
                 //查询商户订单量 支付成功量
                 $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
@@ -55,7 +54,10 @@ class Merchant extends Base
                 //查询商户订单量 支付成功量 30分钟
                 $data[$key]['success_order_total5'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'], $startTime)['data'];
                 $data[$key]['success_order_rate5'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total5']);
+
             }
+            logs(json_encode(['data' => $data, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log');
+
             $list['data'] = $data;
             if (0 == $list['code']) {
                 return json(['code' => 0, 'msg' => 'ok', 'count' => $list['data']->total(), 'data' => $list['data']->all()]);
