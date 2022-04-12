@@ -53,11 +53,11 @@
                 {{#  } }}
             </script>
             <script type="text/html" id="table-seller-admin">
-<!--                {if (buttonAuth('merchanta/addmerchanta'))}-->
-<!--                <a class="layui-btn layui-btn-sm" lay-event="add"><i-->
-<!--                        class="layui-icon">&#xe654;</i>添加通道</a>-->
-<!--                </button>-->
-<!--                {/if}-->
+                <!--                {if (buttonAuth('merchanta/addmerchanta'))}-->
+                <!--                <a class="layui-btn layui-btn-sm" lay-event="add"><i-->
+                <!--                        class="layui-icon">&#xe654;</i>添加通道</a>-->
+                <!--                </button>-->
+                <!--                {/if}-->
                 {if (buttonAuth('merchant/editmerchant'))}
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
                         class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -116,9 +116,6 @@
     function renderTable() {
         layTool.table("#LAY-user-table", "/admin/merchant/index", [
             [{
-                field: "merchant_id",
-                title: "商户ID"
-            }, {
                 field: "merchant_name",
                 title: "商户名称",
             }, {
@@ -128,11 +125,8 @@
                 field: "order_total_amount",
                 title: "跑量",
             }, {
-                field: "Issued",
-                title: "下发",
-            }, {
                 field: "success_order_rate",
-                title: "单量成功率",
+                title: "单量/成功率",
             }, {
                 title: "操作",
                 align: "center",
