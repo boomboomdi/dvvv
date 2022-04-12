@@ -153,7 +153,7 @@ class OrderdouyinModel extends Model
         $msg = "失败！";
         try {
             //有没有
-            $info = $this->where($where)->order("last_use_time desc")->find();
+            $info = $this->where($where)->order("add_time asc")->find();
 //            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
 
             if (!empty($info)) {
@@ -185,6 +185,17 @@ class OrderdouyinModel extends Model
                     $returnCode = 1;
                     $msg = "下单失败，ck失效！";
                     //下单失败！
+                }
+                if (isset($notifyResult['code']) && $notifyResult['code'] == 4) {
+                    $returnCode = 4;
+                    $msg = "下单失败，ck失效！";
+                    //下单失败！
+                    //下单成功！
+                    $update['status'] = 2;  //推单使用状态终结
+                    $update['url_status'] = 1;  //已经请求
+                    $update['order_status'] = 0;   //等待付款 --等待通知核销
+                    $update['order_desc'] = "拉单失败|".$notifyResult['msg'];
+                    $this->where($updateWhere)->update($update);
                 }
                 return modelReMsg($returnCode, $info, $msg);
             }
