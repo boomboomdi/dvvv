@@ -47,7 +47,7 @@ class Timecheckdouyin extends Command
 //                ->where('add_time', '>', $LimitStartTime)
                 ->where('add_time', '<', $LimitEndTime)
                 ->select();
-            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+//            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
@@ -55,15 +55,15 @@ class Timecheckdouyin extends Command
                     $getResParam['order_no'] = $v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+//                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
                         //支付成功
                         $orderWhere['order_pay'] = $v['order_pay'];
                         $orderWhere['order_me'] = $v['order_me'];
-                        $orderWhere['status'] = 2;
+//                        $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
-                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+//                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
                         $res = $orderModel->orderNotify($order);
                         if ($res) {
