@@ -169,9 +169,10 @@ class OrderModel extends Model
             logs(json_encode(['handTotalAmount' => $handTotalAmount, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
             $where['status'] = 1;
-            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select()['order_total_amount'];
+            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select();
+            logs(json_encode(['handTotalAmount' => $handTotalAmount, "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_2');
 
-            $info = (float)$handTotalAmount + (float)$totalAmount;
+            $info = (float)$handTotalAmount['order_total_amount'] + (float)$totalAmount['order_total_amount'];
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
