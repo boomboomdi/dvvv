@@ -165,12 +165,12 @@ class OrderModel extends Model
             }
             $where['merchant_sign'] = $merchantSign;
             $info = 0;
-            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->select();
+            $handTotalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->where("order_status", 5)->select()->toArray();
             if (!empty($handTotalAmount['order_total_amount'])) {
                 $info += $handTotalAmount;
             }
             $where['status'] = 1;
-            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select();
+            $totalAmount = $this->field('sum(actual_amount) as order_total_amount')->where($where)->select()->toArray();
             if (!empty($totalAmount['order_total_amount'])) {
                 $info += $totalAmount;
             }
