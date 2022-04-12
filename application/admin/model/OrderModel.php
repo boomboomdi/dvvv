@@ -178,7 +178,7 @@ class OrderModel extends Model
 
         } catch (\Exception $e) {
 
-            return modelReMsg(-1, '', $e->getMessage());
+            return modelReMsg(-1, 0, $e->getMessage());
         }
 
         return modelReMsg(0, $info, 'ok');
