@@ -138,7 +138,33 @@ class OrderModel extends Model
             if (!empty($endTime)) {
                 $where['add_time'] = ['<', $endTime];
             }
-            $info = $this->field('sum(actual_amount) as order_total')->where('merchant_sign', $merchantSign)->find();
+            $info = $this->where('merchant_sign', $merchantSign)->count();
+        } catch (\Exception $e) {
+
+            return modelReMsg(-1, '', $e->getMessage());
+        }
+
+        return modelReMsg(0, $info, 'ok');
+    }
+
+    /**
+     * 获取商户成功订单数量
+     * @param $merchantSign
+     * @return array
+     */
+    public function getAllOrderTotalAmountByMerchantSign($merchantSign, $startTime = "", $endTime = "")
+    {
+        try {
+            $where = [];
+            if (!empty($startTime)) {
+                $where['add_time'] = ['>', $startTime];
+            }
+            if (!empty($endTime)) {
+                $where['add_time'] = ['<', $endTime];
+            }
+            $where['merchant_sign'] = $merchantSign;
+            $where['status'] = 1;
+            return $this->field('sum(actual_amount) as order_total_amount')->where('merchant_sign', $merchantSign)->count();
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
@@ -163,8 +189,10 @@ class OrderModel extends Model
                 $where['add_time'] = ['<', $endTime];
             }
             $where['merchant_sign'] = $merchantSign;
+            $handNum = $this->where($where)->where("status", 5)->count();
             $where['status'] = 1;
-            return $this->where('merchant_sign', $merchantSign)->count();
+            $returnNum = $handNum + $this->where($where)->count();
+            return $returnNum;
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
