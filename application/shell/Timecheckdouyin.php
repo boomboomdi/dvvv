@@ -61,9 +61,11 @@ class Timecheckdouyin extends Command
                         $orderWhere['order_me'] = $v['order_me'];
                         $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
+                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log1');
+
                         $res = $orderModel->orderNotify($order);
                         if ($res) {
-                            logs(json_encode(['order' => $order, 'orderNotifyres' => $res, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log');
+                            logs(json_encode(['order' => $order, 'orderNotifyres' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
                         }
 
                         $torderDouyinWhere['order_me'] = $v['order_me'];
