@@ -44,11 +44,12 @@ class Merchant extends Base
                 $data[$key]['order_total_amount'] = (new \app\admin\model\OrderModel())->getAllOrderTotalAmountByMerchantSign($data[$key]['merchant_sign'])['data'];
 
                 //查询商户订单量 支付成功量
-                $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
+                $data[$key]['order_total'] = (new \app\admin\model\OrderModel())->getAllOrderNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
+                logs(json_encode(['order_total' => $data[$key]['order_total'], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_3');
+
                 //成功数量
                 $data[$key]['success_order_total'] = (new \app\admin\model\OrderModel())->getAllOrderSuccessNumberByMerchantSign($data[$key]['merchant_sign'])['data'];
                 //成功率
-                logs(json_encode(['order_total' => $data[$key]['order_total'],'success_order_total' => $data[$key]['success_order_total'], "last_sql" => Db::table('bsa_order')->getLastSql()]), 'merchantIndex_log_3');
 
                 $data[$key]['success_order_rate'] = makeSuccessRate((int)$data[$key]['success_order_total'], (int)$data[$key]['order_total']);
 

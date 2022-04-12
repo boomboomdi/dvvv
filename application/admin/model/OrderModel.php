@@ -139,7 +139,7 @@ class OrderModel extends Model
             if (!empty($endTime)) {
                 $where['add_time'] = ['<', $endTime];
             }
-            $info = $this->where('merchant_sign', $merchantSign)->count();
+            $info = $this->where('merchant_sign', $merchantSign)->where($where)->count();
         } catch (\Exception $e) {
 
             return modelReMsg(-1, '', $e->getMessage());
