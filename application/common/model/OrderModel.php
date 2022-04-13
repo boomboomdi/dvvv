@@ -188,6 +188,8 @@ class OrderModel extends Model
             $callbackData['actual_amount'] = $data['actual_amount'];
             $callbackData['pay_time'] = date("Y-m-d H:i:s", $data['pay_time']);
             $validate = new OrderinfoValidate();
+            logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_log');
+
             //请求参数不完整
             if (!$validate->scene('notify')->check($callbackData)) {
                 logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_checkfail');
