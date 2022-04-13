@@ -503,6 +503,7 @@ class OrderdouyinModel extends Model
 
             //回调核销  已经收到款项
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
+            logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOff_log');
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
