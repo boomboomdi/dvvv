@@ -155,9 +155,11 @@ class OrderdouyinModel extends Model
         $where['url_status'] = 0;  //0:未使用1:启用中2:已禁用
         $returnCode = 3;
         $msg = "失败！";
+        $db = new Db();
+        $db::startTrans();
         try {
             //有没有
-            $info = $this->where($where)->order("add_time asc")->find();
+            $info = $this->where($where)->order("add_time asc")->lock(true)->find();
 //            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
 
             if (!empty($info)) {
@@ -204,6 +206,7 @@ class OrderdouyinModel extends Model
                     $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                     $this->where($updateWhere)->update($update);
                 }
+                $db::commit();
                 return modelReMsg($returnCode, $info, $msg);
             }
             //没有可下单推单！
