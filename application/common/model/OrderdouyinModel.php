@@ -162,7 +162,7 @@ class OrderdouyinModel extends Model
             $info = $this->where($where)->order("add_time asc")->lock(true)->find();
 //            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
 
-            if (!empty($info)) {
+            if ($info) {
 //                $info = $this->where("t_id", $info['t_id'])->lock(true)->find();
 
                 $updateWhere['t_id'] = $info['t_id'];
