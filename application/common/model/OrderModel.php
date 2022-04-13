@@ -99,6 +99,7 @@ class OrderModel extends Model
      */
     public function orderNotify($orderData, $status = 1)
     {
+
         Db::startTrans();
         try {
             //更改订单状态 order
@@ -209,6 +210,7 @@ class OrderModel extends Model
 
             $data = $db::table("bsa_order")->where("order_no", $data)->lock(true)->find();
             if (!$data) {
+                Db::rollback();
                 logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_lock_order_fail');
                 $returnMsg['code'] = 1002;
                 $returnMsg['msg'] = "回调参数有误!";
@@ -220,7 +222,6 @@ class OrderModel extends Model
                 $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
                 $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
                 if (!$updateRes) {
-
                     $db::rollback();
                     $returnMsg['code'] = 3000;
                     $returnMsg['msg'] = "回调失败!请联系管理员";
@@ -279,12 +280,10 @@ class OrderModel extends Model
             }
 
         } catch (\Exception $exception) {
-
             $db::rollback();
             logs(json_encode(['data' => $data, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotifyForMerchant_exception');
             return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
-
             $db::rollback();
             logs(json_encode(['data' => $data, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotifyForMerchant_error');
             return modelReMsg(-3, '', $error->getMessage());
