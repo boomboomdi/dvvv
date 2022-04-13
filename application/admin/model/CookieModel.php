@@ -48,6 +48,7 @@ class CookieModel extends Model
             if (!empty($has)) {
                 $code = 1;
                 $cookie['last_use_time'] = time();
+                $cookie['status'] = 1;
                 $this->where('account', $cookie['account'])->update($cookie);
             } else {
                 $code = 0;
