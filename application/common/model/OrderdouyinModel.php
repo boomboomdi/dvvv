@@ -111,6 +111,7 @@ class OrderdouyinModel extends Model
                 if (!empty($orderMe)) {
                     $updateTorderWhere['order_no'] = $info['order_no'];
                     $updateTorder['order_me'] = $orderMe;
+                    $updateTorder['last_use_time'] = time();
                     //绑定推单 通道订单号
                     $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
                     if (!$bindTorder) {
@@ -194,7 +195,7 @@ class OrderdouyinModel extends Model
                     $update['status'] = 2;  //推单使用状态终结
                     $update['url_status'] = 1;  //已经请求
                     $update['order_status'] = 0;   //等待付款 --等待通知核销
-                    $update['order_desc'] = "拉单失败|".$notifyResult['msg'];
+                    $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                     $this->where($updateWhere)->update($update);
                 }
                 return modelReMsg($returnCode, $info, $msg);
