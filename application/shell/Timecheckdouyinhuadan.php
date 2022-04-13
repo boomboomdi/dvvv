@@ -47,7 +47,7 @@ class Timecheckdouyinhuadan extends Command
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
 //                ->where('last_use_time', '>', $LimitStartTime)
-                ->where('last_use_time', '<', $LimitEndTime)
+                ->where('last_use_time', '<', $LimitStartTime)   //时间是过了当前时间之前的15分
                 ->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
