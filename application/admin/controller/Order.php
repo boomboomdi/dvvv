@@ -9,6 +9,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\OrderModel;
+use app\common\model\OrderdouyinModel;
 use think\Db;
 
 class Order extends Base
@@ -117,6 +118,16 @@ class Order extends Base
                 if ($notifyRes['code'] != 1000) {
                     return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
                 }
+                $orderdouyinModel = new OrderdouyinModel();
+                $torderWhere['order_me'] = $order['order_me'];
+                $v = $orderdouyinModel->where($torderWhere['order_me'])->find();
+                if (!empty($v)) {
+                    $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v, 2);
+                    if ($orderdouyinModelRes) {
+                        logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
+                    }
+                }
+
                 return json(['code' => 1000, 'msg' => '回调成功', 'data' => []]);
             } else {
                 return json('访问错误', "20009");

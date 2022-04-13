@@ -469,7 +469,7 @@ class OrderdouyinModel extends Model
      * @param $tOrderData
      * @return void
      */
-    public function orderDouYinNotifyToWriteOff($tOrderData, $order_status = 1)
+    public function orderDouYinNotifyToWriteOff($tOrderData, $orderStatus = 1)
     {
 
 //        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
@@ -504,8 +504,9 @@ class OrderdouyinModel extends Model
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
-
-            $order_desc = "支付失败|回调核销|" . $notifyResult;
+            if ($orderStatus == 2) {
+                $order_desc = "核销手动回调|" . $notifyResult;
+            }
             //通知失败
             if ($notifyResult != "success") {
 
@@ -521,7 +522,11 @@ class OrderdouyinModel extends Model
                 logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
 
             } else {
-                $order_desc = "支付失败|回调核销|" . $notifyResult;
+
+                $order_desc = "支付成功|回调核销|" . $notifyResult;
+                if ($orderStatus == 2) {
+                    $order_desc = "支付成功|核销手动回调|" . $notifyResult;
+                }
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -529,7 +534,7 @@ class OrderdouyinModel extends Model
                         'success_amount' => $tOrderData['total_amount'],
                         'notify_status' => 1,
                         'notify_time' => time(),
-                        'order_desc' => "核销回调|" . $notifyResult
+                        'order_desc' => $order_desc
                     ]);
             }
             return modelReMsg(0, "", json_encode($notifyResult));
