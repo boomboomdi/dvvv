@@ -44,11 +44,11 @@ class Timecheckdouyin extends Command
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 2)
-//                ->where('order_me', '<>', " ")
+                ->where('status', '=', 1)
 //                ->where('last_use_time', '>', $LimitStartTime)
                 ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
-            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
