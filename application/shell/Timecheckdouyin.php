@@ -89,7 +89,7 @@ class Timecheckdouyin extends Command
                             logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
                         }
                     }
-                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 4) {
+                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 2) {
                         $torderDouyinUpdate['last_use_time'] = time();
                         $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
                         $torderDouyinUpdate['order_desc'] = "下单成功|支付失败|订单失效";
