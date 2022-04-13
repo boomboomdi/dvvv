@@ -117,6 +117,18 @@ class Order extends Base
                 $torderWhere['order_me'] = $order['order_me'];
                 $v = $orderdouyinModel->where($torderWhere)->find();
                 if (!empty($v)) {
+                    $torderDouyinWhere['order_me'] = $v['order_me'];
+                    $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                    $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
+                    $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
+                    $torderDouyinUpdate['pay_time'] = time();
+                    $torderDouyinUpdate['last_use_time'] = time();
+                    $torderDouyinUpdate['success_amount'] = $v['total_amount'];
+                    $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
+                    $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                    if ($updateTorderStatus) {
+                        logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
+                    }
                     $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v, 2);
                     if ($orderdouyinModelRes) {
                         logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
