@@ -24,6 +24,7 @@ class Orderdouyin extends Base
 //            $apiMerchantOrderNo = input('param.apiMerchantOrderNo');
             $order_no = input('param.order_no');
             $order_me = input('param.order_me');
+            $account = input('param.account');
             $startTime = input('param.start_time');
 //            $endTime = input('param.end_time');
 
@@ -33,6 +34,9 @@ class Orderdouyin extends Base
             }
             if (!empty($order_me)) {
                 $where[] = ['order_me', '=', $order_me];
+            }
+             if (!empty($account)) {
+                $where[] = ['account', '=', $account];
             }
             if (!empty($startTime)) {
 //                $endTime = stototime($startTime,);

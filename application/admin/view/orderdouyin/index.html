@@ -16,13 +16,13 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
-<!--                <div class="layui-inline">-->
-<!--                    <label class="layui-form-label">添加时间</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"-->
-<!--                               id="operate_time">-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="layui-inline">-->
+                <!--                    <label class="layui-form-label">添加时间</label>-->
+                <!--                    <div class="layui-input-block">-->
+                <!--                        <input type="text" name="start_time" placeholder="请输入" autocomplete="off" class="layui-input"-->
+                <!--                               id="operate_time">-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <div class="layui-inline">
                     <label class="layui-form-label">订单编号</label>
                     <div class="layui-input-block">
@@ -30,10 +30,17 @@
                                class="layui-input">
                     </div>
                 </div>
-                 <div class="layui-inline">
+                <div class="layui-inline">
                     <label class="layui-form-label">匹配订单</label>
                     <div class="layui-input-block">
                         <input type="text" name="order_me" placeholder="请输入" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="account" placeholder="请输入" autocomplete="off"
                                class="layui-input">
                     </div>
                 </div>
@@ -134,7 +141,7 @@
             }, {
                 field: "order_no",
                 title: "订单编号"
-            },{
+            }, {
                 field: "order_me",
                 title: "匹配单号"
             }, {
