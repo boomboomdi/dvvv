@@ -200,6 +200,8 @@ class OrderModel extends Model
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
 
             $data = $db::table("bsa_order")->where("order_no", $data)->find();
+            logs(json_encode(['callbackData' => $data, 'notify_url' => $data['notify_url']]), 'curlPostForMerchant_log1');
+
             $returnMsg = array();
             $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
             $callbackData['sign'] = md5($doMd5String);
