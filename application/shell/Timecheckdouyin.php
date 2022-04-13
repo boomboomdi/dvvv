@@ -44,6 +44,7 @@ class Timecheckdouyin extends Command
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
+                ->where('order_me', '<>', " ")
 //                ->where('last_use_time', '>', $LimitStartTime)
                 ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
@@ -56,7 +57,7 @@ class Timecheckdouyin extends Command
                     $getResParam['order_url'] = $v['check_url'];
                     $getResParam['ck'] = $v['cookie'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-//                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
+                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
 
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
                         //支付成功
