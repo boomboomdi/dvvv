@@ -58,7 +58,6 @@ class Timecheckdouyinhuadan extends Command
                     if ($orderNotifyNoPayToWriteRes) {
                         logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_log');
                     }
-
 //                    var_dump($res);exit;
                     $doNum++;
                 }

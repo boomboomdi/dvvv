@@ -561,15 +561,16 @@ class OrderdouyinModel extends Model
         try {
             $res = $this->where($where)->update($torderDouyinUpdate);
             if (!$res) {
+                logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'updateNotifyTorderException');
                 return modelReMsg('-1', "", "更新失败");
             }
             return modelReMsg('0', "", "更新成功");
 
         } catch (\Exception $exception) {
-            Log::log('updateNotifyTorderException!', $exception->getMessage(), $torderDouyinUpdate);
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'updateNotifyTorderException');
             return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
         } catch (\Error $error) {
-            Log::log('updateNotifyTorderError!', $error->getMessage(), $torderDouyinUpdate);
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
             return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
         }
     }
