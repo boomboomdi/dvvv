@@ -540,7 +540,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
-                        'success_amount' => $tOrderData['total_amount'],
+                        'success_amount' => $tOrderData['success_amount'],
                         'notify_status' => 1,
                         'notify_time' => time(),
                         'order_desc' => $order_desc
