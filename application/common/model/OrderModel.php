@@ -199,6 +199,7 @@ class OrderModel extends Model
             $merchantWhere['merchant_sign'] = $data['merchant_sign'];
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
 
+            $data = $db::table("bsa_order")->where("order_no", $data)->lock(true)->find();
             $returnMsg = array();
             $doMd5String = $callbackData['merchant_sign'] . $callbackData['order_no'] . $callbackData['amount'] . $callbackData['actual_amount'] . $callbackData['pay_time'] . $token;
             $callbackData['sign'] = md5($doMd5String);
@@ -208,76 +209,73 @@ class OrderModel extends Model
 //            $result = json_decode($notifyResult, true);
             //通知失败
 
-            $data = $db::table("bsa_order")->where("order_no", $data)->lock(true)->find();
-            if (!$data) {
-                Db::rollback();
-                logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_lock_order_fail');
-                $returnMsg['code'] = 1002;
-                $returnMsg['msg'] = "回调参数有误!";
-                $returnMsg['data'] = $validate->getError();
-                return $returnMsg;
-            }
-            $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
-            if ($notifyResult != "success") {
-                $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
-                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
-                if (!$updateRes) {
-                    $db::rollback();
-                    $returnMsg['code'] = 3000;
-                    $returnMsg['msg'] = "回调失败!请联系管理员";
+            if ($data) {
+                $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
+                if ($notifyResult != "success") {
+                    $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
+                    $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
+                    if (!$updateRes) {
+                        $db::rollback();
+                        $returnMsg['code'] = 3000;
+                        $returnMsg['msg'] = "回调失败!请联系管理员";
+                        $returnMsg['data'] = json_encode($notifyResult);
+                        return $returnMsg;
+                    }
+                    $db::commit();
+                    $returnMsg['code'] = 1000;
+                    $returnMsg['msg'] = "回调失败!";
+                    $returnMsg['data'] = json_encode($notifyResult);
+
+                    return $returnMsg;
+                }
+                //如果是手动回调
+                $orderWhere['order_no'] = $callbackData['order_no'];
+                if ($status == 2) {
+                    $updateData['order_status'] = 5;
+                    $updateData['status'] = 1;
+                    $updateData['update_time'] = time();
+                    $updateData['order_desc'] = "手动回调成功|" . json_encode($notifyResult);
+                    $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
+                    if (!$updateRes) {
+                        $returnMsg['code'] = 3000;
+                        $returnMsg['msg'] = "手动回调失败!请联系管理员";
+                        $returnMsg['data'] = json_encode($notifyResult);
+                        $db::rollback();
+                        return $returnMsg;
+                    }
+
+                    $db::commit();
+                    $returnMsg['code'] = 1000;
+                    $returnMsg['msg'] = "手动回调成功!";
                     $returnMsg['data'] = json_encode($notifyResult);
                     return $returnMsg;
                 }
-                $db::commit();
-                $returnMsg['code'] = 1000;
-                $returnMsg['msg'] = "回调失败!";
-                $returnMsg['data'] = json_encode($notifyResult);
+                if ($status == 1) {
+                    $orderUpdate['order_status'] = 1;
+                    $orderUpdate['update_time'] = time();
+                    $orderUpdate['status'] = 1;
+                    $orderUpdate['order_desc'] = "回调成功|" . json_encode($notifyResult);
+                    $updateRes = Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
 
-                return $returnMsg;
-            }
-            //如果是手动回调
-            $orderWhere['order_no'] = $callbackData['order_no'];
-            if ($status == 2) {
-                $updateData['order_status'] = 5;
-                $updateData['status'] = 1;
-                $updateData['update_time'] = time();
-                $updateData['order_desc'] = "手动回调成功|" . json_encode($notifyResult);
-                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
-                if (!$updateRes) {
-                    $returnMsg['code'] = 3000;
-                    $returnMsg['msg'] = "手动回调失败!请联系管理员";
-                    $returnMsg['data'] = json_encode($notifyResult);
-                    $db::rollback();
-                    return $returnMsg;
-                }
+                    if (!$updateRes) {
+                        $db::rollback();
+                        $returnMsg['code'] = 4000;
+                        $returnMsg['msg'] = "回调失败!请联系管理员";
+                        $returnMsg['data'] = json_encode($notifyResult);
+                        return $returnMsg;
+                    }
 
-                $db::commit();
-                $returnMsg['code'] = 1000;
-                $returnMsg['msg'] = "手动回调成功!";
-                $returnMsg['data'] = json_encode($notifyResult);
-                return $returnMsg;
-            }
-            if ($status == 1) {
-                $orderUpdate['order_status'] = 1;
-                $orderUpdate['update_time'] = time();
-                $orderUpdate['status'] = 1;
-                $orderUpdate['order_desc'] = "回调成功|" . json_encode($notifyResult);
-                $updateRes = Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
-
-                if (!$updateRes) {
-                    $db::rollback();
-                    $returnMsg['code'] = 4000;
-                    $returnMsg['msg'] = "回调失败!请联系管理员";
+                    $db::commit();
+                    $returnMsg['code'] = 1000;
+                    $returnMsg['msg'] = "回调成功!";
                     $returnMsg['data'] = json_encode($notifyResult);
                     return $returnMsg;
                 }
-
-                $db::commit();
-                $returnMsg['code'] = 1000;
-                $returnMsg['msg'] = "回调成功!";
-                $returnMsg['data'] = json_encode($notifyResult);
-                return $returnMsg;
             }
+            $returnMsg['code'] = 4000;
+            $returnMsg['msg'] = "回调失败!";
+            $returnMsg['data'] = json_encode($notifyResult);
+            return $returnMsg;
 
         } catch (\Exception $exception) {
             $db::rollback();
