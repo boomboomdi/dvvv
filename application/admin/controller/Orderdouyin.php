@@ -31,7 +31,7 @@ class Orderdouyin extends Base
             if (!empty($order_no)) {
                 $where[] = ['order_no', '=', $order_no];
             }
-            if (!empty($order_no)) {
+            if (!empty($order_me)) {
                 $where[] = ['order_me', '=', $order_me];
             }
             if (!empty($startTime)) {
