@@ -36,8 +36,8 @@ class Timecheckdouyin extends Command
             $orderModel = new OrderModel();
 //            $notifyLogModel = new NotifylogModel();
 //            $notifyLogWhere['status'] = 2;
-            $LimitStartTime = $now - $limitTime;
-            $LimitEndTime = $now - 10;
+            $LimitStartTime = time() - $limitTime;
+            $LimitEndTime = time() - 10;
             $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
             $where[] = ['order_status', '4'];
             //查询下单之前280s 到现在之前20s的等待付款订单
@@ -47,7 +47,7 @@ class Timecheckdouyin extends Command
                 ->where('add_time', '>', $LimitStartTime)
                 ->where('add_time', '<', $LimitEndTime)
                 ->select();
-//            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
@@ -55,7 +55,7 @@ class Timecheckdouyin extends Command
                     $getResParam['order_no'] = $v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-//                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
                         //支付成功
@@ -79,7 +79,10 @@ class Timecheckdouyin extends Command
                         $torderDouyinUpdate['success_amount'] = $v['total_amount'];
                         $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
                         $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                        $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                        if ($orderdouyinModelRes) {
+                            logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
+                        }
                     }
                     if ((strtotime($v['limit_time']) - time()) > $limitTime) {
                         $torderDouyinWhere['order_me'] = $v['order_me'];
