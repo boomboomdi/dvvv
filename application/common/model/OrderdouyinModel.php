@@ -165,6 +165,7 @@ class OrderdouyinModel extends Model
                 $updateWhere['order_no'] = $info['order_no'];
                 $update['last_use_time'] = time();
                 $update['use_times'] = $info['use_times'] + 1;
+                $update['cookie'] = $cookie['cookie'];
                 //获取话单
                 $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
                 $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
@@ -508,12 +509,22 @@ class OrderdouyinModel extends Model
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
 
-            $order_desc = "匹配成功|核销回调|" . $notifyResult;
-            if ($orderStatus == 2) {
-                $order_desc = "匹配成功|手动核销回调|" . $notifyResult;
+            $match_order_desc = "匹配失败|";
+            if (!empty($tOrderData['order_me'])) {
+                $match_order_desc = "匹配成功|";
             }
+            $add_order_desc = "|支付失败";
+            if ($tOrderData['order_status'] == 1) {
+                $add_order_desc = "|支付成功";
+            }
+            $do_order_desc = "|手动核销回调|";
+            if ($orderStatus == 1) {
+                $do_order_desc = "|自动核销回调|";
+            }
+            $order_desc = $match_order_desc . $add_order_desc . $do_order_desc . $notifyResult;
             //通知失败
             if ($notifyResult != "success") {
+
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -525,11 +536,6 @@ class OrderdouyinModel extends Model
                 logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
 
             } else {
-
-                $order_desc = "支付成功|回调核销|" . $notifyResult;
-                if ($orderStatus == 2) {
-                    $order_desc = "支付成功|核销手动回调|" . $notifyResult;
-                }
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,

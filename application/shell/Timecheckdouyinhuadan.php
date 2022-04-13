@@ -46,7 +46,7 @@ class Timecheckdouyinhuadan extends Command
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-//                ->where('last_use_time', '>', $LimitStartTime)    //这个不用
+                ->where('last_use_time', '>', 0)
                 ->where('last_use_time', '<', $LimitStartTime)   //时间是过了当前时间之前的15分
                 ->select();
             $totalNum = count($orderData);
@@ -54,7 +54,7 @@ class Timecheckdouyinhuadan extends Command
                 logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
-                    $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v);
+                    $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v, 1);
                     if ($orderNotifyNoPayToWriteRes) {
                         logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_log');
                     }

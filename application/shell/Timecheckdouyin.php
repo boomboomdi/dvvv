@@ -43,7 +43,7 @@ class Timecheckdouyin extends Command
             //查询下单之前280s 到现在之前20s的等待付款订单
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('url_status', '=', 2)
+                ->where('url_status', '=', 1)
                 ->where('last_use_time', '>', $LimitStartTime)
                 ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
@@ -54,8 +54,9 @@ class Timecheckdouyin extends Command
                 foreach ($orderData as $k => $v) {
                     $getResParam['order_no'] = $v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
+                    $getResParam['ck'] = $v['cookie'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
 
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
                         //支付成功
