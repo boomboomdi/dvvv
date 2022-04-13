@@ -51,10 +51,14 @@ class Timecheckdouyinhuadan extends Command
                 ->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
-//                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
+                logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
                 foreach ($orderData as $k => $v) {
                     //请求查单接口
-                    $orderModel->orderDouYinNotifyToWriteOff($v);
+                    $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v);
+                    if ($orderNotifyNoPayToWriteRes) {
+                        logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_log');
+                    }
+
 //                    var_dump($res);exit;
                     $doNum++;
                 }
