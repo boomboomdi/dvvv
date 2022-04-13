@@ -111,7 +111,7 @@ class OrderdouyinModel extends Model
                 if (!empty($orderMe)) {
                     $updateTorderWhere['order_no'] = $info['order_no'];
                     $updateTorder['order_me'] = $orderMe;
-                    $updateTorder['url_status'] = 2;
+//                    $updateTorder['url_status'] = 2;
                     $updateTorder['last_use_time'] = time();
 //                    $updateTorder['last_use_time'] = time();
                     $updateTorder['order_desc'] = "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe;
@@ -125,7 +125,7 @@ class OrderdouyinModel extends Model
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 1,
-                        'url_status' => 2,
+//                        'url_status' => 2,
                         'last_use_time' => time(),
                         'order_desc' => "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe
                     ]);
