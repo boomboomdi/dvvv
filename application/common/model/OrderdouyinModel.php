@@ -113,7 +113,7 @@ class OrderdouyinModel extends Model
                     $updateTorder['order_me'] = $orderMe;
                     $updateTorder['url_status'] = 2;
                     $updateTorder['last_use_time'] = time();
-                    $updateTorder['last_use_time'] = time();
+//                    $updateTorder['last_use_time'] = time();
                     $updateTorder['order_desc'] = "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe;
                     //绑定推单 通道订单号
                     $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
