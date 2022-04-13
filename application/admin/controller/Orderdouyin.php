@@ -23,6 +23,7 @@ class Orderdouyin extends Base
             $limit = input('param.limit');
 //            $apiMerchantOrderNo = input('param.apiMerchantOrderNo');
             $order_no = input('param.order_no');
+            $order_me = input('param.order_me');
             $startTime = input('param.start_time');
 //            $endTime = input('param.end_time');
 
@@ -30,11 +31,15 @@ class Orderdouyin extends Base
             if (!empty($order_no)) {
                 $where[] = ['order_no', '=', $order_no];
             }
+            if (!empty($order_no)) {
+                $where[] = ['order_me', '=', $order_me];
+            }
             if (!empty($startTime)) {
 //                $endTime = stototime($startTime,);
                 $endTime = mktime(date("Y-m-d", $startTime));
                 $where[] = ['add_time', 'between', [strtotime($startTime), strtotime($startTime . ' 23:59:59')]];
             }
+
             $writeOffNodeId = session("admin_role_id");
             if ($writeOffNodeId == 8) {
                 $where['write_off_sign'] = ['=', session("admin_user_name")];   //默认情况下 登录名就是
