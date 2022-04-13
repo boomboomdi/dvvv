@@ -39,16 +39,15 @@ class Timecheckdouyinhuadan extends Command
             $now = time();
             $lockLimit = $now - $limitTime;
             $orderModel = new OrderdouyinModel();
-//            $where[] = ['order_status', "!=", '1'];
-//            $where[] = ['notify_status', "!=", '0'];
-//            $where[] = ['add_time', "<", $lockLimit];
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
-
+            $LimitStartTime = $now - $limitTime;
+            $LimitEndTime = $now - 10;
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('add_time', '<', $lockLimit)
+                ->where('add_time', '>', $LimitStartTime)
+                ->where('add_time', '<', $LimitEndTime)
                 ->select();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
