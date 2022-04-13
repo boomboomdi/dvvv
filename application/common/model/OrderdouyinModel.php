@@ -161,8 +161,8 @@ class OrderdouyinModel extends Model
             //有没有
             $torder = $this->where($where)->order("add_time asc")->find();
 
-//            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
-            if (!$torder) {
+            logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
+            if ($torder) {
                 $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
                 if ($info) {
                     $updateWhere['t_id'] = $info['t_id'];
