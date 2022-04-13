@@ -488,6 +488,8 @@ class OrderdouyinModel extends Model
 //        $db = new Db();
         $orderWhere['order_no'] = $tOrderData['order_no'];
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
+        $db = new Db();
+        $db::startTrans();
         try {
 //            if (!validateURL($notifyUrl)) {
 //                return modelReMsg('0', "", "回调地址有误！");
@@ -497,7 +499,7 @@ class OrderdouyinModel extends Model
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
             $token = $db::table("bsa_write_off")->where($writeWhere)->find();
             $tOrderDataWhere['order_no'] = $tOrderData['order_no'];
-            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->find();
+            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->lock(true)->find();
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
             $notifyParam['total_amount'] = $tOrderData['total_amount'];
@@ -555,11 +557,14 @@ class OrderdouyinModel extends Model
                         'order_desc' => $order_desc
                     ]);
             }
+            $db::commit();
             return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {
+            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffexception');
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
         } catch (\Error $error) {
+            $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
             return modelReMsg('-11', "", "回调失败" . $error->getMessage());
 

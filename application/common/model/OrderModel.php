@@ -173,9 +173,10 @@ class OrderModel extends Model
      */
     public function orderNotifyForMerchant($data, $status = 1)
     {
+        $db = new Db();
+        $db::startTrans();
         try {
             //$status 决定order_status 是手动回调还是自动完成且回调
-
             //参与回调参数
             $callbackData['merchant_sign'] = $data['merchant_sign'];
             $callbackData['order_no'] = $data['order_no'];
@@ -206,19 +207,31 @@ class OrderModel extends Model
 //            $result = json_decode($notifyResult, true);
             //通知失败
 
+            $data = $db::table("bsa_order")->where("order_no", $data)->lock(true)->find();
+            if (!$data) {
+                logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_lock_order_fail');
+                $returnMsg['code'] = 1002;
+                $returnMsg['msg'] = "回调参数有误!";
+                $returnMsg['data'] = $validate->getError();
+                return $returnMsg;
+            }
             $orderWhere['order_no'] = $callbackData['order_no'];  //orderData
             if ($notifyResult != "success") {
                 $updateData['order_desc'] = "回调失败|" . json_encode($notifyResult);
                 $updateRes = Db::table('bsa_order')->where($orderWhere)->update($updateData);
                 if (!$updateRes) {
+
+                    $db::rollback();
                     $returnMsg['code'] = 3000;
                     $returnMsg['msg'] = "回调失败!请联系管理员";
                     $returnMsg['data'] = json_encode($notifyResult);
                     return $returnMsg;
                 }
+                $db::commit();
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "回调失败!";
                 $returnMsg['data'] = json_encode($notifyResult);
+
                 return $returnMsg;
             }
             //如果是手动回调
@@ -233,8 +246,11 @@ class OrderModel extends Model
                     $returnMsg['code'] = 3000;
                     $returnMsg['msg'] = "手动回调失败!请联系管理员";
                     $returnMsg['data'] = json_encode($notifyResult);
+                    $db::rollback();
                     return $returnMsg;
                 }
+
+                $db::commit();
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "手动回调成功!";
                 $returnMsg['data'] = json_encode($notifyResult);
@@ -248,11 +264,14 @@ class OrderModel extends Model
                 $updateRes = Db::table('bsa_order')->where($orderWhere)->update($orderUpdate);
 
                 if (!$updateRes) {
+                    $db::rollback();
                     $returnMsg['code'] = 4000;
                     $returnMsg['msg'] = "回调失败!请联系管理员";
                     $returnMsg['data'] = json_encode($notifyResult);
                     return $returnMsg;
                 }
+
+                $db::commit();
                 $returnMsg['code'] = 1000;
                 $returnMsg['msg'] = "回调成功!";
                 $returnMsg['data'] = json_encode($notifyResult);
@@ -260,9 +279,13 @@ class OrderModel extends Model
             }
 
         } catch (\Exception $exception) {
+
+            $db::rollback();
             logs(json_encode(['data' => $data, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotifyForMerchant_exception');
             return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
+
+            $db::rollback();
             logs(json_encode(['data' => $data, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotifyForMerchant_error');
             return modelReMsg(-3, '', $error->getMessage());
         }
