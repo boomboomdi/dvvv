@@ -163,6 +163,8 @@ class OrderdouyinModel extends Model
 //            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
 
             if (!empty($info)) {
+//                $info = $this->where("t_id", $info['t_id'])->lock(true)->find();
+
                 $updateWhere['t_id'] = $info['t_id'];
                 $updateWhere['order_no'] = $info['order_no'];
                 $update['last_use_time'] = time();
