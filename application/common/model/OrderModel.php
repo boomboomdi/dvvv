@@ -188,7 +188,6 @@ class OrderModel extends Model
             $callbackData['actual_amount'] = $data['actual_amount'];
             $callbackData['pay_time'] = date("Y-m-d H:i:s", $data['pay_time']);
             $validate = new OrderinfoValidate();
-            logs(json_encode(['callbackData' => $callbackData, 'status' => $status, 'errorMessage' => $validate->getError()]), 'orderNotifyForMerchant_log');
 
             //请求参数不完整
             if (!$validate->scene('notify')->check($callbackData)) {
@@ -200,8 +199,6 @@ class OrderModel extends Model
             }
             $merchantWhere['merchant_sign'] = $data['merchant_sign'];
             $token = Db::table("bsa_merchant")->where($merchantWhere)->find()['token'];
-
-            $data = $db::table("bsa_order")->where("order_no", $data)->find();
             logs(json_encode(['callbackData' => $data, 'notify_url' => $data['notify_url']]), 'curlPostForMerchant_log1');
 
             $returnMsg = array();
