@@ -429,7 +429,7 @@ class OrderdouyinModel extends Model
                 }
                 //获取话单
                 $where['total_amount'] = $amount;
-                $getUesTorderRes = $this->getUseTorder($where, $getCookie);
+                $getUesTorderRes = $this->getUseTorder($where, $getCookieRes['data']);
                 logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'getUesTorderRes');
 
                 if ($getUesTorderRes['code'] == 1) {
@@ -507,14 +507,16 @@ class OrderdouyinModel extends Model
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
 
-            $order_desc = "匹配成功|核销手动回调|" . $notifyResult;
+            $order_desc = "匹配成功|核销回调|" . $notifyResult;
+            if ($orderStatus == 2) {
+                $order_desc = "匹配成功|手动核销回调|" . $notifyResult;
+            }
             //通知失败
             if ($notifyResult != "success") {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
-                        'success_amount' => $tOrderData['total_amount'],
                         'notify_status' => 2,
                         'notify_time' => time(),
                         'order_desc' => $order_desc
