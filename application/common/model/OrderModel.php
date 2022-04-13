@@ -100,7 +100,6 @@ class OrderModel extends Model
     public function orderNotify($orderData, $status = 1)
     {
 
-        Db::startTrans();
         try {
             //更改订单状态 order
             //1、支付成功（下单成功）！2、支付失败（下单成功）！3、下单失败！4、等待支付（下单成功）！5、已手动回调。6、回调中（还未通知商户）
@@ -119,7 +118,6 @@ class OrderModel extends Model
             if ($orderData['order_status'] == 6) { //手动回调 本地更新未通知四方
                 $orderNotifyForMerchantRes = $this->orderNotifyForMerchant($orderData, 2);
                 if ($orderNotifyForMerchantRes['code'] > 0) {
-                    Db::commit();
                     return $orderNotifyForMerchantRes;
                 }
             }
@@ -148,17 +146,14 @@ class OrderModel extends Model
 
             $notifyRes = $this->orderNotifyForMerchant($orderData, $status);
 
-            Db::commit();
             if ($notifyRes['code'] != 1000) {
                 return modelReMsg(-2, '', $notifyRes['msg']);
             }
             return modelReMsg(1000, '', $notifyRes['msg']);
         } catch (\Exception $exception) {
-            Db::rollback();
             logs(json_encode(['orderData' => $orderData, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderNotify_exception');
             return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
-            Db::rollback();
             logs(json_encode(['orderData' => $orderData, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderNotify_error');
             return modelReMsg(-3, '', $error->getMessage());
         }

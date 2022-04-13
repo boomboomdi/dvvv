@@ -56,7 +56,7 @@ class Timecheckdouyin extends Command
                     $getResParam['order_url'] = $v['check_url'];
                     $getResParam['ck'] = $v['cookie'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
+//                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
 
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
                         //支付成功
@@ -64,7 +64,7 @@ class Timecheckdouyin extends Command
                         $orderWhere['order_me'] = $v['order_me'];
 //                        $orderWhere['status'] = 2;
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
-//                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
 
                         $res = $orderModel->orderNotify($order);
                         if ($res) {
