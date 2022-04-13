@@ -113,11 +113,6 @@ class Order extends Base
                 }
                 $orderModel = new \app\common\model\OrderModel();
                 logs(json_encode(['notify' => "notify", 'id' => $id]), 'notify_first');
-
-                $notifyRes = $orderModel->orderNotify($order, 2);
-                if ($notifyRes['code'] != 1000) {
-                    return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
-                }
                 $orderdouyinModel = new OrderdouyinModel();
                 $torderWhere['order_me'] = $order['order_me'];
                 $v = $orderdouyinModel->where($torderWhere['order_me'])->find();
@@ -127,7 +122,11 @@ class Order extends Base
                         logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
                     }
                 }
-
+                $notifyRes = $orderModel->orderNotify($order, 2);
+                if ($notifyRes['code'] != 1000) {
+                    return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
+                }
+                
                 return json(['code' => 1000, 'msg' => '回调成功', 'data' => []]);
             } else {
                 return json('访问错误', "20009");
