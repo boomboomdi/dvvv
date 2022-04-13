@@ -49,7 +49,7 @@ class Timecheckdouyinhuadan extends Command
                 ->where('last_use_time', '>', 0)
                 ->where('last_use_time', '<', $LimitStartTime)   //时间是过了当前时间之前的15分
                 ->select();
-            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadanfordata');
+            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_data_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
