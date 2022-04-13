@@ -117,6 +117,8 @@ class Order extends Base
                 $orderdouyinModel = new OrderdouyinModel();
                 $torderWhere['order_me'] = $order['order_me'];
                 $v = $orderdouyinModel->where($torderWhere)->find();
+                logs(json_encode(['order_id' => $id, 'v' => $v, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_log2');
+
                 if (!empty($v)) {
                     $torderDouyinWhere['order_me'] = $v['order_me'];
                     $torderDouyinWhere['order_pay'] = $v['order_pay'];
@@ -134,10 +136,10 @@ class Order extends Base
                     if ($orderdouyinModelRes) {
                         logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
                     }
-                    $notifyRes = $orderModel->orderNotify($order, 2);
-                    if ($notifyRes['code'] != 1000) {
-                        return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
-                    }
+                }
+                $notifyRes = $orderModel->orderNotify($order, 2);
+                if ($notifyRes['code'] != 1000) {
+                    return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
                 }
 
 
