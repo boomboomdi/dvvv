@@ -506,12 +506,10 @@ class OrderdouyinModel extends Model
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
-            if ($orderStatus == 2) {
-                $order_desc = "核销手动回调|" . $notifyResult;
-            }
+
+            $order_desc = "匹配成功|核销手动回调|" . $notifyResult;
             //通知失败
             if ($notifyResult != "success") {
-
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
