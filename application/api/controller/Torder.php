@@ -53,7 +53,6 @@ class Torder extends Controller
             $addParam = $param;
             unset($addParam['sign']);
             $addParam['add_time'] = time();
-            $addParam['last_use_time'] = 0;
             $addParam['status'] = 0;
             $where['account'] = $param['account'];
             $where['order_no'] = $param['order_no'];
