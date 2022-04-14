@@ -165,7 +165,7 @@ class OrderdouyinModel extends Model
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
             if ($info) {
-                if ($info['url_status'] != 1) {
+                if ($info['url_status'] == 0) {
                     $updateWhere['t_id'] = $info['t_id'];
                     $updateWhere['order_no'] = $info['order_no'];
                     $update['last_use_time'] = time();
@@ -217,6 +217,8 @@ class OrderdouyinModel extends Model
                     return modelReMsg($returnCode, $info, $msg);
                 }
             }
+
+            $db::commit();
             //没有可下单推单！
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
