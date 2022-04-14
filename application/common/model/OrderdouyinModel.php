@@ -153,14 +153,17 @@ class OrderdouyinModel extends Model
     {
         $where['status'] = 0;  //0:未使用1:启用中2:已禁用
         $where['url_status'] = 0;  //0:未使用1:启用中2:已禁用
-        $where['add_time'] = ['>', time() - 600];  //只预拉  当前时间->当前时间之前10范围之内
+        $where['add_time'] = ['>', (time() - 600)];  //只预拉  当前时间->当前时间之前10分钟范围之内
         $returnCode = 3;
         $msg = "失败！";
         $db = new Db();
         $db::startTrans();
         try {
             //有没有
-            $torder = $this->where($where)->order("add_time asc")->lock(true)->find();
+            $torder = $this->where('status', '=', 0)
+                ->where('url_status', '=', 1)
+                ->where('add_time', '>', time() - 600)
+                ->order("add_time asc")->lock(true)->find();
 
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
