@@ -56,7 +56,7 @@ class Prepareorder extends Command
 
                     if (($v['prepare_num'] - $can_use_num) > 0) {
                         $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
-//                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
+                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
                         if ($res['code'] == 0 && $res['data'] > 0) {
                             $prepareSetWhere['id'] = $v['id'];

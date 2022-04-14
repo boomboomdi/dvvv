@@ -44,7 +44,7 @@ class Distorytorderurl extends Command
                 ->where('last_use_time', '<', $LimitStartTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
-            $db = new Db();
+
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
@@ -62,23 +62,17 @@ class Distorytorderurl extends Command
                     $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
                     $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
                     $torderDouyinUpdate['order_desc'] = "预拉成功|匹配失败|准备核销回调";
-                    $update2 = $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
+                    $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
                         ->update($torderDouyinUpdate);
-                    if (!$update2) {
-                        $db::rollback();
-                        logs(json_encode(['torderDouyinWhere' => $torderDouyinWhere, 'update2' => $update2, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'DistorytorderurlUpdateTOrderDouyin_fail_log');
-                    }
-                    $db::commit();
+
                 }
                 $output->writeln("Distorytorderurl:预产单处理成功" . "成功处理:" . $successNum . "失败:" . $errorNum);
 
             }
         } catch (\Exception $exception) {
-            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Distorytorderurl_exception');
             $output->writeln("Distorytorderurl:销毁已拉单未支付链接！" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
-            $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Distorytorderurl_error');
             $output->writeln("Distorytorderurl:销毁已拉单未支付链接！！" . $totalNum . "error");
         }
