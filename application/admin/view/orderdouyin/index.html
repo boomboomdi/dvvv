@@ -81,6 +81,15 @@
                 <span class="layui-badge-dot gray"></span>未回调
                 {{#  } }}
             </script>
+            <script type="text/html" id="orderStatusTpl">
+                {{#  if(d.order_status == 1){ }}
+                <span class="layui-badge-dot green"></span>支付成功
+                {{#  } else if(d.order_status == 2){ }}
+                <span class="layui-badge-dot gray"></span>支付失败
+                {{#  } else if(d.order_status == 0){ }}
+                <span class="layui-badge-dot gray"></span>等待支付
+                {{#  } }}
+            </script>
             <script type="text/html" id="table-seller-admin">
 
                 {if (buttonAuth('orderdouyin/deltorder'))}
@@ -141,7 +150,7 @@
             }, {
                 field: "order_no",
                 title: "订单编号"
-            },  {
+            }, {
                 field: "order_pay",
                 title: "抖音单号"
             }, {
@@ -150,7 +159,11 @@
             }, {
                 field: "account",
                 title: "收款账号",
-            } ,{
+            }, {
+                field: "order_status",
+                title: "支付状态",
+                templet: '#statusTpl'
+            }, , {
                 field: "status",
                 title: "状态",
                 templet: '#statusTpl'

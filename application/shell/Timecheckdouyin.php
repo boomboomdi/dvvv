@@ -85,7 +85,6 @@ class Timecheckdouyin extends Command
                             }
                         }
 
-
                         $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
                         $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
                         $torderDouyinUpdate['pay_time'] = time();
