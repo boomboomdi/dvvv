@@ -108,8 +108,9 @@ class OrderdouyinModel extends Model
                 ->where('status', '=', 1)
                 ->where('last_use_time', '>', time() - 180)
                 ->where('last_use_time', '<', time())
-                ->order("last_use_time asc")->find();
-            logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_info');
+                ->order("last_use_time asc")
+                ->find();
+            logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_log');
 
             if (!empty($info)) {
                 $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->find();
