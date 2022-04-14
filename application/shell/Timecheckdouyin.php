@@ -45,7 +45,7 @@ class Timecheckdouyin extends Command
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
                 ->where('status', '=', 1)
-                ->where('last_use_time', '>', $LimitStartTime)
+                ->where('last_use_time', '>', $LimitStartTime - 100)
                 ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
@@ -66,13 +66,16 @@ class Timecheckdouyin extends Command
                         $orderWhere['order_pay'] = $v['order_pay'];
                         $orderWhere['order_me'] = $v['order_me'];
 //                        $orderWhere['status'] = 2;
+
                         $order = Db::table("bsa_order")->where($orderWhere)->find();
                         logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
-
-                        $res = $orderModel->orderNotify($order);
-                        if ($res) {
-                            logs(json_encode(['order' => $order, 'orderNotifyres' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
+                        if ($order) {
+                            $res = $orderModel->orderNotify($order);
+                            if ($res) {
+                                logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
+                            }
                         }
+
 
                         $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
                         $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态

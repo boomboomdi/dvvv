@@ -549,9 +549,12 @@ class OrderdouyinModel extends Model
                         'notify_time' => time(),
                         'order_desc' => $order_desc
                     ]);
+
+                $db::commit();
                 logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
 
             } else {
+
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -561,8 +564,9 @@ class OrderdouyinModel extends Model
                         'notify_time' => time(),
                         'order_desc' => $order_desc
                     ]);
+
+                $db::commit();
             }
-            $db::commit();
             return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             $db::rollback();
