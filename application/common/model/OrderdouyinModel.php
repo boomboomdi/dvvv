@@ -172,10 +172,10 @@ class OrderdouyinModel extends Model
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', time() - 600)
                 ->order("add_time asc")
-                ->lock(true)
+//                ->lock(true)
                 ->find();
             logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
-            if (!$info) {
+            if (empty($info)) {
                 $db::rollback();
                 return modelReMsg(-3, '', '没有可下单推单');
             }
