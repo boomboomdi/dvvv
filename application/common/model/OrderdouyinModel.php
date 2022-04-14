@@ -161,9 +161,6 @@ class OrderdouyinModel extends Model
      */
     public function getUseTorder($where, $cookie)
     {
-        $where['status'] = 0;  //0:未使用1:启用中2:已禁用
-        $where['url_status'] = 0;  //0:未使用1:启用中2:已禁用
-        $where['add_time'] = ['>', (time() - 600)];  //只预拉  当前时间->当前时间之前10分钟范围之内
         $returnCode = 3;
         $msg = "失败！";
         $db = new Db();
@@ -214,7 +211,6 @@ class OrderdouyinModel extends Model
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
 
-                    $db::commit();
                     $returnCode = 1;
                     $msg = "下单失败，ck失效！";
                     //下单失败！
