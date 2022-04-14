@@ -41,7 +41,7 @@ class Prepareorder extends Command
             //下单金额
             $prepareWhere['status'] = 1;
             $prepareAmountList = $db::table("bsa_prepare_set")
-                ->where($prepareWhere)
+                ->where("status", "=", 1)
                 ->select();
 //            if (count($prepareAmountList) > 0) {
             if (!is_array($prepareAmountList) || count($prepareAmountList) == 0) {
@@ -58,9 +58,9 @@ class Prepareorder extends Command
                         ->order("add_time asc")
                         ->count();
                     logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
-
-                    if (($v['prepare_num'] - $can_use_num) > 0) {
-                        $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
+                    $doNum = $v['prepare_num'] - $can_use_num;
+                    if (($doNum > 0) && $v['status'] == 1) {
+                        $res = $orderDouYinModel->createOrder($v, $doNum);
                         logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
                         if ($res['code'] == 0 && $res['data'] > 0) {
