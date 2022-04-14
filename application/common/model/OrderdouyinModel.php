@@ -452,7 +452,7 @@ class OrderdouyinModel extends Model
                 //获取话单
                 $where['total_amount'] = $amount;
                 $getUesTorderRes = $this->getUseTorder($where, $getCookieRes['data']);
-                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'PrepareordergetUesTorderRes');
+                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'PrepareorderGetUesTorderRes_log');
 
                 if ($getUesTorderRes['code'] == 1) {
                     $updateCookieWhere['id'] = $getCookieRes['data']['id'];
@@ -470,10 +470,10 @@ class OrderdouyinModel extends Model
             }
             return modelReMsg(0, $successNum, "预产成功！");
         } catch (\Exception $exception) {
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'OrderdouyinModelcreateOrderexception');
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'PrepareorderCreateOrderException_log');
             return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'OrderdouyinModelcreateOrdererror');
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'PrepareorderCreateOrderError_log');
             return modelReMsg('-22', $successNum, "预产单失败" . $error->getMessage());
         }
     }
