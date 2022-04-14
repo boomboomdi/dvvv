@@ -170,19 +170,20 @@ class OrderdouyinModel extends Model
         $db::startTrans();
         try {
             //有没有
-            $torder = $this
+            $info = $this
                 ->where('status', '=', 0)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', time() - 600)
                 ->order("add_time asc")
+                ->lock(true)
                 ->find();
 
-            logs(json_encode(['account' => $cookie['account'], 'info' => $torder, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
-            if (empty($torder)) {
+            logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
+            if (!$info) {
                 $db::rollback();
                 return modelReMsg(-3, '', '没有可下单推单');
             }
-            $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
+//            $torder = $this->where("t_id", $torder['t_id'])->lock(true)->find();
             if ($info) {
                 if ($info['url_status'] == 0) {
                     $updateWhere['t_id'] = $info['t_id'];
