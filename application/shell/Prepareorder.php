@@ -40,13 +40,14 @@ class Prepareorder extends Command
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
             $prepareWhere['status'] = 1;
-            $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
+            $prepareAmountList = $db::table("bsa_prepare_set")
+                ->where($prepareWhere)
+                ->select();
 //            if (count($prepareAmountList) > 0) {
             if (!is_array($prepareAmountList) || count($prepareAmountList) == 0) {
                 $output->writeln("Prepareorder:无预产任务");
             } else {
                 foreach ($prepareAmountList as $k => $v) {
-
                     $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
 //                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $can_use_num = $db::table("bsa_torder_douyin")

@@ -55,11 +55,11 @@ class Orderdouyin extends Controller
             //$user_id = $message['user_id'];  //用户标识
             // 根据user_id  未付款次数 限制下单 end
 
-            $cookieModel = new CookieModel();
-            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find();
-            if (empty($getCookie)) {
-                return apiJsonReturn(10009, "no useful ck！");
-            }
+//            $cookieModel = new CookieModel();
+//            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find();
+//            if (empty($getCookie)) {
+//                return apiJsonReturn(10009, "no useful ck！");
+//            }
 
             $orderMe = guid12();
             for ($x = 0; $x <= 3; $x++) {
