@@ -61,7 +61,6 @@ class Order extends Base
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '2') {
-
                     $data[$key]['order_status'] = '<button class="layui-btn layui-btn-danger layui-btn-xs">付款失败</button>';
                 }
                 if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '3') {
