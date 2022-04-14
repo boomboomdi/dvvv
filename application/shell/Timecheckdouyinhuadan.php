@@ -54,7 +54,7 @@ class Timecheckdouyinhuadan extends Command
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
-                    //请求查单接口
+                    //回调商户
                     $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v, 1);
                     if ($orderNotifyNoPayToWriteRes) {
                         logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_log');

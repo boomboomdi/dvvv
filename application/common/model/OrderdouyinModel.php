@@ -224,7 +224,6 @@ class OrderdouyinModel extends Model
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
             return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Exception $e) {
-
             $db::rollback();
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
             return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
@@ -519,7 +518,7 @@ class OrderdouyinModel extends Model
 
             //回调核销  已经收到款项
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
-            logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOff_log');
+            logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOff_log');
 
 //            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
 //            $result = json_decode($notifyResult, true);
