@@ -86,6 +86,8 @@
                 <button class="layui-btn layui-btn-success layui-btn-xs">支付成功</button>
                 {{#  } else if(d.order_status == 2){ }}
                 <button class="layui-btn layui-btn-danger layui-btn-xs">支付失败</button>
+                {{#  } else if(d.order_status == 3){ }}
+                <button class="layui-btn layui-btn-disabled layui-btn-xs">下单失败</button>
                 {{#  } else if(d.order_status == 0){ }}
                 <button class="layui-btn layui-btn-primary layui-btn-xs">等待支付</button>
                 {{#  } else if(d.order_status == 4){ }}
