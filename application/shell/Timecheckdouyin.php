@@ -68,7 +68,6 @@ class Timecheckdouyin extends Command
                             ->update([
                                 "can_use_num" => Db::raw("can_use_num-1")
                             ]);
-
                     }
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
 
@@ -102,24 +101,25 @@ class Timecheckdouyin extends Command
                             logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
                         }
                     }
+                    //支付链接不可用
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 2) {
                         $torderDouyinUpdate['last_use_time'] = time();
                         $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
-                        $torderDouyinUpdate['order_desc'] = "下单成功|支付失败|订单失效";
+                        $torderDouyinUpdate['order_desc'] = "下单成功|匹配成功|订单失效";
                         $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
                         if ($updateTorderStatus) {
                             logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
                         }
                     }
-                    if (($v['add_time'] - time()) > 1000) {
-                        $torderDouyinWhere['order_me'] = $v['order_me'];
-                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
-                        $torderDouyinUpdate['order_status'] = 2;  ///匹配订单支付超时
-                        $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
-                        $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
-                        $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
-                    }
+//                    if (($v['add_time'] - time()) > 1000) {
+//                        $torderDouyinWhere['order_me'] = $v['order_me'];
+//                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
+//                        $torderDouyinUpdate['order_status'] = 2;  ///匹配订单支付超时
+//                        $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
+//                        $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
+//                        $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+//                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+//                    }
                 }
 
             }

@@ -487,16 +487,11 @@ class OrderdouyinModel extends Model
     public function orderDouYinNotifyToWriteOff($tOrderData, $orderStatus = 1)
     {
 
-//        Log::log('orderDouYinNotifyToWriteOffFIRST!', $tOrderData);
-//        $db = new Db();
         $orderWhere['order_no'] = $tOrderData['order_no'];
         $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
         $db = new Db();
         $db::startTrans();
         try {
-//            if (!validateURL($notifyUrl)) {
-//                return modelReMsg('0', "", "回调地址有误！");
-//            }
             $db = new Db();
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
@@ -549,10 +544,9 @@ class OrderdouyinModel extends Model
                     ]);
 
                 $db::commit();
-                logs(json_encode(['notifyParam' => $notifyParam, 'notify_url' => $tOrderData['notify_url'], 'notifyResult' => $notifyResult]), 'curlPostJsonWriteOffFail');
+                logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
 
             } else {
-
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
@@ -562,17 +556,18 @@ class OrderdouyinModel extends Model
                         'notify_time' => time(),
                         'order_desc' => $order_desc
                     ]);
-
                 $db::commit();
+                logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffSuccess_log');
+
             }
             return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             $db::rollback();
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffexception');
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffException_log');
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
         } catch (\Error $error) {
             $db::rollback();
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError_log');
             return modelReMsg('-11', "", "回调失败" . $error->getMessage());
 
         }
@@ -588,17 +583,21 @@ class OrderdouyinModel extends Model
     {
         try {
             $res = $this->where($where)->update($torderDouyinUpdate);
+            logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrder_log');
+
             if (!$res) {
-                logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'updateNotifyTorderException');
+                logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrderFail_log');
                 return modelReMsg('-1', "", "更新失败");
             }
+            logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrder_log');
+
             return modelReMsg('0', "", "更新成功");
 
         } catch (\Exception $exception) {
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'updateNotifyTorderException');
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'TimecheckdouyinUpdateNotifyTorderException_log');
             return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError');
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'TimecheckdouyinUpdateNotifyTorderError_log');
             return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
         }
     }
