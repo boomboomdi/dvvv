@@ -47,11 +47,11 @@ class Prepareorder extends Command
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
                         $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
                         if ($v) {
-                            logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
+                            logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'prepareorderapi');
 
                             if(($v['prepare_num'] - $v['can_use_num'])>0){
                                 $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
-                                logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'yula_res_log');
+                                logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapi_res_log');
 
                                 if ($res['code'] == 0 && $res['data'] > 0) {
                                     $prepareSetWhere['id'] = $v['id'];
