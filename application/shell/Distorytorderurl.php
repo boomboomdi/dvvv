@@ -1,0 +1,91 @@
+<?php
+
+namespace app\shell;
+
+use app\common\model\OrderModel;
+use think\console\Command;
+use think\console\Input;
+use think\console\Output;
+
+use app\common\model\OrderdouyinModel;
+use app\common\model\SystemConfigModel;
+use think\Db;
+
+class Distorytorderurl extends Command
+{
+    protected function configure()
+    {
+        $this->setName('Distorytorderurl')->setDescription('销毁已拉单未支付链接！');
+    }
+
+    /**
+     * 销毁已拉单未支付链接
+     * @param Input $input
+     * @param Output $output
+     * @return int|null|void
+     */
+    protected function execute(Input $input, Output $output)
+    {
+        $limitTime = 180;
+        $now = time();
+        $successNum = 0;
+        $errorNum = 0;
+        $lockLimit = $now - $limitTime;
+        $orderdouyinModel = new OrderdouyinModel();
+        $LimitStartTime = time() - $limitTime;
+        $LimitEndTime = time() - 10;
+        $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
+        $where[] = ['order_status', '4'];
+        $db = new Db();
+        try {
+            //查询下单之前300S没有使用的但已经预拉成功的推单  并
+            $orderData = $orderdouyinModel
+                ->where('order_status', '<>', 1)
+                ->where('notify_status', '=', 0)
+                ->where('order_me', '=', null)
+                ->where('url_status', '=', 1)
+                ->where('last_use_time', '<', $LimitStartTime)
+                ->select();
+            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
+            $db = new Db();
+            $totalNum = count($orderData);
+            if ($totalNum > 0) {
+                foreach ($orderData as $k => $v) {
+
+                    $prepareWhere['order_amount'] = $v['total_amount'];
+                    $prepareWhere['status'] = 1;
+                    $update1 = $db::table("bsa_prepare_set")->where($prepareWhere)
+                        ->update([
+                            "can_use_num" => Db::raw("can_use_num-1")
+                        ]);
+                    if (!$update1) {
+                        logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_prepare_set")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_prepare_set_fail_log');
+                    }
+                    //支付链接不可用
+                    $torderDouyinWhere['t_id'] = $v['t_id'];
+                    $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
+                    $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
+                    $torderDouyinUpdate['order_desc'] = "预拉成功|匹配失败|准备核销回调";
+                    $update2 = $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
+                        ->update($torderDouyinUpdate);
+                    if (!$update2) {
+                        $db::rollback();
+                        logs(json_encode(['torderDouyinWhere' => $torderDouyinWhere, 'update2' => $update2, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'DistorytorderurlUpdateTOrderDouyin_fail_log');
+                    }
+                    $db::commit();
+                }
+                $output->writeln("Distorytorderurl:预产单处理成功" . "成功处理:" . $successNum . "失败:" . $errorNum);
+
+            }
+        } catch (\Exception $exception) {
+            $db::rollback();
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Distorytorderurl_exception');
+            $output->writeln("Distorytorderurl:销毁已拉单未支付链接！" . $totalNum . "exception" . $exception->getMessage());
+        } catch (\Error $error) {
+            $db::rollback();
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Distorytorderurl_error');
+            $output->writeln("Distorytorderurl:销毁已拉单未支付链接！！" . $totalNum . "error");
+        }
+
+    }
+}
