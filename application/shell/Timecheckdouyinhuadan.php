@@ -41,7 +41,7 @@ class Timecheckdouyinhuadan extends Command
             $orderModel = new OrderdouyinModel();
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
-            $LimitStartTime = $now - $limitTime;
+            $LimitStartTime = time() - 900;
             $LimitEndTime = $now - 10;
             $orderData = $orderModel
                 ->where('order_status', '<>', 1)
@@ -57,7 +57,7 @@ class Timecheckdouyinhuadan extends Command
                     //回调商户
                     $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v, 1);
                     if ($orderNotifyNoPayToWriteRes) {
-                        logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
+                        logs(json_encode(['orderData' => $orderData,"add_time"=>date("Y-m-d H:i:s",$orderData['add_time']), 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
                     }
 //                    var_dump($res);exit;
                     $doNum++;

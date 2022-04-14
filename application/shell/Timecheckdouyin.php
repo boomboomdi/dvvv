@@ -61,7 +61,7 @@ class Timecheckdouyin extends Command
 
                     $torderDouyinWhere['order_me'] = $v['order_me'];
                     $torderDouyinWhere['order_pay'] = $v['order_pay'];
-                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] = !0) {
+                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] != 0) {
                         $prepareWhere['order_amount'] = $v['total_amount'];
                         $prepareWhere['status'] = 1;
                         $db::table("bsa_prepare_set")->where($prepareWhere)
