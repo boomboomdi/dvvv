@@ -62,10 +62,12 @@ class Distorytorderurl extends Command
                     $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
                     $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
                     $torderDouyinUpdate['order_desc'] = "预拉成功|匹配失败|准备核销回调";
-                    $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
+                    $uodateTorderRes = $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
                         ->update($torderDouyinUpdate);
-                    logs(json_encode(['orderData' => $v, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
+                    if(!$uodateTorderRes){
+                        logs(json_encode(['orderData' => $v, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_uodateTorderRes_log');
 
+                    }
                 }
                 $output->writeln("Distorytorderurl:预产单处理成功" . "成功处理:" . $successNum . "失败:" . $errorNum);
 
