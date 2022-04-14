@@ -550,7 +550,6 @@ class OrderdouyinModel extends Model
             $order_desc = $match_order_desc . $add_order_desc . $do_order_desc . $notifyResult;
             //通知失败
             if ($notifyResult != "success") {
-
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 2,
