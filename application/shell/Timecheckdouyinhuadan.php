@@ -32,18 +32,19 @@ class Timecheckdouyinhuadan extends Command
         $errorNum = 0;
         $doNum = 0;
         $orderData = [];
+        $db = new Db();
         try {
             $limit = 10;
             $limitTime = SystemConfigModel::getDouyinPayLimitTime();
 //            $limitTime = 900;
             $now = time();
             $lockLimit = $now - $limitTime;
-            $orderModel = new OrderdouyinModel();
+            $orderdouyinModel = new OrderdouyinModel();
             //查询下单之前280s 到现在之前20s的等待付款订单
 //            $updateData = $orderModel->where('add_time', '<', $lockLimit)->where($updateDataWhere)->select();
             $LimitStartTime = time() - 900;
             $LimitEndTime = $now - 10;
-            $orderData = $orderModel
+            $orderData = $orderdouyinModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
 //                ->where('add_time', '>=', ($LimitStartTime - 1800))
@@ -55,10 +56,16 @@ class Timecheckdouyinhuadan extends Command
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
                     //回调商户
-                    $orderNotifyNoPayToWriteRes = $orderModel->orderDouYinNotifyToWriteOff($v, 1);
+                    $orderNotifyNoPayToWriteRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v, 1);
                     if ($orderNotifyNoPayToWriteRes) {
-                        logs(json_encode(['orderData' => $orderData,"add_time"=>date("Y-m-d H:i:s",$orderData['add_time']), 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
+                        logs(json_encode(['orderData' => $orderData, "add_time" => date("Y-m-d H:i:s", $orderData['add_time']), 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
                     }
+                    $prepareWhere['order_amount'] = $v['total_amount'];
+                    $prepareWhere['status'] = 1;
+                    $db::table("bsa_prepare_set")->where($prepareWhere)
+                        ->update([
+                            "can_use_num" => Db::raw("can_use_num-1")
+                        ]);
 //                    var_dump($res);exit;
                     $doNum++;
                 }
