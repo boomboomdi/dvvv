@@ -44,6 +44,7 @@ class Timecheckdouyin extends Command
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
+                ->where('order_me', '<>', null)
                 ->where('status', '=', 1)
                 ->where('last_use_time', '>', $LimitStartTime - 100)
                 ->where('last_use_time', '<', $LimitEndTime)
