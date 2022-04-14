@@ -46,22 +46,22 @@ class Prepareorder extends Command
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
                         $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock()->find();
-                        if($v){
+                        if ($v) {
                             logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
-                            for ($i = 0; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
-                                $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
-                                logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'yula_res_log');
 
-                                if ($res['code'] == 0 && $res['data'] > 0) {
-                                    $prepareSetWhere['id'] = $v['id'];
-                                    $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-                                    $db::commit();
-                                    $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
-                                } else {
-                                    sleep(1);
-                                    $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
-                                }
+                            $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
+                            logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'yula_res_log');
+
+                            if ($res['code'] == 0 && $res['data'] > 0) {
+                                $prepareSetWhere['id'] = $v['id'];
+                                $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
+                                $db::commit();
+                                $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
+                            } else {
+                                sleep(1);
+                                $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                             }
+
                         }
                     }
                 }
