@@ -163,7 +163,7 @@ class OrderdouyinModel extends Model
             $torder = $this->where('status', '=', 0)
                 ->where('url_status', '=', 1)
                 ->where('add_time', '>', time() - 600)
-                ->order("add_time asc")->lock(true)->find();
+                ->order("add_time asc")->find();
 
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
