@@ -234,11 +234,11 @@ class OrderdouyinModel extends Model
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
             $db::rollback();
-            logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
+            logs(json_encode(['where' => $amount, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
             return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Exception $e) {
             $db::rollback();
-            logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
+            logs(json_encode(['where' => $amount, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
             return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
 
