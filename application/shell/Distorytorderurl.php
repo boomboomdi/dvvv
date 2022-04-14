@@ -48,7 +48,6 @@ class Distorytorderurl extends Command
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
-
                     $prepareWhere['order_amount'] = $v['total_amount'];
                     $prepareWhere['status'] = 1;
                     $update1 = $db::table("bsa_prepare_set")->where($prepareWhere)

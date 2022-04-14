@@ -44,7 +44,6 @@ class Prepareorder extends Command
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
-
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 0)

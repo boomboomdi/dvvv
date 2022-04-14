@@ -177,7 +177,6 @@ class OrderdouyinModel extends Model
                 ->order("add_time asc")
                 ->lock(true)
                 ->find();
-
             logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
             if (!$info) {
                 $db::rollback();
@@ -201,7 +200,6 @@ class OrderdouyinModel extends Model
                 logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
 
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
-                    $db::commit();
                     $returnCode = 0;
                     $msg = "下单成功！";
                     //下单成功！
