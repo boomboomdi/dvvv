@@ -15,7 +15,7 @@ class Distorytorderurl extends Command
 {
     protected function configure()
     {
-        $this->setName('Distorytorderurl')->setDescription('销毁已拉单未支付链接！');
+        $this->setName('Distorytorderurl')->setDescription('销毁已拉单未支付推单！');
     }
 
     /**
@@ -33,9 +33,6 @@ class Distorytorderurl extends Command
         $lockLimit = $now - $limitTime;
         $orderdouyinModel = new OrderdouyinModel();
         $LimitStartTime = time() - $limitTime;
-        $LimitEndTime = time() - 10;
-        $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
-        $where[] = ['order_status', '4'];
         $db = new Db();
         try {
             //查询下单之前300S没有使用的但已经预拉成功的推单  并

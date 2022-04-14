@@ -44,13 +44,19 @@ class Prepareorder extends Command
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
-                    if (($v['prepare_num'] - $v['can_use_num']) > 0) {
+
+                    $can_use_num = $db::table("bsa_torder_douyin")
+                        ->where('status', '=', 0)
+                        ->where('url_status', '=', 0)
+                        ->where('add_time', '>', time() - 600)
+                        ->order("add_time asc")->count();
+                    if (($v['prepare_num'] - $can_use_num) > 0) {
                         $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
                         if ($v) {
                             logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'prepareorderapi');
 
-                            if (($v['prepare_num'] - $v['can_use_num']) > 0) {
-                                $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
+                            if (($v['prepare_num'] - $can_use_num) > 0) {
+                                $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
                                 logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
                                 if ($res['code'] == 0 && $res['data'] > 0) {

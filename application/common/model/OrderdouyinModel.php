@@ -100,6 +100,7 @@ class OrderdouyinModel extends Model
 
         $db = new Db();
         try {
+
             //有没有
             $info = $this
                 ->where('total_amount', '=', $where['amount'])
@@ -113,7 +114,7 @@ class OrderdouyinModel extends Model
             logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_log');
 
             if (!empty($info)) {
-                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->find();
+                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->count();
                 $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
                     ['can_use_num' => ($prepare['can_use_num'] - 1)]
                 );
@@ -169,10 +170,12 @@ class OrderdouyinModel extends Model
         $db::startTrans();
         try {
             //有没有
-            $torder = $this->where('status', '=', 0)
+            $torder = $this
+                ->where('status', '=', 0)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', time() - 600)
-                ->order("add_time asc")->find();
+                ->order("add_time asc")
+                ->find();
 
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
             if (empty($torder)) {
