@@ -49,30 +49,24 @@ class Prepareorder extends Command
                         ->where('url_status', '=', 0)
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")->count();
+                    $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
+
                     if (($v['prepare_num'] - $can_use_num) > 0) {
-                        $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
-                        if ($v) {
-                            logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'prepareorderapi');
+                        $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
+                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
-                            if (($v['prepare_num'] - $can_use_num) > 0) {
-                                $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
-                                logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
-
-                                if ($res['code'] == 0 && $res['data'] > 0) {
-                                    $prepareSetWhere['id'] = $v['id'];
-                                    $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-                                    $db::commit();
-                                    $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
-                                } else {
-                                    sleep(1);
-                                    $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
-                                }
-                            }
+                        if ($res['code'] == 0 && $res['data'] > 0) {
+                            $prepareSetWhere['id'] = $v['id'];
+                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
+                            $db::commit();
+                            $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
-                            $db::rollback();
+                            sleep(1);
+                            $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
-
                     }
+
+
                 }
             }
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
