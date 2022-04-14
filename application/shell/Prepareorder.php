@@ -49,11 +49,11 @@ class Prepareorder extends Command
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")->count();
                     $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->find();
-                    logs(json_encode(['num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateOrder_index_log');
+                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateOrder_index_log');
 
                     if (($v['prepare_num'] - $can_use_num) > 0) {
                         $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
-                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
+//                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
                         if ($res['code'] == 0 && $res['data'] > 0) {
                             $prepareSetWhere['id'] = $v['id'];
