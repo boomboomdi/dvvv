@@ -45,7 +45,7 @@ class Prepareorder extends Command
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
-                        $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock()->find();
+                        $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
                         if ($v) {
                             logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
 
