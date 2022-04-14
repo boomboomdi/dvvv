@@ -44,6 +44,7 @@ class Prepareorder extends Command
             if (count($prepareAmountList) > 0) {
                 foreach ($prepareAmountList as $k => $v) {
                     if (($v['prepare_num'] - $v['can_use_num']) > 0) {
+                        $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock()->find();
 //                        logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'Prepareorderapi');
                         for ($i = 0; $i < ($v['prepare_num'] - $v['can_use_num']); $i++) {
                             $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
