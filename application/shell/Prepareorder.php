@@ -28,7 +28,7 @@ class Prepareorder extends Command
         $totalNum = 0;
         $successNum = 0;
         $errorNum = 0;
-        $msg = "";
+        $msg = "预拉开始";
         $db = new Db();
         $db::startTrans();
         try {
@@ -49,7 +49,7 @@ class Prepareorder extends Command
                         if ($v) {
                             logs(json_encode(['totalNum' => $totalNum, 'prepareAmountList' => $prepareAmountList]), 'prepareorderapi');
 
-                            if(($v['prepare_num'] - $v['can_use_num'])>0){
+                            if (($v['prepare_num'] - $v['can_use_num']) > 0) {
                                 $res = $orderDouYinModel->createOrder($v, ($v['prepare_num'] - $v['can_use_num']));
                                 logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapi_res_log');
 
@@ -63,9 +63,10 @@ class Prepareorder extends Command
                                     $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                                 }
                             }
+                        } else {
+                            $db::rollback();
                         }
 
-                        $db::commit();
                     }
                 }
             }
