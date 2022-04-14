@@ -47,7 +47,8 @@ class Prepareorder extends Command
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 0)
                         ->where('add_time', '>', time() - 600)
-                        ->order("add_time asc")->count();
+//                        ->order("add_time asc")
+                        ->count();
                     logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
 
 //                    $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->find();
