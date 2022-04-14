@@ -100,7 +100,6 @@ class OrderdouyinModel extends Model
 
         $db = new Db();
         try {
-
             //有没有
             $info = $this
                 ->where('total_amount', '=', $where['amount'])

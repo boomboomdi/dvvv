@@ -46,16 +46,18 @@ class Prepareorder extends Command
                 $output->writeln("Prepareorder:无预产任务");
             } else {
                 foreach ($prepareAmountList as $k => $v) {
+
+
+                    $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
+//                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 0)
+                        ->where('total_amount', '=', $v['order_amount'])
                         ->where('add_time', '>', time() - 600)
-//                        ->order("add_time asc")
+                        ->order("add_time asc")
                         ->count();
                     logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
-
-//                    $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->find();
-//                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
 
                     if (($v['prepare_num'] - $can_use_num) > 0) {
                         $res = $orderDouYinModel->createOrder($v, $v['prepare_num'] - $can_use_num);
