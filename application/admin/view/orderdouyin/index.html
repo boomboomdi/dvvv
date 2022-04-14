@@ -88,6 +88,8 @@
                 <span class="layui-badge-dot gray"></span>支付失败
                 {{#  } else if(d.order_status == 0){ }}
                 <span class="layui-badge-dot gray"></span>等待支付
+                {{#  } else if(d.order_status == 4){ }}
+                <span class="layui-badge-dot gray"></span>预拉未用
                 {{#  } }}
             </script>
             <script type="text/html" id="table-seller-admin">
@@ -162,8 +164,8 @@
             }, {
                 field: "order_status",
                 title: "支付状态",
-                templet: '#statusTpl'
-            }, , {
+                templet: '#orderStatusTpl'
+            }, {
                 field: "status",
                 title: "状态",
                 templet: '#statusTpl'
