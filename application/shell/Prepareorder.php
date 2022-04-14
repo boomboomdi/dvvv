@@ -71,19 +71,19 @@ class Prepareorder extends Command
                             sleep(1);
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
+                        $db::commit();
                     }
 
                 }
             }
 
-
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
-
+            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
             $output->writeln("Prepareorder:浴场处理失败！" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
-
+            $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
             $output->writeln("Prepareorder:浴场处理失败！！" . $totalNum . "error");
         }
