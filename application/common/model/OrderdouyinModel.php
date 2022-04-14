@@ -170,10 +170,11 @@ class OrderdouyinModel extends Model
 //                ->where('url_status', '=', 0)
 //                ->where('add_time', '>', time() - 600)
             //有没有
+            $limit_time = time()-10000;
             $info = $this
                 ->where('status', '=', 0)
                 ->where('url_status', '=', 0)
-                ->where('add_time', '>', time() - 600)
+                ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
                 ->lock(true)
                 ->find();
@@ -226,7 +227,7 @@ class OrderdouyinModel extends Model
                 }
                 return modelReMsg($returnCode, $info, $msg);
             }
-            logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTordera_fitst_log');
+            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTordera_fitst_log');
 
             $db::commit();
             //没有可下单推单！
