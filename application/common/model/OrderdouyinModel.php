@@ -166,6 +166,9 @@ class OrderdouyinModel extends Model
                 ->order("add_time asc")->find();
 
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
+            if(empty($torder)){
+                return modelReMsg(-3, '', '没有可下单推单');
+            }
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
             if ($info) {
                 if ($info['url_status'] == 0) {
