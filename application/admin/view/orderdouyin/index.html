@@ -83,13 +83,14 @@
             </script>
             <script type="text/html" id="orderStatusTpl">
                 {{#  if(d.order_status == 1){ }}
-                <span class="layui-badge-dot green"></span>支付成功
+                <button class="layui-btn layui-btn-success layui-btn-xs">支付成功</button>
+<!--                <span class="layui-badge-dot green"></span>支付成功-->
                 {{#  } else if(d.order_status == 2){ }}
-                <span class="layui-badge-dot gray"></span>支付失败
+                <button class="layui-btn layui-btn-danger layui-btn-xs">支付成功</button>
                 {{#  } else if(d.order_status == 0){ }}
-                <span class="layui-badge-dot gray"></span>等待支付
+                <button class="layui-btn layui-btn-important layui-btn-xs">等待支付</button>
                 {{#  } else if(d.order_status == 4){ }}
-                <span class="layui-badge-dot gray"></span>预拉未用
+                <button class="layui-btn layui-btn-gray layui-btn-xs">预拉未用</button>
                 {{#  } }}
             </script>
             <script type="text/html" id="table-seller-admin">
