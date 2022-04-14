@@ -163,7 +163,7 @@ class OrderdouyinModel extends Model
         $returnCode = 3;
         $msg = "失败！";
         $db = new Db();
-//        $db::startTrans();
+        $db::startTrans();
         try {
 //            ->where('status', '=', 0)
 //                ->where('url_status', '=', 0)
@@ -175,7 +175,7 @@ class OrderdouyinModel extends Model
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
-//                ->lock(true)
+                ->lock(true)
                 ->find();
             if ($info) {
                 $updateWhere['t_id'] = $info['t_id'];
@@ -204,7 +204,7 @@ class OrderdouyinModel extends Model
                     $update['url_status'] = 1;
                     $update['order_status'] = 0;
                     $this->where($updateWhere)->update($update);
-//                    $db::commit();
+                    $db::commit();
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
 
@@ -222,21 +222,21 @@ class OrderdouyinModel extends Model
                     $update['order_status'] = 0;   //等待付款 --等待通知核销
                     $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                     $this->where($updateWhere)->update($update);
-//                    $db::commit();
+                    $db::commit();
                 }
                 return modelReMsg($returnCode, $info, $msg);
             }
             logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTordera_fitst_log');
 
-//            $db::commit();
+            $db::commit();
             //没有可下单推单！
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
-//            $db::rollback();
+            $db::rollback();
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
             return modelReMsg(-1, '', $exception->getMessage());
         } catch (\Exception $e) {
-//            $db::rollback();
+            $db::rollback();
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
             return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
         }
@@ -436,7 +436,7 @@ class OrderdouyinModel extends Model
     {
         $successNum = 0;
         try {
-//            logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
+            logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
 
             $amount = $v['order_amount'];
             //获取CK
