@@ -177,9 +177,7 @@ class OrderdouyinModel extends Model
                 ->order("add_time asc")
                 ->lock(true)
                 ->find();
-            logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTordera_fitst_log');
             if ($info) {
-
                 $updateWhere['t_id'] = $info['t_id'];
                 $updateWhere['order_no'] = $info['order_no'];
                 $update['last_use_time'] = time();
@@ -227,8 +225,8 @@ class OrderdouyinModel extends Model
                     $db::commit();
                 }
                 return modelReMsg($returnCode, $info, $msg);
-
             }
+            logs(json_encode(['account' => $cookie['account'], 'info' => $info, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTordera_fitst_log');
 
             $db::commit();
             //没有可下单推单！
