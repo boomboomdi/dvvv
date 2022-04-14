@@ -165,7 +165,7 @@ class OrderdouyinModel extends Model
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
             if ($info) {
-                if (!$info['url_status'] == 1) {
+                if ($info['url_status'] != 1) {
                     $updateWhere['t_id'] = $info['t_id'];
                     $updateWhere['order_no'] = $info['order_no'];
                     $update['last_use_time'] = time();
