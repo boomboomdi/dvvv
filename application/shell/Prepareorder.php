@@ -47,7 +47,6 @@ class Prepareorder extends Command
             } else {
                 foreach ($prepareAmountList as $k => $v) {
 
-
                     $v = $db::table("bsa_prepare_set")->where("id", $v['id'])->lock(true)->find();
 //                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $can_use_num = $db::table("bsa_torder_douyin")
@@ -66,12 +65,12 @@ class Prepareorder extends Command
                         if ($res['code'] == 0 && $res['data'] > 0) {
                             $prepareSetWhere['id'] = $v['id'];
                             $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
+                            $db::commit();
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
                             sleep(1);
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
-                        $db::commit();
                     }
 
                 }
