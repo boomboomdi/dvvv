@@ -41,7 +41,10 @@ class Prepareorder extends Command
             //下单金额
             $prepareWhere['status'] = 1;
             $prepareAmountList = $db::table("bsa_prepare_set")->where($prepareWhere)->select();
-            if (count($prepareAmountList) > 0) {
+//            if (count($prepareAmountList) > 0) {
+            if (!is_array($prepareAmountList) || count($prepareAmountList) == 0) {
+                $output->writeln("Prepareorder:无预产任务");
+            } else {
                 foreach ($prepareAmountList as $k => $v) {
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
@@ -70,6 +73,8 @@ class Prepareorder extends Command
 
                 }
             }
+
+
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
 
