@@ -437,7 +437,6 @@ class OrderdouyinModel extends Model
         $successNum = 0;
         try {
             logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
-
             $amount = $v['order_amount'];
             //获取CK
             $cookieModel = new CookieModel();

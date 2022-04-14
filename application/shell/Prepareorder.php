@@ -52,7 +52,6 @@ class Prepareorder extends Command
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 1)
-//                        ->where('order_me', '<>', null)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")
@@ -64,11 +63,12 @@ class Prepareorder extends Command
                         logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
 
                         if ($res['code'] == 0 && $res['data'] > 0) {
-                            $prepareSetWhere['id'] = $v['id'];
-                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
+//                            $prepareSetWhere['id'] = $v['id'];
+//                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
                             $db::commit();
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
+                            $db::commit();
                             sleep(1);
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
@@ -76,7 +76,7 @@ class Prepareorder extends Command
 
                 }
             }
-
+            $db::commit();
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
             $db::rollback();
