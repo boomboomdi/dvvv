@@ -158,7 +158,7 @@ class OrderdouyinModel extends Model
      * @param $where
      * @return array
      */
-    public function getUseTorder($where, $cookie)
+    public function getUseTorder($amount, $cookie)
     {
         $returnCode = 3;
         $msg = "失败！";
@@ -169,9 +169,10 @@ class OrderdouyinModel extends Model
 //                ->where('url_status', '=', 0)
 //                ->where('add_time', '>', time() - 600)
             //有没有
-            $limit_time = time()-600;
+            $limit_time = time() - 600;
             $info = $this
                 ->where('status', '=', 0)
+                ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
@@ -453,8 +454,8 @@ class OrderdouyinModel extends Model
                     break;
                 }
                 //获取话单
-                $where['total_amount'] = $amount;
-                $getUesTorderRes = $this->getUseTorder($where, $getCookieRes['data']);
+//                $where['total_amount'] = $amount;
+                $getUesTorderRes = $this->getUseTorder($amount, $getCookieRes['data']);
                 logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'PrepareorderGetUesTorderRes_log');
 
                 if ($getUesTorderRes['code'] == 1) {
