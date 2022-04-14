@@ -159,11 +159,11 @@ class OrderdouyinModel extends Model
         $db::startTrans();
         try {
             //有没有
-            $info = $this->where($where)->order("add_time asc")->lock(true)->find();
+            $torder = $this->where($where)->order("add_time asc")->find();
 
-            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTorder_fitst');
-            if ($info) {
-//                $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
+            logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTorder_fitst');
+            if ($torder) {
+                $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
                 if ($info) {
                     $updateWhere['t_id'] = $info['t_id'];
                     $updateWhere['order_no'] = $info['order_no'];
@@ -192,6 +192,7 @@ class OrderdouyinModel extends Model
                         $update['url_status'] = 1;
                         $update['order_status'] = 0;
                         $this->where($updateWhere)->update($update);
+                        $db::commit();
                     }
                     if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
 
@@ -201,7 +202,6 @@ class OrderdouyinModel extends Model
                         //下单失败！
                     }
                     if (isset($notifyResult['code']) && $notifyResult['code'] == 4) {
-                        $db::commit();
                         $returnCode = 4;
                         $msg = "下单失败，ck失效！";
                         //下单失败！
@@ -211,6 +211,7 @@ class OrderdouyinModel extends Model
                         $update['order_status'] = 0;   //等待付款 --等待通知核销
                         $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                         $this->where($updateWhere)->update($update);
+                        $db::commit();
                     }
 
                     return modelReMsg($returnCode, $info, $msg);
@@ -219,8 +220,6 @@ class OrderdouyinModel extends Model
             //没有可下单推单！
             return modelReMsg(-2, '', '没有可下单推单');
         } catch (\Exception $exception) {
-
-
             $db::rollback();
             logs(json_encode(['where' => $where, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
             return modelReMsg(-1, '', $exception->getMessage());
