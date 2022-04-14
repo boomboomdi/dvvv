@@ -170,7 +170,7 @@ class OrderdouyinModel extends Model
 //                ->where('url_status', '=', 0)
 //                ->where('add_time', '>', time() - 600)
             //有没有
-            $limit_time = time()-10000;
+            $limit_time = time()-600;
             $info = $this
                 ->where('status', '=', 0)
                 ->where('url_status', '=', 0)
