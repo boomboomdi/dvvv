@@ -179,6 +179,7 @@ class OrderdouyinModel extends Model
 
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder, "last_sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'getUseTorder_fitst');
             if (empty($torder)) {
+                $db::rollback();
                 return modelReMsg(-3, '', '没有可下单推单');
             }
             $info = $this->where("t_id", $torder['t_id'])->lock(true)->find();
