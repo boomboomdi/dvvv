@@ -49,7 +49,7 @@ class Timecheckdouyin extends Command
                 ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
-
+            $db = new Db();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
@@ -61,7 +61,17 @@ class Timecheckdouyin extends Command
 
                     $torderDouyinWhere['order_me'] = $v['order_me'];
                     $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                    if (isset($getOrderStatus['code']) && $getOrderStatus['code'] = !0) {
+                        $prepareWhere['order_amount'] = $v['total_amount'];
+                        $prepareWhere['status'] = 1;
+                        $db::table("bsa_prepare_set")->where($prepareWhere)
+                            ->update([
+                                "can_use_num" => Db::raw("can_use_num-1")
+                            ]);
+
+                    }
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
+
                         //支付成功
                         $orderWhere['order_pay'] = $v['order_pay'];
                         $orderWhere['order_me'] = $v['order_me'];
