@@ -96,11 +96,19 @@ class OrderdouyinModel extends Model
         $orderWhere['url_status'] = 1;  //0:未使用1:启用中2:已禁用
         $orderWhere['total_amount'] = $where['amount'];  //
         $prepareSetWhere['order_amount'] = $where['amount'];
+        $prepareSetWhere['status'] = 1;
 
         $db = new Db();
         try {
             //有没有
-            $info = $this->where($orderWhere)->order("add_time asc")->find();
+            $info = $this
+                ->where('total_amount', '=', $where['amount'])
+                ->where('url_status', '=', 1)
+                ->where('order_me', '=', null)
+                ->where('status', '=', 1)
+                ->where('last_use_time', '>', time() - 180)
+                ->where('last_use_time', '<', time())
+                ->order("last_use_time asc")->find();
             logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_info');
 
             if (!empty($info)) {
