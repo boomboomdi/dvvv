@@ -202,17 +202,14 @@ class OrderModel extends Model
             $info = 0;
             $where['merchant_sign'] = $merchantSign;
             $handNum = $this->where($where)->where("status", 5)->count();
-            if (!empty($handNum) && is_int($handNum)) {
-                $info += $handNum;
-            }
+            $info = $info + $handNum;
             //回调中的
             $postingNum = $this->where($where)->where("status", 6)->count();
-            if (!empty($postingNum) && is_int($postingNum)) {
-                $info += $postingNum;
-            }
+            $info = $info + $postingNum;
+
             $where['status'] = 1;
             if (!empty($this->where($where)->count()) || is_int($this->where($where)->count())) {
-                $info += $this->where($where)->count();
+                $info = $info + $this->where($where)->count();
             }
         } catch (\Exception $e) {
             return modelReMsg(-1, 0, $e->getMessage());
