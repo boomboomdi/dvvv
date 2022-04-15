@@ -120,4 +120,9 @@ class Torder extends Controller
         }
     }
 
+    public function getStrTest()
+    {
+
+    }
+
 }

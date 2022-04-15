@@ -106,9 +106,9 @@ class OrderdouyinModel extends Model
                 ->where('url_status', '=', 1)
                 ->where('order_me', '=', null)
 //                ->where('status', '=', 1)
-                ->where('last_use_time', '>', time() - 180)
-                ->where('last_use_time', '<', time())
-                ->order("last_use_time asc")
+                ->where('get_url_time', '>', time() - 180)
+                ->where('get_url_time', '<', time())
+                ->order("get_url_time asc")
                 ->find();
             logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_log');
 
