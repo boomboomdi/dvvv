@@ -179,7 +179,7 @@ class OrderdouyinModel extends Model
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
-                ->lock(true)
+//                ->lock(true)
                 ->find();
             if ($info) {
                 $updateWhere['t_id'] = $info['t_id'];
@@ -208,10 +208,13 @@ class OrderdouyinModel extends Model
                         $update['check_url'] = $notifyResult['order_url'];
                         $update['order_pay'] = $notifyResult['order_id'];
                         $update['get_url_time'] = time();
-                        $update['status'] = 1;
+//                        $update['status'] = 1;
                         $update['url_status'] = 1;
                         $update['order_status'] = 0;
-                        $this->where($updateWhere)->update($update);
+                        $updateTorder = $this->where($updateWhere)->update($update);
+                        if ($updateTorder) {
+                            logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
+                        }
                         $db::commit();
                     }
 
