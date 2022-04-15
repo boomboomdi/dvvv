@@ -53,7 +53,6 @@ class Prepareorder extends Command
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 1)
-//                        ->where('prepare', '=', 0)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")
@@ -63,7 +62,6 @@ class Prepareorder extends Command
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
                         logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
-
                         if ($res['code'] == 0 && $res['data'] > 0) {
 //                            $prepareSetWhere['id'] = $v['id'];
 //                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
