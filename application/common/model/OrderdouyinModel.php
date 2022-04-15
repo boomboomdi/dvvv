@@ -251,7 +251,7 @@ class OrderdouyinModel extends Model
                 }
                 return modelReMsg($returnCode, $info, $msg);
             }
-            logs(json_encode(['account' => $cookie['account'], 'info' => $info]), 'getUseTordera_fitst_log');
+            logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTordera_fitst_log');
 
             $db::commit();
             //没有可下单推单！
