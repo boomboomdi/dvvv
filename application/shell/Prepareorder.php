@@ -73,6 +73,7 @@ class Prepareorder extends Command
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
                     }
+                    sleep(4);
 
                 }
             }
