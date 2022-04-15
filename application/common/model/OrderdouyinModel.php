@@ -173,16 +173,24 @@ class OrderdouyinModel extends Model
             // 可以预拉十分钟之内的未预拉（url_status）
             //  且可用（status=0）  预拉成功 status = 1
             //的推单的推单 （符合金额total_amount）
-            $info = $this
+            $torder = $this
                 ->where('status', '=', 0)
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
-                ->lock(true)
+//                ->lock(true)
                 ->find();
-            if ($info) {
-                logs(json_encode(['info' => $info]), 'lock_torder_result');
+            if ($torder) {
+                $info = $this
+                    ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
+
+                if(!$info){
+                    $db::rollback();
+                    return modelReMsg(-2, '', '没有可下单推单');
+                }
+
+//                logs(json_encode(['info' => $info]), 'lock_torder_result');
                 if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                     $db::rollback();
                     return modelReMsg(-2, '', '没有可下单推单');
