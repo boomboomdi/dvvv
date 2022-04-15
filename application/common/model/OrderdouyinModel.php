@@ -215,7 +215,7 @@ class OrderdouyinModel extends Model
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 4) {
                     $returnCode = 4;
-                    $msg = "下单失败，ck失效！";
+                    $msg = "下单失败，账号无法预拉！";
                     //下单失败！
                     //下单成功！
                     $update['status'] = 2;  //推单使用状态终结
