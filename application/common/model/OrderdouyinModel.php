@@ -182,7 +182,7 @@ class OrderdouyinModel extends Model
                 ->lock(true)
                 ->find();
             if ($info) {
-                logs(json_encode(['info' => $info, 'notifyResult' => $info]), 'lock_torder_result');
+                logs(json_encode(['info' => $info]), 'lock_torder_result');
                 if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                     $db::rollback();
                     return modelReMsg(-2, '', '没有可下单推单');
