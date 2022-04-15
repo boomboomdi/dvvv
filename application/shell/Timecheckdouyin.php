@@ -71,7 +71,6 @@ class Timecheckdouyin extends Command
                             ]);
                     }
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
-
                         //支付成功
                         $orderWhere['order_pay'] = $v['order_pay'];
                         $orderWhere['order_me'] = $v['order_me'];

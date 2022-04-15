@@ -509,7 +509,7 @@ class OrderdouyinModel extends Model
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
             $token = $db::table("bsa_write_off")->where($writeWhere)->find();
             $tOrderDataWhere['order_no'] = $tOrderData['order_no'];
-//            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->lock(true)->find();
+            $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->lock(true)->find();
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];
             $notifyParam['total_amount'] = $tOrderData['total_amount'];
