@@ -83,7 +83,7 @@ class Torder extends Controller
         Log::info('douyin orderInfo first!', $param);
         try {
             $validate = new OrderdouyinValidate();
-            if (!$validate->check($param)) {
+            if (!$validate->scene("order_info")->check($param)) {
                 return json(msg(-1, '', $validate->getError()));
             }
 
