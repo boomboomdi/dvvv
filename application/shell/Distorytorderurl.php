@@ -43,7 +43,7 @@ class Distorytorderurl extends Command
                 ->where('url_status', '=', 1)
                 ->where('last_use_time', '<', $LimitStartTime)
                 ->select();
-//            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
+            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
