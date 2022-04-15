@@ -232,7 +232,7 @@ class OrderdouyinModel extends Model
                     //下单成功！
                     $update['status'] = 2;  //推单使用状态终结
                     $update['url_status'] = 1;  //已经请求
-                    $update['get_url_time'] = time();
+//                    $update['get_url_time'] = time();
                     $update['order_status'] = 0;   //等待付款 --等待通知核销
                     $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                     $this->where($updateWhere)->update($update);
