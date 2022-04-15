@@ -103,6 +103,7 @@ class Timecheckdouyin extends Command
                     //支付链接不可用
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 2) {
                         $torderDouyinUpdate['last_use_time'] = time();
+                        $torderDouyinUpdate['status'] = 2;   //订单终结状态
                         $torderDouyinUpdate['url_status'] = 2;   //订单已失效 以停止查询
                         $torderDouyinUpdate['order_desc'] = "下单成功|匹配成功|订单失效";
                         $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
