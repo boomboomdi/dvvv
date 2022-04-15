@@ -35,14 +35,18 @@ class Distorytorderurl extends Command
         $LimitStartTime = time() - $limitTime;
         $db = new Db();
         try {
-            //查询下单之前300S没有使用的但已经预拉成功的推单  并
+            //查询下单之前600S
+            //没有匹配订单（order_me =null）的
+            //不管预拉与否 url_status = 1
+            //录入时间小于当前时间600s之前 add_time
+            //禁用
             $orderData = $orderdouyinModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('order_me', '=', null)
-                ->where('url_status', '=', 1)
-                ->where('last_use_time', '>', 0)
-                ->where('last_use_time', '<', $LimitStartTime)
+//                ->where('url_status', '=', 1)
+//                ->where('add_time', '>', 0)
+                ->where('add_time', '<', $LimitStartTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
 

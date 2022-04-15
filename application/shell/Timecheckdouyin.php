@@ -41,6 +41,7 @@ class Timecheckdouyin extends Command
             $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
             $where[] = ['order_status', '4'];
             //查询下单之前280s 到现在之前20s的等待付款订单
+            //一直查询  --等待 回调 code!=0  改为status  =2
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
