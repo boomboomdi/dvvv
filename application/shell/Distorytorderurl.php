@@ -41,6 +41,7 @@ class Distorytorderurl extends Command
                 ->where('notify_status', '=', 0)
                 ->where('order_me', '=', null)
                 ->where('url_status', '=', 1)
+                ->where('last_use_time', '>', 0)
                 ->where('last_use_time', '<', $LimitStartTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
@@ -64,7 +65,7 @@ class Distorytorderurl extends Command
                     $torderDouyinUpdate['order_desc'] = "预拉成功|匹配失败|准备核销回调";
                     $uodateTorderRes = $db::table("bsa_torder_douyin")->where($torderDouyinWhere)
                         ->update($torderDouyinUpdate);
-                    if(!$uodateTorderRes){
+                    if (!$uodateTorderRes) {
                         logs(json_encode(['orderData' => $v, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_uodateTorderRes_log');
 
                     }
