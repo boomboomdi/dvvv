@@ -92,7 +92,7 @@ class Timecheckdouyin extends Command
                         $torderDouyinUpdate['success_amount'] = $v['total_amount'];
                         $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
                         $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                        if (!$updateTorderStatus) {
+                        if ($updateTorderStatus) {
                             logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinupdateNotifyTorder_log');
                         }
                         $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
