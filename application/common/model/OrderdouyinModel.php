@@ -487,7 +487,7 @@ class OrderdouyinModel extends Model
                     $updateCookieParam['status'] = 2;
                     $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
                 } else if ($getUesTorderRes['code'] == 0) {
-                    sleep(3);
+                    sleep(1);
                     $msg = $amount . "预产成功！" . $successNum . "个";
                     $successNum++;
                 }
