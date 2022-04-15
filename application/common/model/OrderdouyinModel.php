@@ -208,7 +208,7 @@ class OrderdouyinModel extends Model
                         $update['check_url'] = $notifyResult['order_url'];
                         $update['order_pay'] = $notifyResult['order_id'];
                         $update['get_url_time'] = time();
-//                        $update['status'] = 1;
+                        $update['status'] = 1;
                         $update['url_status'] = 1;
                         $update['order_status'] = 0;
                         $updateTorder = $this->where($updateWhere)->update($update);
