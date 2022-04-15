@@ -53,6 +53,7 @@ class Prepareorder extends Command
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 1)
+                        ->where('prepare', '=', 0)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")
