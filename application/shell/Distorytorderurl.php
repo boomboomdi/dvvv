@@ -26,7 +26,7 @@ class Distorytorderurl extends Command
      */
     protected function execute(Input $input, Output $output)
     {
-        $limitTime = 180;
+        $limitTime = 900;
         $now = time();
         $successNum = 0;
         $errorNum = 0;
