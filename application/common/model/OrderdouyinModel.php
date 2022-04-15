@@ -199,8 +199,8 @@ class OrderdouyinModel extends Model
 
                 //更新预拉时间
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
-                    $updateRes = $db::table('bsa_torder_douyin')->where($updateWhere)->find();
-                    if (isset($updateRes['order_pay']) && empty($updateRes['order_pay'])) {
+//                    $updateRes = $db::table('bsa_torder_douyin')->where($updateWhere)->find();
+//                    if (isset($updateRes['order_pay']) && empty($updateRes['order_pay'])) {
                         $returnCode = 0;
                         $msg = "下单成功！";
                         //下单成功！
@@ -213,7 +213,7 @@ class OrderdouyinModel extends Model
                         $update['order_status'] = 0;
                         $this->where($updateWhere)->update($update);
                         $db::commit();
-                    }
+//                    }
 
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
