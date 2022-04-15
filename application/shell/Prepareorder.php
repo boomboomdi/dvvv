@@ -65,6 +65,8 @@ class Prepareorder extends Command
                         if ($res['code'] == 0 && $res['data'] > 0) {
 //                            $prepareSetWhere['id'] = $v['id'];
 //                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
+
+                            sleep(4);
                             $db::commit();
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
@@ -73,7 +75,6 @@ class Prepareorder extends Command
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
                     }
-                    sleep(4);
 
                 }
             }
