@@ -538,7 +538,6 @@ class OrderdouyinModel extends Model
 
             $successAmount = $tOrderData['success_amount'];
             if ($tOrderData['order_status'] == 1) {
-
                 $successAmount = $tOrderData['total_amount'];
                 $add_order_desc = "|支付成功";
             }
