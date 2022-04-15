@@ -106,6 +106,9 @@ class Torder extends Controller
             }
 //            $data['order_status'] = $res['data']['order_status']; // 0：等待付款(使用中)1：已付款2：未到账(使用中) 4：未使用
 //            $data['success_amount'] = $res['data']['success_amount']; // 付款金额  1 整型
+            if (isset($res['data']['status']) && $res['data']['status'] == 2) {
+                $res['data']['order_status'] = 5;
+            }
             return json(msg($res['data']['order_status'], $where['order_no'], "查询成功！"));
 
         } catch (\Exception $exception) {
