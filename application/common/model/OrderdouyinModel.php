@@ -179,9 +179,12 @@ class OrderdouyinModel extends Model
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
                 ->order("add_time asc")
-//                ->lock(true)
+                ->lock(true)
                 ->find();
             if ($info) {
+                if (!empty($info['order_pay'])) {
+                    return modelReMsg(-2, '', '没有可下单推单');
+                }
                 $updateWhere['t_id'] = $info['t_id'];
                 $updateWhere['order_no'] = $info['order_no'];
                 $update['last_use_time'] = time();
