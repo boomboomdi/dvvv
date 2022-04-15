@@ -535,9 +535,14 @@ class OrderdouyinModel extends Model
                 $match_order_desc = "匹配成功|";
             }
             $add_order_desc = "|支付失败";
+
+            $successAmount = $tOrderData['success_amount'];
             if ($tOrderData['order_status'] == 1) {
+
+                $successAmount = $tOrderData['total_amount'];
                 $add_order_desc = "|支付成功";
             }
+
             $do_order_desc = "|手动核销回调|";
             if ($orderStatus == 1) {
                 $do_order_desc = "|自动核销回调|";
@@ -550,6 +555,7 @@ class OrderdouyinModel extends Model
                         'status' => 2,
                         'url_status' => 2,
                         'notify_status' => 2,
+                        'success_amount' => $successAmount,
                         'notify_time' => time(),
                         'order_desc' => $order_desc
                     ]);
@@ -562,7 +568,7 @@ class OrderdouyinModel extends Model
                     ->update([
                         'status' => 2,
                         'url_status' => 2,
-                        'success_amount' => $tOrderData['success_amount'],
+                        'success_amount' => $successAmount,
                         'notify_status' => 1,
                         'notify_time' => time(),
                         'order_desc' => $order_desc
