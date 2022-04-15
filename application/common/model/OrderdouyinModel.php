@@ -184,7 +184,7 @@ class OrderdouyinModel extends Model
             if ($torder) {
                 $info = $this
                     ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
-                if(!$info){
+                if (!$info) {
                     $db::rollback();
                     return modelReMsg(-2, '', '没有可下单推单');
                 }
@@ -487,6 +487,7 @@ class OrderdouyinModel extends Model
                     $updateCookieParam['status'] = 2;
                     $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
                 } else if ($getUesTorderRes['code'] == 0) {
+                    sleep(3);
                     $msg = $amount . "预产成功！" . $successNum . "个";
                     $successNum++;
                 }
