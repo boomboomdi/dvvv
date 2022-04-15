@@ -211,23 +211,23 @@ class OrderdouyinModel extends Model
                 //更新预拉时间
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
 //                    $updateRes = $db::table('bsa_torder_douyin')->where($updateWhere)->find();
-                    if (isset($info['order_pay']) && empty($info['order_pay'])) {
-                        $returnCode = 0;
-                        $msg = "下单成功！";
-                        //下单成功！
-                        $update['pay_url'] = $notifyResult['ali_url'];
-                        $update['check_url'] = $notifyResult['order_url'];
-                        $update['order_pay'] = $notifyResult['order_id'];
-                        $update['get_url_time'] = time();
-                        $update['status'] = 1;
-                        $update['url_status'] = 1;
-                        $update['order_status'] = 0;
-                        $updateTorder = $this->where($updateWhere)->update($update);
-                        if ($updateTorder) {
-                            logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
-                        }
-                        $db::commit();
+//                    if (isset($info['order_pay']) && !empty($info['order_pay'])) {
+                    $returnCode = 0;
+                    $msg = "下单成功！";
+                    //下单成功！
+                    $update['pay_url'] = $notifyResult['ali_url'];
+                    $update['check_url'] = $notifyResult['order_url'];
+                    $update['order_pay'] = $notifyResult['order_id'];
+                    $update['get_url_time'] = time();
+                    $update['status'] = 1;
+                    $update['url_status'] = 1;
+                    $update['order_status'] = 0;
+                    $updateTorder = $this->where($updateWhere)->update($update);
+                    if ($updateTorder) {
+                        logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
                     }
+                    $db::commit();
+//                    }
 
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
