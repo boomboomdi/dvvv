@@ -183,6 +183,7 @@ class OrderdouyinModel extends Model
                 ->find();
             if ($info) {
                 if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
+                    $db::rollback();
                     return modelReMsg(-2, '', '没有可下单推单');
                 }
                 $updateWhere['t_id'] = $info['t_id'];
