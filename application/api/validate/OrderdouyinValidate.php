@@ -37,7 +37,7 @@ class OrderdouyinValidate extends Validate
     ];
     protected $scene = [
         'ping'=>['account','studio','device_desc','status','time'],
-        'order_info'=>['write_off_sign','order_no','account','status','time']
+        'order_info'=>['write_off_sign','order_no','account','time']
     ];
 
 
