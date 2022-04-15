@@ -182,7 +182,7 @@ class OrderdouyinModel extends Model
                 ->lock(true)
                 ->find();
             if ($info) {
-                if (!empty($info['order_pay'])) {
+                if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                     return modelReMsg(-2, '', '没有可下单推单');
                 }
                 $updateWhere['t_id'] = $info['t_id'];
