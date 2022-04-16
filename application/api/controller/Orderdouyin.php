@@ -345,7 +345,6 @@ class Orderdouyin extends Controller
             $updateWeightRes = $db::table("bsa_torder_douyin")->where($updateWhere)->update($updateWeight);
             if (!$updateWeightRes) {
                 $db::rollback();
-
                 return "update Torder fail";
                 logs(json_encode(['order_no' => $notifyResult['order_no'], 'updateWeightRes' => $updateWeightRes]), 'updatePrepareOrder_log');
             }
