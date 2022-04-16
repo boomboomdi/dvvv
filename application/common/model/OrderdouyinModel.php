@@ -382,7 +382,7 @@ class OrderdouyinModel extends Model
                 return modelReMsg(-2, '', '核销单已更新！');
             }
             $updateWhere['t_id'] = $info['t_id'];
-            $updateWhere['order_no'] = $info['order_no'];
+//            $updateWhere['order_no'] = $info['order_no'];
             $update['last_use_time'] = time();
             $update['use_times'] = $info['use_times'] + 1;
             $update['cookie'] = $cookie['cookie'];
