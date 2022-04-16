@@ -669,20 +669,19 @@ class OrderdouyinModel extends Model
                     $msg = $getCookieRes['msg'];
                     break;
                 }
-                $this->getUseTOrderNew($val, $getCookieRes['data']);
+                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
 //                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
-//                if ($getUesTOrderRes['code'] == 1) {   //下单失败，ck失效
-//                    $updateCookieWhere['id'] = $getCookieRes['data']['id'];
-//                    $updateCookieParam['status'] = 2;
-//                    $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
-//                    $errorNum++;
-//                } else if ($getUesTOrderRes['code'] == 0) {  //下单成功
-////                    sleep(1);
-//                    $msg = $amount . "预产失败！" . $successNum++ . "个";
-//                    $successNum++;
-//                }
+                if ($getUesTOrderRes['code'] == 0) {  //下单成功
+                    $msg = "|" . $amount . "预产成功！" . $successNum++ . "个";
+                    $successNum++;
+                } else {
+                    $msg = "|" . $amount . "预产失败！" . $successNum++ . "个";
+                    $successNum++;
+                }
             }
-            return modelReMsg(0, $successNum, "预产成功！");
+            logs(json_encode(['endTime' => date("Y-m-d H:i:s", time()), "info" => $torderData['order_no'], "getRes" => $msg]), 'getUseTOrderNew_log');
+
+            return modelReMsg(0, $successNum, $msg);
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'PrepareorderCreateOrderException_log');
             return modelReMsg('-11', $successNum, "预产单失败" . $exception->getMessage());
