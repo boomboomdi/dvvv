@@ -48,7 +48,7 @@ class Prepareorder extends Command
                 $output->writeln("Prepareorder:无预产任务");
             } else {
                 foreach ($prepareAmountList as $k => $v) {
-                    $v = $db::table("bsa_prepare_set")->where("status", "=", 1)->where("id", $v['id'])->lock(true)->find();
+//                    $v = $db::table("bsa_prepare_set")->where("status", "=", 1)->where("id", $v['id'])->lock(true)->find();
 //                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
@@ -78,11 +78,11 @@ class Prepareorder extends Command
             }
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
-            $db::rollback();
+//            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
             $output->writeln("Prepareorder:浴场处理失败！" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
-            $db::rollback();
+//            $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
             $output->writeln("Prepareorder:浴场处理失败！！" . $totalNum . "error");
         }
