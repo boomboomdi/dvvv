@@ -178,14 +178,14 @@ class OrderdouyinModel extends Model
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
-//                ->where('weight', '>', )
+//                ->where('weight', '=',0 )
                 ->order("add_time weight asc")
 //                ->lock(true)
                 ->find();
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "torder" => $torder]), 'lock_tOrder_log');
 
             if ($torder) {
-                $updateWeight['weight'] = $torder['weight'] + 1;
+                $updateWeight['weight'] = 1;
                 $updateWeightRes = $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
                 logs(json_encode(['updateWeightTime' => date("Y-m-d H:i:s", time()), "updateWeightRes" => $updateWeightRes]), 'lock_tOrder_log');
 
@@ -242,7 +242,6 @@ class OrderdouyinModel extends Model
                     if ($updateTorder) {
                         logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
                     }
-                    $db::commit();
 //                    }
                 }
                 if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
@@ -262,8 +261,11 @@ class OrderdouyinModel extends Model
                     $update['order_status'] = 0;   //等待付款 --等待通知核销
                     $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                     $this->where($updateWhere)->update($update);
-                    $db::commit();
+
                 }
+                $db::commit();
+                $updateWeight['weight'] = 0;
+                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
                 return modelReMsg($returnCode, $info, $msg);
             }
             logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTordera_fitst_log');
