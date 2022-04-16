@@ -182,7 +182,10 @@ class OrderdouyinModel extends Model
                 ->lock(true)
                 ->find();
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "torder" => $torder]), 'lock_tOrder_log');
-
+            if (!$torder) {
+                $db::rollback();
+                return modelReMsg(-2, '', '没有可下单推单');
+            }
             if ($torder) {
                 $updateWeight['weight'] = $torder['weight'] + 1;
                 $updateWeightRes = $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
@@ -192,14 +195,11 @@ class OrderdouyinModel extends Model
                     $db::rollback();;
                     return modelReMsg(-5, '', '没有可下单推单');
                 }
-                $info = $this
-                    ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
-                logs(json_encode(['lockTime' => date("Y-m-d H:i:s", time()), "info" => $info]), 'lock_tOrder_log');
+//                $info = $this
+//                    ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
+//                logs(json_encode(['lockTime' => date("Y-m-d H:i:s", time()), "info" => $info]), 'lock_tOrder_log');
 
-                if (!$info) {
-                    $db::rollback();
-                    return modelReMsg(-2, '', '没有可下单推单');
-                }
+
 
                 logs(json_encode(['info' => $info]), 'lock_torder_result');
                 if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
