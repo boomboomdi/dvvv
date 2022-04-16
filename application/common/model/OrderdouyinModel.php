@@ -190,7 +190,7 @@ class OrderdouyinModel extends Model
                 logs(json_encode(['updateWeightTime' => date("Y-m-d H:i:s", time()), "updateWeightRes" => $updateWeightRes]), 'lock_tOrder_log');
 
                 if (!$updateWeightRes) {
-                    $db::rollback();;
+                    $db::rollback();
                     return modelReMsg(-5, '', '没有可下单推单');
                 }
                 $info = $this
