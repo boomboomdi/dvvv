@@ -340,7 +340,7 @@ class Orderdouyin extends Controller
                 $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
             }
             $updateWeight['weight'] = 0;
-            $updateWeightRes = $this->where('t_id', '=', $info['t_id'])->update($updateWeight);
+            $updateWeightRes = $db::table("bsa_torder_douyin")->update($updateWeight);
             if (!$updateWeightRes) {
                 logs(json_encode(['order_no' => $notifyResult['order_no'], 'updateWeightRes' => $updateWeightRes]), 'updatePrepareOrder_log');
             }
