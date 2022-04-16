@@ -338,10 +338,14 @@ class Orderdouyin extends Controller
                 $update['order_status'] = 0;   //等待付款 --等待通知核销
                 $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
                 $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
+                $db::commit();
             }
             $updateWeight['weight'] = 0;
-            $updateWeightRes = $db::table("bsa_torder_douyin")->update($updateWeight);
+            $updateWeightRes = $db::table("bsa_torder_douyin")->where($updateWhere)->update($updateWeight);
             if (!$updateWeightRes) {
+                $db::rollback();
+
+                return "update Torder fail";
                 logs(json_encode(['order_no' => $notifyResult['order_no'], 'updateWeightRes' => $updateWeightRes]), 'updatePrepareOrder_log');
             }
             $db::commit();
@@ -352,7 +356,7 @@ class Orderdouyin extends Controller
             return json(msg('-22', '', 'create order error!' . $error->getMessage() . $error->getLine()));
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
-            return json(msg('-11', '', 'create order Exception!' . $exception->getMessage() . $exception->getFile() . $exception->getLine()));
+            return json(msg('-11', '', 'create order Exception!' . $exception->getMessage() . $exception->getFile()));
         }
     }
 }
