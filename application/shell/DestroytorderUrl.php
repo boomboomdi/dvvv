@@ -45,7 +45,7 @@ class DestroytorderUrl extends Command
             $orderData = $orderdouyinModel
                 ->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
-                ->where('url_status', '=', 2)
+//                ->where('url_status', '=', 2)
                 ->where('order_me', '=', null)
                 ->where('get_url_time', '<', $lockLimit)
                 ->where('get_url_time', '>', 0)
