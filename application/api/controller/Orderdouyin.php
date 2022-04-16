@@ -275,20 +275,20 @@ class Orderdouyin extends Controller
         $db::startTrans();
         $notifyResult = $data;
         try {
-            if (!isset($notifyResult['code']) || !isset($notifyResult['account'])
-                || !isset($notifyResult['order_id']) || !isset($notifyResult['order_no'])
-                || !isset($notifyResult['ali_url']) || !isset($notifyResult['order_url'])
-            ) {
-                logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
-                return "缺少必要参数";
-                return json(msg(-1, '', $validate->getError()));
-            }
-//            $validate = new OrderdouyindanValidate();
-//            if (!$validate->check($notifyResult)) {
+//            if (!isset($notifyResult['code']) || !isset($notifyResult['account'])
+//                || !isset($notifyResult['order_id']) || !isset($notifyResult['order_no'])
+//                || !isset($notifyResult['ali_url']) || !isset($notifyResult['order_url'])
+//            ) {
 //                logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
-//                return "参数格式有误" . $validate->getError();
+//                return "缺少必要参数";
 //                return json(msg(-1, '', $validate->getError()));
 //            }
+            $validate = new OrderdouyindanValidate();
+            if (!$validate->check($notifyResult)) {
+                logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
+                return "参数格式有误" . $validate->getError();
+                return json(msg(-1, '', $validate->getError()));
+            }
 
             $updateWhere['account'] = $notifyResult['account'];
             $updateWhere['order_no'] = $notifyResult['order_no'];
