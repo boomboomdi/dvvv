@@ -183,8 +183,10 @@ class OrderdouyinModel extends Model
                 ->find();
             if ($torder) {
                 $updateWeight['weight'] = $torder['weight'] + 1;
-                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
-                $db::commit();
+                $updateWeightRes = $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
+                if(!$updateWeightRes){
+                    return modelReMsg(-5, '', '没有可下单推单');
+                }
                 $info = $this
                     ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
                 if (!$info) {
