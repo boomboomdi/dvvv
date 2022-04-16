@@ -317,6 +317,7 @@ class Orderdouyin extends Controller
                 $update['status'] = 1;
                 $update['url_status'] = 1;
                 $update['order_status'] = 0;
+                $update['order_desc'] = "预拉成功|等待匹配";
                 $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
             }
             $cookieModel = new CookieModel();
