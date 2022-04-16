@@ -178,10 +178,13 @@ class OrderdouyinModel extends Model
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
-                ->order("add_time asc")
+                ->order("weight asc")
 //                ->lock(true)
                 ->find();
             if ($torder) {
+                $updateWeight['weight'] = $torder['weight'] + 1;
+                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight['weight']);
+                $db::commit();
                 $info = $this
                     ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
                 if (!$info) {
