@@ -267,16 +267,17 @@ class Orderdouyin extends Controller
     public function updatePrepareOrder0076()
     {
         $data = @file_get_contents('php://input');
-        $notifyResult = json_decode($data, true);
+        $data = json_decode($data, true);
 
         $returnCode = 3;
         $msg = "失败！";
         $db = new Db();
         $db::startTrans();
-
+        $notifyResult = $data;
         try {
             if (!isset($notifyResult['code']) || !isset($notifyResult['account'])
-                || !isset($notifyResult['order_id']) || !isset($notifyResult['order_no']) || !isset($notifyResult['ali_url']) || !isset($notifyResult['order_url'])
+                || !isset($notifyResult['order_id']) || !isset($notifyResult['order_no'])
+                || !isset($notifyResult['ali_url']) || !isset($notifyResult['order_url'])
             ) {
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
                 return "缺少必要参数";
