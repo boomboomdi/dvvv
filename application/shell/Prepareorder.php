@@ -67,10 +67,8 @@ class Prepareorder extends Command
 //                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
 
 //                            sleep(4);
-                            $db::commit();
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
-                            $db::commit();
 //                            sleep(1);
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
@@ -78,7 +76,6 @@ class Prepareorder extends Command
 
                 }
             }
-            $db::commit();
             $output->writeln("Prepareorder:预产单处理成功" . $msg);
         } catch (\Exception $exception) {
             $db::rollback();
