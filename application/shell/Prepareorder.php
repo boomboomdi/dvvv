@@ -59,6 +59,7 @@ class Prepareorder extends Command
 //                        ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('weight', '=', 1)
+                        ->where('get_url_time', '=',0)
                         ->where('add_time', '>', time() - 600)
                         ->order("add_time asc")
                         ->count();

@@ -324,7 +324,9 @@ class OrderdouyinModel extends Model
             }
             //获取话单
             $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
+
             $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
+            $createParam['ck_account'] = $cookie['account'];   //account  bsa_cookie
             $createParam['amount'] = $info['total_amount'];   //total_amount  bsa_torder_douyin
             $createParam['order_no'] = $info['order_no'];   //order_no  bsa_torder_douyin
             $postStartDate = date("Y-m-d H:i:s", time());
