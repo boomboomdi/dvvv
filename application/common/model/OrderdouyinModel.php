@@ -338,6 +338,8 @@ class OrderdouyinModel extends Model
             logs(json_encode(['createParam' => $createParam['order_no'], "startTime" => $postStartDate, 'postEndDate' => date("Y-m-d H:i:s", time()), 'notifyResult' => $notifyResult]), 'getUseTOrderNew_log');
             if ($notifyResult == "success") {
                 return modelReMsg(0, $info, $msg);
+            } else {
+                $db::rollback();
             }
             return modelReMsg(-2, $info, "getUseTOrderNew_res预拉失败");
 
