@@ -16,7 +16,7 @@ class OrderdouyindanValidate extends Validate
     ];
 
     protected $message = [
-        'account.require' => 'require write_off_sign',
+        'account.require' => 'require account',
         'order_no.require' => 'require order_no',
         'ali_url.require' => 'require ali_url',
         'order_url.require' => 'require order_url',
