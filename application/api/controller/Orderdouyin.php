@@ -3,15 +3,10 @@
 namespace app\api\controller;
 
 use app\admin\model\CookieModel;
-use app\admin\model\WriteoffModel;
-use app\api\validate\OrderdouyinValidate;
+use app\api\validate\OrderdouyindanValidate;
 use app\api\validate\OrderinfoValidate;
 use app\common\model\DeviceModel;
-use app\api\model\OrderLog;
-use app\api\model\TorderModel;
 use app\common\model\OrderdouyinModel;
-use app\common\model\OrderModel;
-use app\common\model\PayapiModel;
 use think\Db;
 use think\facade\Log;
 use think\Request;
@@ -272,26 +267,33 @@ class Orderdouyin extends Controller
     public function updatePrepareOrder0076()
     {
         $data = @file_get_contents('php://input');
-        $message = json_decode($data, true);
+        $notifyResult = json_decode($data, true);
 
         $returnCode = 3;
         $msg = "失败！";
         $db = new Db();
         $db::startTrans();
         try {
-            $updateWhere['account'] = $message['account'];
-            $updateWhere['order_no'] = $message['order_no'];
+            $validate = new OrderdouyindanValidate();
+            if (!$validate->check($notifyResult)) {
+                return "参数格式有误" . $validate->getError();
+                return json(msg(-1, '', $validate->getError()));
+            }
+
+            $updateWhere['account'] = $notifyResult['account'];
+            $updateWhere['order_no'] = $notifyResult['order_no'];
             $updateWhere['weight'] = 1;
             $info = $this->where($updateWhere)->lock(true)->find();
             if (!$info) {
                 $lastSql = $db::table("bsa_torder_douyin")->getLastSql();
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info, "lastSql" => $lastSql]), 'updatePrepareOrder_log');
                 $db::rollback();
-                return modelReMsg(-1, '', '暂无此催单！');
+                return "暂无此催单";
+//                return modelReMsg(-2, '', '暂无此催单！');
             }
             if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                 $db::rollback();
-                logs(json_encode(['message' => $message, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
+                logs(json_encode(['message' => $notifyResult, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
                 return modelReMsg(-2, '', '核销单已更新！');
             }
             if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
@@ -328,9 +330,12 @@ class Orderdouyin extends Controller
                 $this->where($updateWhere)->update($update);
             }
             $updateWeight['weight'] = 0;
-            $this->where('t_id', '=', $info['t_id'])->update($updateWeight);
+            $updateWeightRes = $this->where('t_id', '=', $info['t_id'])->update($updateWeight);
+            if (!$updateWeightRes) {
+                logs(json_encode(['order_no' => $notifyResult['order_no'], 'updateWeightRes' => $updateWeightRes]), 'updatePrepareOrder_log');
+            }
             $db::commit();
-            return modelReMsg($returnCode, $info, $msg);
+            return "success";
 
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'douyin_order_error');
