@@ -23,7 +23,6 @@ class Device extends Controller
      */
     public function ping(Request $request)
     {
-//        $param = $request->param();
         $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
         Log::info('ping log first!', $param);
@@ -36,7 +35,7 @@ class Device extends Controller
                 unset($param['type']);
             }
             $deviceModel = new DeviceModel();
-//            $updateParam['account'] = $param['account'];
+            $updateParam['account'] = $param['account'];
             $updateParam['heart_time'] = time();
             $updateParam['device_status'] = 1;
 //            $updateParam['studio'] = $param['studio'];
