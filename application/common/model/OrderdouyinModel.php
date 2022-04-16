@@ -178,7 +178,7 @@ class OrderdouyinModel extends Model
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
-                ->where('weight', '>', $limit_time)
+//                ->where('weight', '>', )
                 ->order("add_time weight asc")
 //                ->lock(true)
                 ->find();
