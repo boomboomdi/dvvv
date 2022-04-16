@@ -269,7 +269,7 @@ class Orderdouyin extends Controller
         exit;
     }
 
-    public function updatePrepareOrder()
+    public function updatePrepareOrder0076()
     {
         $data = @file_get_contents('php://input');
         $message = json_decode($data, true);
@@ -289,15 +289,11 @@ class Orderdouyin extends Controller
                 $db::rollback();
                 return modelReMsg(-1, '', '暂无此催单！');
             }
-
-//            $this->where('t_id', '=', $info['t_id'])->update($update);
-
-            $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
             if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                 $db::rollback();
+                logs(json_encode(['message' => $message, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
                 return modelReMsg(-2, '', '核销单已更新！');
             }
-            logs(json_encode(['message' => $message, 'line' => $message]), 'updatePrepareOrder_log');
             if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
                 $returnCode = 0;
                 $msg = "下单成功！";
