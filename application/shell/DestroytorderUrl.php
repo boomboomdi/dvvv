@@ -103,11 +103,11 @@ class DestroytorderUrl extends Command
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'destroyTOrderUrl_log');
 
-            $output->writeln("DestroyTOrderUrl:销毁已拉单未支付链接exception：" . $exception->getMessage());
+            $output->writeln("DestroyTOrderUrl:超时预产单处理exception：" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'destroyTOrderUrl_log');
 
-            $output->writeln("DestroyTOrderUrl:超时预产单处理成功异常error" . $error->getMessage());
+            $output->writeln("DestroyTOrderUrl:超时预产单处理error" . $error->getMessage());
         }
 
     }
