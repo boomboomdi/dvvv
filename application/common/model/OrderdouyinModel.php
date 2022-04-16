@@ -419,7 +419,6 @@ class OrderdouyinModel extends Model
                 $returnCode = 4;
                 $msg = "下单失败，账号无法预拉！";
                 //下单失败！
-                //下单成功！
                 $update['status'] = 2;  //推单使用状态终结
                 $update['url_status'] = 1;  //已经请求
 //                    $update['get_url_time'] = time();
@@ -672,7 +671,7 @@ class OrderdouyinModel extends Model
                 $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
 //                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
                 if ($getUesTOrderRes['code'] == 0) {  //下单成功
-                    $msg = "|" . $amount . "预产成功！" . $successNum++ . "个";
+                    $msg = "|" . $amount . "预产q成功！" . $successNum++ . "个";
                     $successNum++;
                 } else {
                     $msg = "|" . $amount . "预产失败！" . $successNum++ . "个";

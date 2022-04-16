@@ -36,10 +36,8 @@ class Prepareorder extends Command
             $limitTime = 900;
             $now = time();
 
-//            getUseCookie
             $orderDouYinModel = new OrderdouyinModel();
             //下单金额
-            $prepareWhere['status'] = 1;
             $prepareAmountList = $db::table("bsa_prepare_set")
                 ->where("status", "=", 1)
                 ->select();
@@ -48,8 +46,6 @@ class Prepareorder extends Command
                 $output->writeln("Prepareorder:无预产任务");
             } else {
                 foreach ($prepareAmountList as $k => $v) {
-//                    $v = $db::table("bsa_prepare_set")->where("status", "=", 1)->where("id", $v['id'])->lock(true)->find();
-//                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $can_use_num = $db::table("bsa_torder_douyin")
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 1)
@@ -62,17 +58,15 @@ class Prepareorder extends Command
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
                         if ($res['code'] == 0 && $res['data'] > 0) {
-//
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
-//                            sleep(1);
                             $msg .= "失败金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         }
                     }
 
                 }
             }
-            $output->writeln("Prepareorder:预产单处理成功" . $msg);
+            $output->writeln("Prepareorder:预产单处理成功！");
         } catch (\Exception $exception) {
 //            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
