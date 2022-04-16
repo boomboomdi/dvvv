@@ -178,7 +178,8 @@ class OrderdouyinModel extends Model
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
                 ->where('add_time', '>', $limit_time)
-                ->order("weight asc")
+                ->where('weight', '>', $limit_time)
+                ->order("add_time weight asc")
 //                ->lock(true)
                 ->find();
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "torder" => $torder]), 'lock_tOrder_log');
