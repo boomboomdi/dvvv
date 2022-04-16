@@ -61,12 +61,8 @@ class Prepareorder extends Command
                     $doNum = $v['prepare_num'] - $can_use_num;
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
-                        logs(json_encode(['num' => ($v['prepare_num'] - $v['can_use_num']), 'amount' => $v['order_amount'], 'createOrderRes' => $res]), 'prepareorderapicreateOrder_log');
                         if ($res['code'] == 0 && $res['data'] > 0) {
-//                            $prepareSetWhere['id'] = $v['id'];
-//                            $db::table("bsa_prepare_set")->where("id", $v['id'])->update(['can_use_num' => $v['can_use_num'] + $res['data']]);
-
-//                            sleep(4);
+//
                             $msg .= "金额:" . $v['order_amount'] . $res['msg'] . "(" . $res['data'] . "个)||--";
                         } else {
 //                            sleep(1);
