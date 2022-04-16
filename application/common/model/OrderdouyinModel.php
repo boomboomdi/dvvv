@@ -183,7 +183,7 @@ class OrderdouyinModel extends Model
                 ->find();
             if ($torder) {
                 $updateWeight['weight'] = $torder['weight'] + 1;
-                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight['weight']);
+                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
                 $db::commit();
                 $info = $this
                     ->where('t_id', '=', $torder['t_id'])->lock(true)->find();
