@@ -273,11 +273,11 @@ class Orderdouyin extends Controller
         $msg = "失败！";
         $db = new Db();
         $db::startTrans();
+
         try {
             $validate = new OrderdouyindanValidate();
             if (!$validate->check($notifyResult)) {
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
-
                 return "参数格式有误" . $validate->getError();
                 return json(msg(-1, '', $validate->getError()));
             }
@@ -285,7 +285,7 @@ class Orderdouyin extends Controller
             $updateWhere['account'] = $notifyResult['account'];
             $updateWhere['order_no'] = $notifyResult['order_no'];
             $updateWhere['weight'] = 1;
-            $info = $this->where($updateWhere)->lock(true)->find();
+            $info = $db::table('bsa_torder_douyin')->where($updateWhere)->lock(true)->find();
             if (!$info) {
                 $lastSql = $db::table("bsa_torder_douyin")->getLastSql();
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info, "lastSql" => $lastSql]), 'updatePrepareOrder_log');
@@ -309,7 +309,7 @@ class Orderdouyin extends Controller
                 $update['status'] = 1;
                 $update['url_status'] = 1;
                 $update['order_status'] = 0;
-                $this->where($updateWhere)->update($update);
+                $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
             }
             $cookieModel = new CookieModel();
             if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
@@ -329,7 +329,7 @@ class Orderdouyin extends Controller
 //                    $update['get_url_time'] = time();
                 $update['order_status'] = 0;   //等待付款 --等待通知核销
                 $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
-                $this->where($updateWhere)->update($update);
+                $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
             }
             $updateWeight['weight'] = 0;
             $updateWeightRes = $this->where('t_id', '=', $info['t_id'])->update($updateWeight);
