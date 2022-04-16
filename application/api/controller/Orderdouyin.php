@@ -268,4 +268,81 @@ class Orderdouyin extends Controller
         var_dump($result);
         exit;
     }
+
+    public function updatePrepareOrder()
+    {
+        $data = @file_get_contents('php://input');
+        $message = json_decode($data, true);
+
+        $returnCode = 3;
+        $msg = "失败！";
+        $db = new Db();
+        $db::startTrans();
+        try {
+            $updateWhere['account'] = $message['account'];
+            $updateWhere['order_no'] = $message['order_no'];
+            $updateWhere['weight'] = 1;
+            $info = $this->where($updateWhere)->lock(true)->find();
+            if (!$info) {
+                $lastSql = $db::table("bsa_torder_douyin")->getLastSql();
+                logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info, "lastSql" => $lastSql]), 'updatePrepareOrder_log');
+                $db::rollback();
+                return modelReMsg(-1, '', '暂无此催单！');
+            }
+
+//            $this->where('t_id', '=', $info['t_id'])->update($update);
+
+            $db::table("bsa_torder_douyin")->where($updateWhere)->update($update);
+            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
+                $db::rollback();
+                return modelReMsg(-2, '', '核销单已更新！');
+            }
+            logs(json_encode(['message' => $message, 'line' => $message]), 'updatePrepareOrder_log');
+            if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
+                $returnCode = 0;
+                $msg = "下单成功！";
+                //下单成功！
+                $update['pay_url'] = $notifyResult['ali_url'];
+                $update['check_url'] = $notifyResult['order_url'];
+                $update['order_pay'] = $notifyResult['order_id'];
+                $update['get_url_time'] = time();
+                $update['status'] = 1;
+                $update['url_status'] = 1;
+                $update['order_status'] = 0;
+                $this->where($updateWhere)->update($update);
+            }
+            $cookieModel = new CookieModel();
+            if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
+                $returnCode = 1;
+                $msg = "下单失败，ck失效！";
+                //下单失败！
+                $updateCookieWhere['account'] = $info['ck_account'];
+                $updateCookieParam['status'] = 2;
+                $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
+            }
+            if (isset($notifyResult['code']) && $notifyResult['code'] == 4) {
+                $returnCode = 4;
+                $msg = "下单失败，账号无法预拉！";
+                //下单失败！
+                //下单成功！
+                $update['status'] = 2;  //推单使用状态终结
+                $update['url_status'] = 1;  //已经请求
+//                    $update['get_url_time'] = time();
+                $update['order_status'] = 0;   //等待付款 --等待通知核销
+                $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
+                $this->where($updateWhere)->update($update);
+            }
+            $updateWeight['weight'] = 0;
+            $this->where('t_id', '=', $info['t_id'])->update($updateWeight);
+            $db::commit();
+            return modelReMsg($returnCode, $info, $msg);
+
+        } catch (\Error $error) {
+            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'douyin_order_error');
+            return json(msg('-22', '', 'create order error!' . $error->getMessage() . $error->getLine()));
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
+            return json(msg('-11', '', 'create order Exception!' . $exception->getMessage() . $exception->getFile() . $exception->getLine()));
+        }
+    }
 }

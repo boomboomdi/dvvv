@@ -303,6 +303,73 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 return modelReMsg(-1, '', '此推单暂不可预拉！');
             }
+            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
+                $db::rollback();
+                return modelReMsg(-2, '', '核销单已更新！');
+            }
+
+//            $update['last_use_time'] = time();
+//            $update['use_times'] = $info['use_times'] + 1;
+//            $update['cookie'] = $cookie['cookie'];
+            $update['weight'] = 1;
+            $update['last_use_time'] = time();
+            $update['ck_account'] = $cookie['account'];
+            $update['cookie'] = $cookie['cookie'];
+            $updateRes = $this->where('t_id', '=', $torder['t_id'])->update($update);
+            if (!$updateRes) {
+                $db::rollback();
+                logs(json_encode(['order_no' => $torder['order_no'], '$update' => $update, 'updateRes' => $updateRes]), 'getUseTOrderNew_log');
+                return modelReMsg(-2, '', 'updateRes_fail');
+
+            }
+            //获取话单
+            $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
+            $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
+            $createParam['amount'] = $info['total_amount'];   //total_amount  bsa_torder_douyin
+            $createParam['order_no'] = $info['order_no'];   //order_no  bsa_torder_douyin
+            $postStartDate = date("Y-m-d H:i:s", time());
+
+            $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
+            $notifyResult = json_decode($notifyResult, true);
+//                {"msg":"下单成功","order_url":"https://tp-pay.snssdk.com/cashdesk/?app_id=800095745677&encodeType=base64&merchant_id=1200009574&out_order_no=10000017080988975653278733&return_scheme=&return_url=aHR0cHM6Ly93d3cuZG91eWluLmNvbS9wYXk=&sign=976358abfe82f2e06d576dc22aa2dd05&sign_type=MD5&switch=00&timestamp=1648671358&total_amount=5500&trade_no=SP2022033104154330075991127887&trade_type=H5&uid=8b58441a628f2cee4bd6f629ccd9012a","amount":"55","ali_url":"https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_139e2972e1746412b2bc190190e6ee54&alipay_exterface_invoke_assign_sign=_c_d_j6i_r_hoo%2Bue_vw_hdk_uh_m_cn%2B_t2_e_mi_o_vs_orkqhh_m_o_sjk_i6_yo8gwl9_hy_q%3D%3D","code":0,"order_id":"10000017080988975653278733"}
+            $db::commit();
+            logs(json_encode(['createParam' => $createParam['order_no'], "startTime" => $postStartDate, 'postEndDate' => date("Y-m-d H:i:s", time()), 'notifyResult' => $notifyResult]), 'getUseTOrderNew_log');
+            if ($notifyResult == "success") {
+                return modelReMsg(0, $info, $msg);
+            }
+            return modelReMsg(-2, $info, "getUseTOrderNew_res预拉失败");
+
+        } catch (\Exception $exception) {
+            $db::rollback();
+            logs(json_encode(['where' => $torder, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
+            return modelReMsg(-11, '', $exception->getMessage());
+        } catch (\Exception $e) {
+            $db::rollback();
+            logs(json_encode(['where' => $torder, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
+            return json(msg(-22, '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
+        }
+
+    }
+
+
+    /**
+     * 获取可用付款抖音话单支付链接
+     * @param $where
+     * @return array
+     */
+    public function getUseTOrderOLD2($torder, $cookie)
+    {
+        $returnCode = 3;
+        $msg = "失败！";
+        $db = new Db();
+        $db::startTrans();
+        try {
+            $info = $this->where('t_id', '=', $torder['t_id'])->lock(true)->find();
+            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info]), 'getUseTOrderNew_log');
+            if (!$info) {
+                $db::rollback();
+                return modelReMsg(-1, '', '此推单暂不可预拉！');
+            }
 
             $updateWeight['weight'] = 1;
             $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
@@ -602,17 +669,18 @@ class OrderdouyinModel extends Model
                     $msg = $getCookieRes['msg'];
                     break;
                 }
-                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
-                if ($getUesTOrderRes['code'] == 1) {   //下单失败，ck失效
-                    $updateCookieWhere['id'] = $getCookieRes['data']['id'];
-                    $updateCookieParam['status'] = 2;
-                    $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
-                    $errorNum++;
-                } else if ($getUesTOrderRes['code'] == 0) {  //下单成功
-//                    sleep(1);
-                    $msg = $amount . "预产失败！" . $successNum++ . "个";
-                    $successNum++;
-                }
+                $this->getUseTOrderNew($val, $getCookieRes['data']);
+//                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
+//                if ($getUesTOrderRes['code'] == 1) {   //下单失败，ck失效
+//                    $updateCookieWhere['id'] = $getCookieRes['data']['id'];
+//                    $updateCookieParam['status'] = 2;
+//                    $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
+//                    $errorNum++;
+//                } else if ($getUesTOrderRes['code'] == 0) {  //下单成功
+////                    sleep(1);
+//                    $msg = $amount . "预产失败！" . $successNum++ . "个";
+//                    $successNum++;
+//                }
             }
             return modelReMsg(0, $successNum, "预产成功！");
         } catch (\Exception $exception) {
