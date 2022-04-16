@@ -286,6 +286,119 @@ class OrderdouyinModel extends Model
     }
 
     /**
+     * 获取可用付款抖音话单支付链接
+     * @param $where
+     * @return array
+     */
+    public function getUseTOrderNew($torder, $cookie)
+    {
+        $returnCode = 3;
+        $msg = "失败！";
+        $db = new Db();
+        $db::startTrans();
+        try {
+//            ->where('status', '=', 0)
+//                ->where('url_status', '=', 0)
+//                ->where('add_time', '>', time() - 600)
+            //有没有
+            $limit_time = time() - 600;
+            // 可以预拉十分钟之内的未预拉（url_status）
+            //  且可用（status=0）  预拉成功 status = 1
+            //的推单的推单 （符合金额total_amount）
+            $info = $this->where('t_id', '=', $v['t_id'])->lock(true)->find();
+            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "torder" => $torder]), 'lock_tOrder_log');
+            if (!$info) {
+                $db::rollback();
+                return modelReMsg(-2, '', '没有可下单推单');
+            }
+
+            if ($info) {
+                $updateWeight['weight'] = 1;
+                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
+                logs(json_encode(['info' => $info]), 'lock_torder_result');
+                if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
+                    $db::rollback();
+                    return modelReMsg(-2, '', '没有可下单推单');
+                }
+                $updateWhere['t_id'] = $info['t_id'];
+                $updateWhere['order_no'] = $info['order_no'];
+                $update['last_use_time'] = time();
+                $update['use_times'] = $info['use_times'] + 1;
+                $update['cookie'] = $cookie['cookie'];
+                //获取话单
+                $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
+                $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
+                $createParam['amount'] = $info['total_amount'];   //total_amount  bsa_torder_douyin
+                $createParam['order_no'] = $info['order_no'];   //order_no  bsa_torder_douyin
+                $postStartDate = date("Y-m-d H:i:s", time());
+
+                $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
+                $notifyResult = json_decode($notifyResult, true);
+//                {"msg":"下单成功","order_url":"https://tp-pay.snssdk.com/cashdesk/?app_id=800095745677&encodeType=base64&merchant_id=1200009574&out_order_no=10000017080988975653278733&return_scheme=&return_url=aHR0cHM6Ly93d3cuZG91eWluLmNvbS9wYXk=&sign=976358abfe82f2e06d576dc22aa2dd05&sign_type=MD5&switch=00&timestamp=1648671358&total_amount=5500&trade_no=SP2022033104154330075991127887&trade_type=H5&uid=8b58441a628f2cee4bd6f629ccd9012a","amount":"55","ali_url":"https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_139e2972e1746412b2bc190190e6ee54&alipay_exterface_invoke_assign_sign=_c_d_j6i_r_hoo%2Bue_vw_hdk_uh_m_cn%2B_t2_e_mi_o_vs_orkqhh_m_o_sjk_i6_yo8gwl9_hy_q%3D%3D","code":0,"order_id":"10000017080988975653278733"}
+                logs(json_encode(['createParam' => $createParam['order_no'], "startTime" => $postStartDate, 'postEndDate' => date("Y-m-d H:i:s", time()), 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
+
+                //更新预拉时间
+                if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
+//                    $updateRes = $db::table('bsa_torder_douyin')->where($updateWhere)->find();
+//                    if (isset($info['order_pay']) && !empty($info['order_pay'])) {
+                    $returnCode = 0;
+                    $msg = "下单成功！";
+                    //下单成功！
+                    $update['pay_url'] = $notifyResult['ali_url'];
+                    $update['check_url'] = $notifyResult['order_url'];
+                    $update['order_pay'] = $notifyResult['order_id'];
+                    $update['get_url_time'] = time();
+                    $update['status'] = 1;
+                    $update['url_status'] = 1;
+                    $update['order_status'] = 0;
+                    $updateTorder = $this->where($updateWhere)->update($update);
+                    if ($updateTorder) {
+                        logs(json_encode(['createParam' => $createParam, 'notifyResult' => $notifyResult]), 'PrepareordergetUseTorder_result');
+                    }
+//                    }
+                }
+                if (isset($notifyResult['code']) && $notifyResult['code'] == 1) {
+
+                    $returnCode = 1;
+                    $msg = "下单失败，ck失效！";
+                    //下单失败！
+                }
+                if (isset($notifyResult['code']) && $notifyResult['code'] == 4) {
+                    $returnCode = 4;
+                    $msg = "下单失败，账号无法预拉！";
+                    //下单失败！
+                    //下单成功！
+                    $update['status'] = 2;  //推单使用状态终结
+                    $update['url_status'] = 1;  //已经请求
+//                    $update['get_url_time'] = time();
+                    $update['order_status'] = 0;   //等待付款 --等待通知核销
+                    $update['order_desc'] = "拉单失败|" . $notifyResult['msg'];
+                    $this->where($updateWhere)->update($update);
+
+                }
+                $db::commit();
+                $updateWeight['weight'] = 0;
+                $this->where('t_id', '=', $torder['t_id'])->update($updateWeight);
+                return modelReMsg($returnCode, $info, $msg);
+            }
+            logs(json_encode(['account' => $cookie['account'], 'info' => $torder]), 'getUseTordera_fitst_log');
+
+            $db::commit();
+            //没有可下单推单！
+            return modelReMsg(-2, '', '没有可下单推单');
+        } catch (\Exception $exception) {
+            $db::rollback();
+            logs(json_encode(['where' => $amount, 'cookie' => $cookie, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'getUseTorder_exception');
+            return modelReMsg(-1, '', $exception->getMessage());
+        } catch (\Exception $e) {
+            $db::rollback();
+            logs(json_encode(['where' => $amount, 'cookie' => $cookie, 'file' => $e->getFile(), 'line' => $e->getLine(), 'errorMessage' => $e->getMessage()]), 'getUseTorder_error');
+            return json(msg('-11', '', 'create order Exception!' . $e->getMessage() . $e->getFile() . $e->getLine()));
+        }
+
+    }
+
+    /**
      * @return void
      */
     public function getTorderInfo($where)
@@ -477,6 +590,7 @@ class OrderdouyinModel extends Model
     public function createOrder($v, $prepareNum = 1)
     {
         $successNum = 0;
+        $errorNum = 0;
         try {
             logs(json_encode(['v' => $v, 'prepareNum' => $prepareNum]), 'getUesTorderfirst');
             $amount = $v['order_amount'];
@@ -488,32 +602,37 @@ class OrderdouyinModel extends Model
                 return modelReMsg('-99', $successNum, "无可用ck");
             }
             $msg = "预产单失败！";
-            for ($i = 0; $i < $prepareNum; $i++) {
+
+            $limit_time = time() - 600;
+            $torderData = $this
+                ->where('status', '=', 0)
+                ->where('total_amount', '=', $amount)
+                ->where('url_status', '=', 0)
+                ->where('add_time', '>', $limit_time)
+                ->where('weight', '=', 0)
+                ->order("t_id  asc")
+                ->limit($prepareNum)
+                ->select();
+
+            foreach ($torderData as $key => $val) {
                 $getCookieRes = $cookieModel->getUseCookie();
                 if ($getCookieRes['code'] != 0) {
                     $msg = $getCookieRes['msg'];
                     break;
                 }
-                //获取话单
-//                $where['total_amount'] = $amount;
-                $getUesTorderRes = $this->getUseTorder($amount, $getCookieRes['data']);
-                logs(json_encode(['total_amount' => $amount, 'errorMessage' => $getUesTorderRes]), 'PrepareorderGetUesTorderRes_log');
-
-                if ($getUesTorderRes['code'] == 1) {
+                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
+                if ($getUesTOrderRes['code'] == 1) {   //下单失败，ck失效
                     $updateCookieWhere['id'] = $getCookieRes['data']['id'];
                     $updateCookieParam['status'] = 2;
                     $cookieModel->editCookie($updateCookieWhere, $updateCookieParam);
-                } else if ($getUesTorderRes['code'] == 0) {
+                    $errorNum++;
+                } else if ($getUesTOrderRes['code'] == 0) {  //下单成功
 //                    sleep(1);
-                    $msg = $amount . "预产成功！" . $successNum . "个";
+                    $msg = $amount . "预产失败！" . $successNum++ . "个";
                     $successNum++;
                 }
             }
-//            getUseCookie
-            $prepareSetWhere['id'] = $v['id'];
-            if ($successNum > 0) {
-                Db::table("bsa_prepare_set")->where($prepareSetWhere)->update(['can_use_num' => ($v['can_use_num'] + $successNum)]);
-            }
+
             return modelReMsg(0, $successNum, "预产成功！");
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'PrepareorderCreateOrderException_log');
