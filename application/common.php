@@ -326,7 +326,6 @@ function logs($data = null, $fileName = null)
 
     if (!is_dir($path)) {
         $mkdir_re = mkdir($path, 0777, TRUE);
-
     }
 
     $filePath = $path . "/" . date("Y-m-d", time());
