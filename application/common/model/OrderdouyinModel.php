@@ -315,7 +315,7 @@ class OrderdouyinModel extends Model
             $update['last_use_time'] = time();
             $update['ck_account'] = $cookie['account'];
             $update['cookie'] = $cookie['cookie'];
-            $updateRes = $this->where('t_id', '=', $torder['t_id'])->update($update);
+            $updateRes = $this->where('t_id', '=', $info['t_id'])->update($update);
             if (!$updateRes) {
                 $db::rollback();
                 logs(json_encode(['order_no' => $info['order_no'], '$update' => $update, 'updateRes' => $updateRes]), 'getUseTOrderNew_log');
