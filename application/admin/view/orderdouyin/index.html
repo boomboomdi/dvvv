@@ -84,8 +84,8 @@
                 <button class="layui-btn layui-btn-primary layui-btn-xs">预拉停用</button>
                 {{#  } else if(d.weight == 1) { }}
                 <button class="layui-btn layui-btn-success layui-btn-xs">预拉开启</button>
-<!--                {{#  } else if(d.weight == 2) { }}-->
-<!--                <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>-->
+                <!--                {{#  } else if(d.weight == 2) { }}-->
+                <!--                <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>-->
                 {{#  } }}
                 <!--                {if (buttonAuth('torder/changestatus'))}-->
                 <!--                {{#  if(d.status == 1){ }}-->
@@ -194,6 +194,9 @@
                 field: "weight",
                 title: "预拉状态",
                 templet: '#getUrlTpl'
+            }, {
+                field: "use_times",
+                title: "预拉次数",
             }, {
                 field: "get_url_time",
                 title: "链接更新时间"
