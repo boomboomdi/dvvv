@@ -674,7 +674,7 @@ class OrderdouyinModel extends Model
                 ->order("t_id  asc")
                 ->limit($prepareNum)
                 ->select();
-            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData]), 'getUseTOrderNew_log');
+            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData,"lastSql"=>$this->getLastSql()]), 'getUseTOrderNew_log');
 
             foreach ($torderData as $key => $val) {
                 $getCookieRes = $cookieModel->getUseCookie();
