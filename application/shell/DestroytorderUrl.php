@@ -59,7 +59,13 @@ class DestroytorderUrl extends Command
 //
                     //支付链接不可用  改为初始状态
                     //status = 0  get_url_time = 0 url_status_=0   use_times +1 weight = 0
-                    $useTimes = $v['use_times'] + 1;
+
+                    $useTimes = $v['use_times'];
+                    if ($v['use_times'] == 0) {
+                        $useTimes = $useTimes + 2;
+                    }else{
+                        $useTimes = $useTimes ++;
+                    }
                     $torderDouyinWhere['t_id'] = $v['t_id'];
                     $torderDouyinUpdate['url_status'] = 0;   //订单已失效 以停止查询
                     $torderDouyinUpdate['cookie'] = " ";   //订单已失效 以停止查询
@@ -67,7 +73,7 @@ class DestroytorderUrl extends Command
                     $torderDouyinUpdate['use_times'] = $useTimes;   //订单已失效 以停止查询
                     $torderDouyinUpdate['status'] = 0;       //推单改为最终结束状态 等待自动回调核销支付失败
                     $torderDouyinUpdate['get_url_time'] = 0;  ///推单改为最终结束状态 等待自动回调核销支付失败
-                    $torderDouyinUpdate['order_desc'] = "等待第" . $useTimes + 1 . "次预拉|";
+                    $torderDouyinUpdate['order_desc'] = "等待第" . ($useTimes) . "次预拉|";
 
                     logs(json_encode([
                         "doTime" => date("Y-m-d H:i:s", time()),
