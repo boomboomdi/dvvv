@@ -67,7 +67,7 @@ class DestroytorderUrl extends Command
                     $torderDouyinUpdate['use_times'] = $useTimes;   //订单已失效 以停止查询
                     $torderDouyinUpdate['status'] = 0;       //推单改为最终结束状态 等待自动回调核销支付失败
                     $torderDouyinUpdate['get_url_time'] = 0;  ///推单改为最终结束状态 等待自动回调核销支付失败
-                    $torderDouyinUpdate['order_desc'] = "等待第" . $useTimes . "次预拉.|";
+                    $torderDouyinUpdate['order_desc'] = "等待第" . $useTimes + 1 . "次预拉|";
 
                     logs(json_encode([
                         "doTime" => date("Y-m-d H:i:s", time()),

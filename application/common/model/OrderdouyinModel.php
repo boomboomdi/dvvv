@@ -654,6 +654,16 @@ class OrderdouyinModel extends Model
             //可以预拉十分钟之内的未预拉（url_status）
             //且可用（status=0）  预拉成功 status = 1
             //的推单的推单 （符合金额total_amount）
+
+
+
+//            ->where('order_status', '<>', 1)
+//                ->where('notify_status', '=', 0)
+////                ->where('url_status', '=', 2)
+//                ->where('order_me', '=', null)
+//                ->where('get_url_time', '<', $lockLimit)
+//                ->where('get_url_time', '>', 0)
+//                ->where('add_time', '>', $addLockTime)
             $limit_time = time() - 600;
             $torderData = $this
                 ->where('status', '=', 0)
