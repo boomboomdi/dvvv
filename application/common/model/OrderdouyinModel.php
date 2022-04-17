@@ -318,7 +318,7 @@ class OrderdouyinModel extends Model
             $updateRes = $this->where('t_id', '=', $torder['t_id'])->update($update);
             if (!$updateRes) {
                 $db::rollback();
-                logs(json_encode(['order_no' => $torder['order_no'], '$update' => $update, 'updateRes' => $updateRes]), 'getUseTOrderNew_log');
+                logs(json_encode(['order_no' => $info['order_no'], '$update' => $update, 'updateRes' => $updateRes]), 'getUseTOrderNew_log');
                 return modelReMsg(-2, '', 'updateRes_fail');
 
             }
@@ -640,6 +640,7 @@ class OrderdouyinModel extends Model
     {
         $successNum = 0;
         $errorNum = 0;
+        $msg = "";
         try {
             $amount = $v['order_amount'];
             //获取CK
