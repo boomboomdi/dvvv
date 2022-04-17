@@ -8,14 +8,16 @@ class OrderdouyindanValidate extends Validate
 {
 
     protected $rule = [
+        'code' => 'require',
         'account' => 'require',
         'order_no' => 'require',
-        'ali_url' => 'require',
-        'order_url' => 'require',
-        'order_id' => 'require',
+//        'ali_url' => 'require',
+//        'order_url' => 'require',
+//        'order_id' => 'require',
     ];
 
     protected $message = [
+        'code.require' => 'code account',
         'account.require' => 'require account',
         'order_no.require' => 'require order_no',
         'ali_url.require' => 'require ali_url',
