@@ -303,6 +303,10 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 return modelReMsg(-1, '', '此推单暂不可预拉！');
             }
+            if (empty($info)) {
+                $db::rollback();
+                return modelReMsg(-1, '', '此推单暂不可预拉:2！');
+            }
             if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                 $db::rollback();
                 return modelReMsg(-2, '', '核销单已更新！');
@@ -657,7 +661,6 @@ class OrderdouyinModel extends Model
             //的推单的推单 （符合金额total_amount）
 
 
-
 //            ->where('order_status', '<>', 1)
 //                ->where('notify_status', '=', 0)
 ////                ->where('url_status', '=', 2)
@@ -675,7 +678,7 @@ class OrderdouyinModel extends Model
                 ->order("t_id  asc")
                 ->limit($prepareNum)
                 ->select();
-            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData,"lastSql"=>$this->getLastSql()]), 'getUseTOrderNew_log');
+            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             foreach ($torderData as $key => $val) {
                 $getCookieRes = $cookieModel->getUseCookie();
