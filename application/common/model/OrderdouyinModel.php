@@ -652,7 +652,7 @@ class OrderdouyinModel extends Model
             $cookieWhere["status"] = 1;
             $getCookie = $cookieModel->where($cookieWhere)->order("last_use_time desc")->find();
             if (empty($getCookie)) {
-                return modelReMsg('-99', $successNum, "无可用ck");
+                return modelReMsg('-9', $successNum, "无可用ck");
             }
             $msg = "预产单失败！";
 
@@ -660,14 +660,6 @@ class OrderdouyinModel extends Model
             //且可用（status=0）  预拉成功 status = 1
             //的推单的推单 （符合金额total_amount）
 
-
-//            ->where('order_status', '<>', 1)
-//                ->where('notify_status', '=', 0)
-////                ->where('url_status', '=', 2)
-//                ->where('order_me', '=', null)
-//                ->where('get_url_time', '<', $lockLimit)
-//                ->where('get_url_time', '>', 0)
-//                ->where('add_time', '>', $addLockTime)
             $limit_time = time() - 600;
             $torderData = $this
                 ->where('status', '=', 0)
@@ -678,6 +670,9 @@ class OrderdouyinModel extends Model
                 ->order("t_id  asc")
                 ->limit($prepareNum)
                 ->select();
+            if (empty($torderData)) {
+                return modelReMsg('-8', $successNum, "无可用推单！");
+            }
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             foreach ($torderData as $key => $val) {
