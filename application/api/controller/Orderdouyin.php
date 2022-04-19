@@ -291,7 +291,7 @@ class Orderdouyin extends Controller
             }
 
             $updateWhere['account'] = $notifyResult['account'];
-            $updateWhere['order_no'] = $notifyResult['order_no'];
+            $updateWhere['order_no'] = (string)$notifyResult['order_no'];
             $updateWhere['weight'] = 1;
             $info = $db::table('bsa_torder_douyin')->where($updateWhere)->lock(true)->find();
             if (!$info) {
@@ -312,7 +312,7 @@ class Orderdouyin extends Controller
                 //下单成功！
                 $update['pay_url'] = $notifyResult['ali_url'];
                 $update['check_url'] = $notifyResult['order_url'];
-                $update['order_pay'] = $notifyResult['order_id'];
+                $update['order_pay'] = (string)$notifyResult['order_id'];
                 $update['get_url_time'] = time();
                 $update['status'] = 1;
                 $update['url_status'] = 1;

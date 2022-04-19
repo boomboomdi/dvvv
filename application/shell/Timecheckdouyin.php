@@ -55,7 +55,7 @@ class Timecheckdouyin extends Command
             $totalNum = count($orderData);
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
-                    $getResParam['order_no'] = $v['order_pay'];
+                    $getResParam['order_no'] = (string)$v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
                     $getResParam['ck'] = $v['cookie'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);

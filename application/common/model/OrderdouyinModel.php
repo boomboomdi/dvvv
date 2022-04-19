@@ -216,7 +216,7 @@ class OrderdouyinModel extends Model
                 $createParam['ck'] = $cookie['cookie'];   //COOKIE  bsa_cookie
                 $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
                 $createParam['amount'] = $info['total_amount'];   //total_amount  bsa_torder_douyin
-                $createParam['order_no'] = $info['order_no'];   //order_no  bsa_torder_douyin
+                $createParam['order_no'] = (string)$info['order_no'];   //order_no  bsa_torder_douyin
                 $postStartDate = date("Y-m-d H:i:s", time());
 
                 $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
@@ -327,7 +327,7 @@ class OrderdouyinModel extends Model
             $createParam['account'] = $info['account'];   //account  bsa_torder_douyin
             $createParam['ck_account'] = $cookie['account'];   //account  bsa_cookie
             $createParam['amount'] = $info['total_amount'];   //total_amount  bsa_torder_douyin
-            $createParam['order_no'] = $info['order_no'];   //order_no  bsa_torder_douyin
+            $createParam['order_no'] = (string)$info['order_no'];   //order_no  bsa_torder_douyin
             $postStartDate = date("Y-m-d H:i:s", time());
 
             $notifyResult = curlPostJson("http://127.0.0.1:23946/createOrder", $createParam);
@@ -405,7 +405,7 @@ class OrderdouyinModel extends Model
                 //下单成功！
                 $update['pay_url'] = $notifyResult['ali_url'];
                 $update['check_url'] = $notifyResult['order_url'];
-                $update['order_pay'] = $notifyResult['order_id'];
+                $update['order_pay'] = (string)$notifyResult['order_id'];
                 $update['get_url_time'] = time();
                 $update['status'] = 1;
                 $update['url_status'] = 1;
@@ -731,7 +731,7 @@ class OrderdouyinModel extends Model
             $notifyParam['write_off_sign'] = $tOrderData['write_off_sign'];
             $writeWhere['write_off_sign'] = $notifyParam['write_off_sign'];
             $token = $db::table("bsa_write_off")->where($writeWhere)->find();
-            $tOrderDataWhere['order_no'] = $tOrderData['order_no'];
+            $tOrderDataWhere['order_no'] = (string)$tOrderData['order_no'];
             $tOrderData = $db::table("bsa_torder_douyin")->where($tOrderDataWhere)->lock(true)->find();
             $notifyParam['order_no'] = $tOrderData['order_no'];
             $notifyParam['account'] = $tOrderData['account'];

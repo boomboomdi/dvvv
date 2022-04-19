@@ -175,7 +175,7 @@ class OrderModel extends Model
             //$status 决定order_status 是手动回调还是自动完成且回调
             //参与回调参数
             $callbackData['merchant_sign'] = $data['merchant_sign'];
-            $callbackData['order_no'] = $data['order_no'];
+            $callbackData['order_no'] = (string)$data['order_no'];
             $callbackData['order_status'] = 1;
             $callbackData['order_pay'] = $data['order_me'];
             $callbackData['payment'] = $data['payment'];
