@@ -670,7 +670,7 @@ class OrderdouyinModel extends Model
                 ->order("t_id  asc")
                 ->limit($prepareNum)
                 ->select();
-            if (empty($torderData)) {
+            if (empty($torderData) || count($torderData) == 0) {
                 return modelReMsg('-8', $successNum, "无可用推单！");
             }
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
