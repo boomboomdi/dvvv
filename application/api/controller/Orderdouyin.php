@@ -283,12 +283,14 @@ class Orderdouyin extends Controller
 //                return "缺少必要参数";
 //                return json(msg(-1, '', $validate->getError()));
 //            }
+
             $validate = new OrderdouyindanValidate();
             if (!$validate->check($notifyResult)) {
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
                 return "参数格式有误" . $validate->getError();
                 return json(msg(-1, '', $validate->getError()));
             }
+            logs(json_encode(['postTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
 
             $updateWhere['account'] = $notifyResult['account'];
             $updateWhere['order_no'] = (string)$notifyResult['order_no'];
