@@ -28,21 +28,40 @@ class Prepare extends Base
             if (!empty($adminName)) {
                 $where[] = ['admin_name', 'like', $adminName . '%'];
             }
-
+            $db = new Db();
             $model = new PrepareModel();
             $list = $model->getPrepareLists($limit, $where);
             $data = empty($list['data']) ? array() : $list['data'];
             foreach ($data as $key => $vo) {
                 $orderdouyinModel = new OrderdouyinModel();
-                $data[$key]['canUseNum'] = 0;
-                $data[$key]['canUseNum'] = $orderdouyinModel
-                    ->where('total_amount', '=', $vo['order_amount'])
-                    ->where('url_status', '=', 1)
-                    ->where('order_me', '=', null)
-                    ->where('status', '=', 1)
-                    ->where('last_use_time', '>', time() - 180)
-                    ->where('last_use_time', '<', time())->count();
+//                $data[$key]['canUseNum'] = 0;
+//                $data[$key]['canUseNum'] = $orderdouyinModel
+//                    ->where('total_amount', '=', $vo['order_amount'])
+//                    ->where('url_status', '=', 1)
+//                    ->where('order_me', '=', null)
+//                    ->where('status', '=', 1)
+//                    ->where('last_use_time', '>', time() - 180)
+//                    ->where('last_use_time', '<', time())->count();
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
+                $can_use_num = 0;
+                $can_use_num = $db::table("bsa_torder_douyin")
+                    ->where('status', '=', 0)
+                    ->where('url_status', '=', 1)
+                    ->where('total_amount', '=', $vo['order_amount'])
+                    ->where('add_time', '>', time() - 600)
+                    ->order("add_time asc")
+                    ->count();
+                $doPrepareNum = $db::table("bsa_torder_douyin")
+//                        ->where('status', '=', 0)
+//                        ->where('url_status', '=', 1)
+                    ->where('total_amount', '=', $vo['order_amount'])
+                    ->where('weight', '=', 1)
+                    ->where('get_url_time', '=', 0)
+                    ->where('add_time', '>', time() - 600)
+                    ->order("add_time asc")
+                    ->count();
+                $can_use_num = +$doPrepareNum;
+                $data[$key]['canUseNum'] = $can_use_num;
             }
             $list['data'] = $data;
             if (0 == $list['code']) {
