@@ -10,6 +10,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\PrepareModel;
+use think\Db;
 use app\admin\validate\PrepareValidate;
 use app\common\model\OrderdouyinModel;
 use tool\Log;
