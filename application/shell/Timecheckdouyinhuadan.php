@@ -49,7 +49,7 @@ class Timecheckdouyinhuadan extends Command
                 ->where('notify_status', '=', 0)
 //                ->where('url_status', '=', 2)
 //                ->where('add_time', '<', $LimitStartTime)   //时间是过了当前时间之前的15分
-                ->where('limit_time_1', '>', time())   //时间是过了当前时间之前的15分
+                ->where('limit_time_1', '<', time())   //当前时间  > 推单终止使用时间
                 ->select();
             logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_data_log');
 
