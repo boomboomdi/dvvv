@@ -50,7 +50,8 @@ class Prepareorder extends Command
                         ->where('status', '=', 0)
                         ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
-                        ->where('add_time', '>', time() - 600)
+//                        ->where('add_time', '>', time() - 600)
+                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
                         ->order("add_time asc")
                         ->count();
                     logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
@@ -59,8 +60,9 @@ class Prepareorder extends Command
 //                        ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('weight', '=', 1)
-                        ->where('get_url_time', '=',0)
-                        ->where('add_time', '>', time() - 600)
+                        ->where('get_url_time', '=', 0)
+//                        ->where('add_time', '>', time() - 600)
+                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
                         ->order("add_time asc")
                         ->count();
                     $can_use_num = +$doPrepareNum;

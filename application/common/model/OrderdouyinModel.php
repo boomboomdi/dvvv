@@ -665,7 +665,8 @@ class OrderdouyinModel extends Model
                 ->where('status', '=', 0)
                 ->where('total_amount', '=', $amount)
                 ->where('url_status', '=', 0)
-                ->where('add_time', '>', $limit_time)
+                ->where('prepare_limit_time', '>', time())   //限制时间
+//                ->where('add_time', '>', $limit_time)
                 ->where('weight', '=', 0)
                 ->order("t_id  asc")
                 ->limit($prepareNum)
