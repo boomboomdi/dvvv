@@ -40,6 +40,14 @@ class SystemConfigModel extends Model
         return 170;
     }
 
+    /**
+     * 几分钟内的话单可以可以下单
+     * @return int
+     */
+    public static function getTorderPrepareLimitTime()
+    {
+        return 300;
+    }
 
     /**
      * 获取查询订单时间start
@@ -47,7 +55,7 @@ class SystemConfigModel extends Model
      */
     public static function LimitTime()
     {
-        return 3000;
+        return 900;
     }
 
     /**

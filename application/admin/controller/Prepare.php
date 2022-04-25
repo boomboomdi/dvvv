@@ -61,8 +61,9 @@ class Prepare extends Base
                     ->where('add_time', '>', time() - 600)
                     ->order("add_time asc")
                     ->count();
-                $can_use_num = +$doPrepareNum;
+//                $can_use_num = +$doPrepareNum;
                 $data[$key]['canUseNum'] = $can_use_num;
+                $data[$key]['doPrepareNum'] = $doPrepareNum;
             }
             $list['data'] = $data;
             if (0 == $list['code']) {
