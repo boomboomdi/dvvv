@@ -49,7 +49,8 @@ class DestroytorderUrl extends Command
                 ->where('order_me', '=', null)
                 ->where('get_url_time', '<', $lockLimit)
                 ->where('get_url_time', '>', 0)
-                ->where('add_time', '>', $addLockTime)
+                ->where('prepare_limit_time', '>', time())
+//                ->where('add_time', '>', $addLockTime)
                 ->select();
             logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Distorytorderurl_log');
 
@@ -63,8 +64,8 @@ class DestroytorderUrl extends Command
                     $useTimes = $v['use_times'];
                     if ($v['use_times'] == 0) {
                         $useTimes = $useTimes + 2;
-                    }else{
-                        $useTimes = $useTimes ++;
+                    } else {
+                        $useTimes = $useTimes++;
                     }
                     $torderDouyinWhere['t_id'] = $v['t_id'];
                     $torderDouyinUpdate['url_status'] = 0;   //订单已失效 以停止查询
