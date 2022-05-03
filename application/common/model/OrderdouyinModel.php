@@ -671,11 +671,11 @@ class OrderdouyinModel extends Model
                 ->order("add_time  asc")
                 ->limit($prepareNum)
                 ->select();
+            logs(json_encode(["action" > 'createOrder', 'startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             if (empty($torderData) || count($torderData) == 0) {
                 return modelReMsg(-8, $successNum, "无可用推单！");
             }
-            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             foreach ($torderData as $key => $val) {
                 if (!empty($val) && isset($val['order_no'])) {
