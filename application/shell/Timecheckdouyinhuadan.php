@@ -57,10 +57,11 @@ class Timecheckdouyinhuadan extends Command
             if ($totalNum > 0) {
                 foreach ($orderData as $k => $v) {
                     //回调商户
-                    $orderNotifyNoPayToWriteRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
-                    if ($orderNotifyNoPayToWriteRes) {
-                        logs(json_encode(['t-order_no'=>$v['order_no'], "add_time" => date("Y-m-d H:i:s", $v['add_time']), "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
-                    }
+//                    $orderNotifyNoPayToWriteRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                    $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+//                    if (!$orderNotifyNoPayToWriteRes) {
+//                        logs(json_encode(['t-order_no'=>$v['order_no'], "add_time" => date("Y-m-d H:i:s", $v['add_time']), "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
+//                    }
 //                    $prepareWhere['order_amount'] = $v['total_amount'];
 //                    $prepareWhere['status'] = 1;
 //                    $db::table("bsa_prepare_set")->where($prepareWhere)
