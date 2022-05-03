@@ -778,7 +778,7 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
-                        'order_desc' => $order_desc
+                        'order_desc' => "fail:" . $order_desc
                     ]);
                 logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
                 return modelReMsg(-2, "", json_encode($notifyResult));

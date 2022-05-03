@@ -11,6 +11,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Admin;
 use think\App;
+use think\Db;
 use tool\Auth;
 
 class Index extends Base
@@ -38,8 +39,36 @@ class Index extends Base
 
     public function home()
     {
+        $db = new Db();
+        //订单数量   //
+        $orderNum = $db::table("bsa_order")->count();
+        //回调数量
+        $payOrderNum = $db::table("bsa_order")->where('order_status', '=', 1)->count();
+        //手动回调数量
+        $notifyPayOrderNum = $db::table("bsa_order")->where('order_status', '=', 5)->count();
+        $successOrderRate = makeSuccessRate((int)$orderNum, ((int)$payOrderNum + (int)$notifyPayOrderNum));
+
+        //回调金额
+        $payOrderAmount = $db::table("bsa_order")->where('order_status', '=', 1)->sum('actual_amount');
+        //核销单总量
+        $tOrderNum = $db::table("bsa_torder_douyin")->count();
+        //可预拉数量
+        $lastTOrderNum = $db::table("bsa_torder_douyin")->where('status', '=', 0)->count();
+
+
+        //使用数量
+        //成功支付量
+
         $this->assign([
-            'tp_version' => App::VERSION
+            'tp_version' => App::VERSION,
+            'endTime' => date("Y-m-d H:i:s"),
+            'orderNum' => $orderNum,
+            'payOrderNum' => $payOrderNum,
+            'successOrderRate' => $successOrderRate,
+            'notifyPayOrderNum' => $notifyPayOrderNum,
+            'payOrderAmount' => $payOrderAmount,
+            'tOrderNum' => $tOrderNum,
+            'lastTOrderNum' => $lastTOrderNum,
         ]);
 
         return $this->fetch();

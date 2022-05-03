@@ -119,32 +119,32 @@ class Order extends Base
                 logs(json_encode(['order_id' => $id, 'v' => $v, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_log2');
 
                 if (!empty($v)) {
-                    $torderDouyinWhere['order_me'] = $v['order_me'];
-                    $torderDouyinWhere['order_pay'] = $v['order_pay'];
-                    $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
-                    $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
-                    $torderDouyinUpdate['pay_time'] = time();
-                    $torderDouyinUpdate['last_use_time'] = time();
-                    $torderDouyinUpdate['success_amount'] = $v['total_amount'];
-                    $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
-                    $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                    if ($updateTorderStatus) {
-                        logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
-                    }
                     $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v, 2);
-                    if ($orderdouyinModelRes) {
-                        logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
+                    if (!isset($orderdouyinModelRes['code']) || $orderdouyinModelRes['code'] != 0) {
+                        return reMsg(-2, '', "核销回调fail！");
+                        logs(json_encode(['v' => $v['order_no'], 'orderdouyinModelRes' => $orderdouyinModelRes, "time" => date("Y-m-d H:i:s", time())]), 'notify_fail_log');
+                    } else {
+                        $torderDouyinWhere['order_me'] = $v['order_me'];
+                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
+                        $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
+                        $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
+                        $torderDouyinUpdate['pay_time'] = time();
+                        $torderDouyinUpdate['last_use_time'] = time();
+                        $torderDouyinUpdate['success_amount'] = $v['total_amount'];
+                        $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
+                        $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                        if ($updateTorderStatus) {
+                            logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'order_notify_towrite_off_log2');
+                        }
+                        $notifyRes = $orderModel->orderNotify($order, 2);
+                        if ($notifyRes['code'] != 1000) {
+                            return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
+                        }
                     }
                 }
-                $notifyRes = $orderModel->orderNotify($order, 2);
-                if ($notifyRes['code'] != 1000) {
-                    return json(['code' => -2, 'msg' => $notifyRes['msg'], 'data' => []]);
-                }
-
-
                 return json(['code' => 1000, 'msg' => '回调成功', 'data' => []]);
             } else {
-                return json('访问错误', "20009");
+                return json('访问错误', 20009);
             }
         } catch (\Exception $exception) {
             logs(json_encode(['id' => $id, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'order_notify_exception');
