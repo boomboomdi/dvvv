@@ -30,7 +30,9 @@ class Torder extends Controller
 //        $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
 //        var_dump($param);exit;
-        Log::log('douyin upload order first!', $param);
+        logs(json_encode(['message' => $param, "time" => date("Y-m-d H:i:s", time())]), 'uploadOrder_log');
+
+//        Log::log('douyin upload order first!', $param);
         try {
             $validate = new OrderdouyinValidate();
             if (!$validate->check($param)) {
@@ -60,7 +62,7 @@ class Torder extends Controller
             $where['order_no'] = $param['order_no'];
             $limitTime = SystemConfigModel::getTorderPrepareLimitTime();
             $payLimitTime = SystemConfigModel::LimitTime();    //默认900s
-            if (strtotime($param['limit_time'])) {
+            if (is_int(strtotime($param['limit_time']))) {
                 $param['limit_time_1'] = strtotime($param['limit_time']);   //最终回调时间
                 $param['limit_time_2'] = strtotime($param['limit_time']) - time();  //最终回调时间与当前时间间隔
                 $param['prepare_limit_time'] = strtotime($param['limit_time']) - 300;   //预拉单限制终止时间
@@ -72,6 +74,8 @@ class Torder extends Controller
             $res = $orderDouYinModel->addOrder($where, $addParam);
 
             if ($res['code'] != 0) {
+                logs(json_encode(['addParam' => $addParam, 'addRes' => $res, "time" => date("Y-m-d H:i:s", time())]), 'uploadOrder_log');
+
                 return json(msg('-4', '', $res['msg']));
             }
             $returnData['code'] = 1;
