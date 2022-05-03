@@ -307,10 +307,13 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 return modelReMsg(-1, '', '此推单暂不可预拉:2！');
             }
-            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
-                $db::rollback();
-                return modelReMsg(-2, '', '核销单已更新！');
-            }
+//            if (isset($info['use_time']) && $info['use_time'] == 0) {
+//
+//            }
+//            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
+//                $db::rollback();
+//                return modelReMsg(-2, '', '核销单已更新！');
+//            }
 
 //            $update['last_use_time'] = time();
 //            $update['use_times'] = $info['use_times'] + 1;
