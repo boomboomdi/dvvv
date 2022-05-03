@@ -791,7 +791,6 @@ class OrderdouyinModel extends Model
                     ]);
                 $db::commit();
                 logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffSuccess_log');
-
             }
             return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {

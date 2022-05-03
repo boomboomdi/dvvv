@@ -44,8 +44,8 @@ class Prepare extends Base
 //                    ->where('last_use_time', '>', time() - 180)
 //                    ->where('last_use_time', '<', time())->count();
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
-                $can_use_num = 0;
-                $can_use_num = $db::table("bsa_torder_douyin")
+                $canUseNum = 0;
+                $canUseNum = $db::table("bsa_torder_douyin")
                     ->where('status', '=', 1)
                     ->where('url_status', '=', 1)
                     ->where('total_amount', '=', $vo['order_amount'])
@@ -54,7 +54,7 @@ class Prepare extends Base
 //                    ->where('get_url_time', '>', 0)
 //                    ->where('get_url_time', '<', time() + 180)
                     ->where('limit_time_1', '>', time())
-                    ->order("add_time asc")
+//                    ->order("add_time asc")
                     ->count();
                 logs(json_encode(["sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
 
@@ -70,7 +70,7 @@ class Prepare extends Base
                 logs(json_encode(["sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
 
 //                $can_use_num = +$doPrepareNum;
-                $data[$key]['canUseNum'] = $can_use_num;
+                $data[$key]['canUseNum'] = $canUseNum;
                 $data[$key]['doPrepareNum'] = $doPrepareNum;
             }
             $list['data'] = $data;

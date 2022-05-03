@@ -46,15 +46,25 @@ class Prepareorder extends Command
                 $output->writeln("Prepareorder:无预产任务");
             } else {
                 foreach ($prepareAmountList as $k => $v) {
-                    $can_use_num = $db::table("bsa_torder_douyin")
-                        ->where('status', '=', 0)
+                    $canUseNum = $db::table("bsa_torder_douyin")
+                        ->where('status', '=', 1)
                         ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
-//                        ->where('add_time', '>', time() - 600)
-                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
-                        ->order("add_time asc")
+                        ->where('get_url_time', '>', time() - 180)
+                        ->where('get_url_time', '<', time())
+//                    ->where('get_url_time', '>', 0)
+//                    ->where('get_url_time', '<', time() + 180)
+                        ->where('limit_time_1', '>', time())
                         ->count();
-                    logs(json_encode(["total" => $v['prepare_num'], 'can_use_num' => $can_use_num, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
+//                    $can_use_num = $db::table("bsa_torder_douyin")
+//                        ->where('status', '=', 0)
+//                        ->where('url_status', '=', 1)
+//                        ->where('total_amount', '=', $v['order_amount'])
+////                        ->where('add_time', '>', time() - 600)
+//                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
+//                        ->order("add_time asc")
+//                        ->count();
+                    logs(json_encode(["total" => $v['prepare_num'], 'canUseNum' => $canUseNum, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $doPrepareNum = $db::table("bsa_torder_douyin")
 //                        ->where('status', '=', 0)
 //                        ->where('url_status', '=', 1)
@@ -65,8 +75,8 @@ class Prepareorder extends Command
                         ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
                         ->order("add_time asc")
                         ->count();
-                    $can_use_num = +$doPrepareNum;
-                    $doNum = $v['prepare_num'] - $can_use_num;
+                    $canUseNum = $canUseNum + $doPrepareNum;
+                    $doNum = $v['prepare_num'] - $canUseNum;
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
                         if ($res['code'] == 0 && $res['data'] > 0) {
