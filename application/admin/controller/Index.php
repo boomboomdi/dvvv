@@ -59,7 +59,10 @@ class Index extends Base
             ->where('get_url_time', '>', time() - 180)
             ->where('get_url_time', '<', time())->count();
         //可预拉数量
-        $canPrepareTOrderNum = $db::table("bsa_torder_douyin")->where('status', '=', 0)->count();
+        $canPrepareTOrderNum = $db::table("bsa_torder_douyin")
+            ->where('status', '=', 0)
+            ->where('get_url_time', '=', 0)
+            ->count();
         //预拉中数量
         $preparingTOrderNum = $db::table("bsa_torder_douyin")->where('weight', '=', 1)->count();
 

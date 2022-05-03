@@ -51,7 +51,7 @@ class Timecheckdouyinhuadan extends Command
 //                ->where('add_time', '<', $LimitStartTime)   //时间是过了当前时间之前的15分
                 ->where('limit_time_1', '<', time())   //当前时间  > 推单终止使用时间
                 ->select();
-            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_data_log');
+//            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_data_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {
@@ -59,7 +59,7 @@ class Timecheckdouyinhuadan extends Command
                     //回调商户
                     $orderNotifyNoPayToWriteRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
                     if ($orderNotifyNoPayToWriteRes) {
-                        logs(json_encode(['orderData' => $orderData, "add_time" => date("Y-m-d H:i:s", $v['add_time']), 'totalNum' => $totalNum, "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
+                        logs(json_encode(['t-order_no'=>$v['order_no'], "add_time" => date("Y-m-d H:i:s", $v['add_time']), "k" => $k, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'TimecheckdouyinhuadanOrderDouYinNotifyToWriteOff_log');
                     }
                     $prepareWhere['order_amount'] = $v['total_amount'];
                     $prepareWhere['status'] = 1;
