@@ -769,20 +769,15 @@ class OrderdouyinModel extends Model
                 $do_order_desc = "|自动核销回调|";
             }
             $order_desc = $match_order_desc . $add_order_desc . $do_order_desc . $notifyResult;
-            //通知失败
+            //通知结果不为success
             if ($notifyResult != "success") {
+                $db::rollback();
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
-                        'status' => 2,
-                        'url_status' => 2,
-                        'notify_status' => 2,
-                        'success_amount' => $successAmount,
-                        'notify_time' => time(),
-                        'order_desc' => $order_desc
+                        'order_desc' => "支付成功，回调核销|" . $order_desc
                     ]);
-
-                $db::commit();
                 logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
+                return modelReMsg(-2, "", json_encode($notifyResult));
 
             } else {
                 $db::table('bsa_torder_douyin')->where($orderWhere)
@@ -806,7 +801,7 @@ class OrderdouyinModel extends Model
         } catch (\Error $error) {
             $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError_log');
-            return modelReMsg('-11', "", "回调失败" . $error->getMessage());
+            return modelReMsg('-22', "", "回调失败" . $error->getMessage());
 
         }
     }

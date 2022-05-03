@@ -71,35 +71,39 @@ class Timecheckdouyin extends Command
                                 "can_use_num" => Db::raw("can_use_num-1")
                             ]);
                     }
+                    //code==1  支付成功！
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 1) {
-                        //支付成功
-                        $orderWhere['order_pay'] = $v['order_pay'];
-                        $orderWhere['order_me'] = $v['order_me'];
+
+                        $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
+                        if (!isset($orderdouyinModelRes['code']) || $orderdouyinModelRes['code'] != 0) {
+                            logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
+                        } else {
+                            //支付成功
+                            $orderWhere['order_pay'] = $v['order_pay'];
+                            $orderWhere['order_me'] = $v['order_me'];
 //                        $orderWhere['status'] = 2;
 
-                        $order = Db::table("bsa_order")->where($orderWhere)->find();
-                        logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
-                        if ($order) {
-                            $res = $orderModel->orderNotify($order);
-                            if ($res) {
-                                logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
+                            $order = Db::table("bsa_order")->where($orderWhere)->find();
+                            logs(json_encode(['order' => $order, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log');
+                            if ($order) {
+                                $res = $orderModel->orderNotify($order);
+                                if ($res) {
+                                    logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
+                                }
+                            }
+
+                            $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
+                            $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
+                            $torderDouyinUpdate['pay_time'] = time();
+                            $torderDouyinUpdate['last_use_time'] = time();
+                            $torderDouyinUpdate['success_amount'] = $v['total_amount'];
+                            $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
+                            $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
+                            if (!$updateTorderStatus) {
+                                logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinupdateNotifyTorder_log');
                             }
                         }
 
-                        $torderDouyinUpdate['order_status'] = 1;  //匹配订单支付成功
-                        $torderDouyinUpdate['status'] = 2;   //推单改为最终结束状态
-                        $torderDouyinUpdate['pay_time'] = time();
-                        $torderDouyinUpdate['last_use_time'] = time();
-                        $torderDouyinUpdate['success_amount'] = $v['total_amount'];
-                        $torderDouyinUpdate['order_desc'] = "支付成功|待回调";
-                        $updateTorderStatus = $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-                        if (!$updateTorderStatus) {
-                            logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinupdateNotifyTorder_log');
-                        }
-                        $orderdouyinModelRes = $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
-                        if ($orderdouyinModelRes) {
-                            logs(json_encode(['v' => $v, 'orderdouyinModelRes' => $orderdouyinModelRes, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
-                        }
                     }
                     //支付链接不可用
                     if (isset($getOrderStatus['code']) && $getOrderStatus['code'] == 2) {
