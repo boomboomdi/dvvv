@@ -49,9 +49,9 @@ class Prepare extends Base
                     ->where('status', '=', 0)
                     ->where('url_status', '=', 1)
                     ->where('total_amount', '=', $vo['order_amount'])
+                    ->where('get_url_time', '>', 0)
                     ->where('get_url_time', '<', time() - 180)
                     ->where('limit_time_1', '<', time())
-                    ->where('get_url_time', '>', 0)
                     ->order("add_time asc")
                     ->count();
                 $doPrepareNum = $db::table("bsa_torder_douyin")
@@ -60,7 +60,7 @@ class Prepare extends Base
                     ->where('total_amount', '=', $vo['order_amount'])
                     ->where('weight', '=', 1)
                     ->where('get_url_time', '=', 0)
-                    ->where('add_time', '>', time() - 600)
+                    ->where('limit_time_1', '<', time())
                     ->order("add_time asc")
                     ->count();
 //                $can_use_num = +$doPrepareNum;
