@@ -315,6 +315,7 @@ class Orderdouyin extends Controller
                 $update['pay_url'] = $notifyResult['ali_url'];
                 $update['check_url'] = $notifyResult['order_url'];
                 $update['order_pay'] = (string)$notifyResult['order_id'];
+                $update['use_times'] = $info['use_times'] + 1;
                 $update['get_url_time'] = time();
                 $update['status'] = 1;
                 $update['url_status'] = 1;
