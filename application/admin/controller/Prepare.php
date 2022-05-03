@@ -49,7 +49,7 @@ class Prepare extends Base
                     ->where('status', '=', 0)
                     ->where('url_status', '=', 1)
                     ->where('total_amount', '=', $vo['order_amount'])
-                    ->where('add_time', '>', time() - 600)
+                    ->where('get_url_time', '>', time())
                     ->order("add_time asc")
                     ->count();
                 $doPrepareNum = $db::table("bsa_torder_douyin")
