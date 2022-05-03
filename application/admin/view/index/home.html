@@ -72,14 +72,14 @@
                                 <h5>订单统计</h5>
                             </div>
                             <div class="panel-content">
-                                <h1 class="no-margins">订单总数:{$orderNum}</h1>
-                                <h1 class="no-margins">支付单数:{$payOrderNum}</h1>
-                                <h1 class="no-margins">手动回调:{$notifyPayOrderNum}</h1>
-                                <h1 class="no-margins">回调金额{$payOrderAmount}</h1>
+                                <h2 class="no-margins">订单总数:{$orderNum}</h2>
+                                <h2 class="no-margins">支付单数:{$payOrderNum}</h2>
+                                <h2 class="no-margins">手动回调:{$notifyPayOrderNum}</h2>
+                                <h2 class="no-margins">回调金额{$payOrderAmount}</h2>
 <!--                                <div class="stat-percent font-bold text-gray"><i class="fa fa-commenting"></i>回调金额{$payOrderAmount}-->
 <!--                                </div>-->
 
-                                <h1 class="no-margins">成功率:{$successOrderRate}</h1>
+                                <h2 class="no-margins">成功率:{$successOrderRate}</h2>
 <!--                                <small>成功率:{$successOrderRate}</small>-->
                             </div>
                         </div>
@@ -92,14 +92,17 @@
                     <div class="panel layui-bg-blue">
                         <div class="panel-body">
                             <div class="panel-title">
-                                <span class="label pull-right layui-bg-cyan">实时</span>
-                                <h5>商品统计</h5>
+                                <span class="label pull-right layui-bg-blue">统计截至:{$endTime}</span>
+                                <h5>核销单统计</h5>
                             </div>
                             <div class="panel-content">
-                                <h1 class="no-margins">1234</h1>
-                                <div class="stat-percent font-bold text-gray"><i class="fa fa-commenting"></i> 1234
-                                </div>
-                                <small>当前分类总记录数</small>
+                                <h2 class="no-margins">总单数:{$tOrderNum}</h2>
+                                <h2 class="no-margins">可下单数量:{$canOrderTOrderNum}</h2>
+                                <h2 class="no-margins">可预拉数量:{$canPrepareTOrderNum}</h2>
+                                <h2 class="no-margins">预拉中数量:{$preparingTOrderNum}</h2>
+<!--                                <div class="stat-percent font-bold text-gray"><i class="fa fa-commenting"></i> 1234-->
+<!--                                </div>-->
+<!--                                <small>当前分类总记录数</small>-->
                             </div>
                         </div>
                     </div>

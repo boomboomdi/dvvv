@@ -47,18 +47,24 @@ class Index extends Base
         //手动回调数量
         $notifyPayOrderNum = $db::table("bsa_order")->where('order_status', '=', 5)->count();
         $successOrderRate = makeSuccessRate((int)$orderNum, ((int)$payOrderNum + (int)$notifyPayOrderNum));
-
         //回调金额
         $payOrderAmount = $db::table("bsa_order")->where('order_status', '=', 1)->sum('actual_amount');
         //核销单总量
         $tOrderNum = $db::table("bsa_torder_douyin")->count();
+       //可下单数量
+        $canOrderTOrderNum = $db::table("bsa_torder_douyin")
+            ->where('url_status', '=', 1)
+            ->where('order_me', '=', null)
+            ->where('status', '=', 1)
+            ->where('get_url_time', '>', time() - 180)
+            ->where('get_url_time', '<', time())->count();
         //可预拉数量
-        $lastTOrderNum = $db::table("bsa_torder_douyin")->where('status', '=', 0)->count();
-
+        $canPrepareTOrderNum = $db::table("bsa_torder_douyin")->where('status', '=', 0)->count();
+        //预拉中数量
+        $preparingTOrderNum = $db::table("bsa_torder_douyin")->where('weight', '=', 1)->count();
 
         //使用数量
         //成功支付量
-
         $this->assign([
             'tp_version' => App::VERSION,
             'endTime' => date("Y-m-d H:i:s"),
@@ -68,7 +74,9 @@ class Index extends Base
             'notifyPayOrderNum' => $notifyPayOrderNum,
             'payOrderAmount' => $payOrderAmount,
             'tOrderNum' => $tOrderNum,
-            'lastTOrderNum' => $lastTOrderNum,
+            'canOrderTOrderNum' => $canOrderTOrderNum,
+            'canPrepareTOrderNum' => $canPrepareTOrderNum,
+            'preparingTOrderNum' => $preparingTOrderNum,
         ]);
 
         return $this->fetch();
