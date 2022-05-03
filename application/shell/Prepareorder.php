@@ -56,16 +56,8 @@ class Prepareorder extends Command
 //                    ->where('get_url_time', '<', time() + 180)
                         ->where('limit_time_1', '>', time())
                         ->count();
-//                    $can_use_num = $db::table("bsa_torder_douyin")
-//                        ->where('status', '=', 0)
-//                        ->where('url_status', '=', 1)
-//                        ->where('total_amount', '=', $v['order_amount'])
-////                        ->where('add_time', '>', time() - 600)
-//                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
-//                        ->order("add_time asc")
-//                        ->count();
                     $doPrepareNum = $db::table("bsa_torder_douyin")
-//                        ->where('status', '=', 0)
+                        ->where('status', '=', 0)
 //                        ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('weight', '=', 1)

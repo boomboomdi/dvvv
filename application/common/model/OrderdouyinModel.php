@@ -671,6 +671,7 @@ class OrderdouyinModel extends Model
                 ->order("add_time  asc")
                 ->limit($prepareNum)
                 ->select();
+
             if (empty($torderData) || count($torderData) == 0) {
                 return modelReMsg(-8, $successNum, "无可用推单！");
             }
@@ -693,9 +694,7 @@ class OrderdouyinModel extends Model
                         $successNum++;
                     }
                 }
-
             }
-            logs(json_encode(['endTime' => date("Y-m-d H:i:s", time()), "info" => $torderData['order_no'], "getRes" => $msg]), 'getUseTOrderNew_log');
 
             return modelReMsg(0, $successNum, $msg);
         } catch (\Exception $exception) {
