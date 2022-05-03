@@ -306,7 +306,7 @@ class Orderdouyin extends Controller
             if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
                 $db::rollback();
                 logs(json_encode(['message' => $notifyResult, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
-                return modelReMsg(-2, '', '核销单已更新！');
+                return "参数错误！";
             }
             if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
                 $returnCode = 0;
