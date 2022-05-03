@@ -303,12 +303,13 @@ class Orderdouyin extends Controller
                 return "暂无此催单";
 //                return modelReMsg(-2, '', '暂无此催单！');
             }
-            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
-                $db::rollback();
-                logs(json_encode(['message' => $notifyResult, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
-                return "参数错误！";
-            }
+
             if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
+                if (empty($info['order_id']) || empty($info['pay_url']) || empty($info['check_url'])) {
+                    $db::rollback();
+                    logs(json_encode(['message' => $notifyResult, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
+                    return "参数错误！";
+                }
                 $returnCode = 0;
                 $msg = "下单成功！";
                 //下单成功！
