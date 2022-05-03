@@ -63,14 +63,15 @@ class Torder extends Controller
             $limitTime = SystemConfigModel::getTorderPrepareLimitTime();
             $payLimitTime = SystemConfigModel::LimitTime();    //默认900s
             if (is_int(strtotime($param['limit_time']))) {
-                $param['limit_time_1'] = strtotime($param['limit_time']);   //最终回调时间时间戳
-                $param['limit_time_2'] = strtotime($param['limit_time']) - time();  //最终回调时间与当前时间间隔
-                $param['prepare_limit_time'] = strtotime($param['limit_time']) - 300;   //预拉单限制终止时间
+                $addParam['limit_time_1'] = strtotime($param['limit_time']);   //最终回调时间时间戳
+                $addParam['limit_time_2'] = strtotime($param['limit_time']) - time();  //最终回调时间与当前时间间隔
+                $addParam['prepare_limit_time'] = strtotime($param['limit_time']) - 300;   //预拉单限制终止时间
             } else {
-                $param['limit_time_1'] = time() + $payLimitTime;   //最终回调时间
-                $param['limit_time_2'] = $payLimitTime;    //最终回调时间与当前时间间隔
-                $param['prepare_limit_time'] = time() + ($payLimitTime - $limitTime);  //预拉单限制终止时间  limit_time-300
+                $addParam['limit_time_1'] = time() + $payLimitTime;   //最终回调时间
+                $addParam['limit_time_2'] = $payLimitTime;    //最终回调时间与当前时间间隔
+                $addParam['prepare_limit_time'] = time() + ($payLimitTime - $limitTime);  //预拉单限制终止时间  limit_time-300
             }
+
             $res = $orderDouYinModel->addOrder($where, $addParam);
 
             if ($res['code'] != 0) {
