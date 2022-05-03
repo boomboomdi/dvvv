@@ -50,7 +50,7 @@ class Prepare extends Base
                     ->where('url_status', '=', 1)
                     ->where('total_amount', '=', $vo['order_amount'])
                     ->where('get_url_time', '>', 0)
-                    ->where('get_url_time', '<', time() - 180)
+                    ->where('get_url_time', '<', time() + 180)
                     ->where('limit_time_1', '<', time())
                     ->order("add_time asc")
                     ->count();
