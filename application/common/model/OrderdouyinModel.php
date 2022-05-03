@@ -668,7 +668,7 @@ class OrderdouyinModel extends Model
                 ->where('prepare_limit_time', '>', time())   //限制时间
 //                ->where('add_time', '>', $limit_time)
                 ->where('weight', '=', 0)
-                ->order("t_id  asc")
+                ->order("add_time  asc")
                 ->limit($prepareNum)
                 ->select();
             if (empty($torderData) || count($torderData) == 0) {
@@ -685,7 +685,7 @@ class OrderdouyinModel extends Model
                 $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
 //                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
                 if ($getUesTOrderRes['code'] == 0) {  //下单成功
-                    $msg = "|" . $amount . "预产q成功！" . $successNum++ . "个";
+                    $msg = "|" . $amount . "预产成功！" . $successNum++ . "个";
                     $successNum++;
                 } else {
                     $msg = "|" . $amount . "预产失败！" . $successNum++ . "个";

@@ -64,19 +64,19 @@ class Prepareorder extends Command
 //                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
 //                        ->order("add_time asc")
 //                        ->count();
-                    logs(json_encode(["total" => $v['prepare_num'], 'canUseNum' => $canUseNum, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
                     $doPrepareNum = $db::table("bsa_torder_douyin")
 //                        ->where('status', '=', 0)
 //                        ->where('url_status', '=', 1)
                         ->where('total_amount', '=', $v['order_amount'])
                         ->where('weight', '=', 1)
                         ->where('get_url_time', '=', 0)
-//                        ->where('add_time', '>', time() - 600)
-                        ->where('prepare_limit_time', '>', time())   //当前时间小于预拉限制时间
+//                        ->where('limit_time_1', '>', time())
                         ->order("add_time asc")
                         ->count();
                     $canUseNum = $canUseNum + $doPrepareNum;
                     $doNum = $v['prepare_num'] - $canUseNum;
+                    logs(json_encode(["total" => $v['prepare_num'], 'canUseNum' => $canUseNum, 'doNum' => $doNum, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
+
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
                         if ($res['code'] == 0 && $res['data'] > 0) {
