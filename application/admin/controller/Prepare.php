@@ -46,17 +46,17 @@ class Prepare extends Base
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
                 $can_use_num = 0;
                 $can_use_num = $db::table("bsa_torder_douyin")
-                    ->where('status', '=', 0)
+                    ->where('status', '=', 1)
                     ->where('url_status', '=', 1)
                     ->where('total_amount', '=', $vo['order_amount'])
                     ->where('get_url_time', '>', time() - 180)
                     ->where('get_url_time', '<', time())
 //                    ->where('get_url_time', '>', 0)
 //                    ->where('get_url_time', '<', time() + 180)
-                    ->where('limit_time_1', '<', time())
+                    ->where('limit_time_1', '>', time())
                     ->order("add_time asc")
                     ->count();
-                logs(json_encode([ "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
+                logs(json_encode(["sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
 
                 $doPrepareNum = $db::table("bsa_torder_douyin")
 //                        ->where('status', '=', 0)
@@ -67,7 +67,7 @@ class Prepare extends Base
                     ->where('limit_time_1', '<', time())
                     ->order("add_time asc")
                     ->count();
-                logs(json_encode([ "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
+                logs(json_encode(["sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Prepare_log');
 
 //                $can_use_num = +$doPrepareNum;
                 $data[$key]['canUseNum'] = $can_use_num;
