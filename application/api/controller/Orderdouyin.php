@@ -357,10 +357,10 @@ class Orderdouyin extends Controller
 
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'douyin_order_error');
-            return json(msg('-22', '', 'create order error!' . $error->getMessage() . $error->getLine()));
+
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
-            return json(msg('-11', '', 'create order Exception!' . $exception->getMessage() . $exception->getFile()));
+            return  "order exception";
         }
     }
 }
