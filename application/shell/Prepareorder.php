@@ -88,7 +88,7 @@ class Prepareorder extends Command
 
                 }
             }
-            $output->writeln("Prepareorder:预产单处理成功！");
+            $output->writeln("Prepareorder:预产单处理成功！" . $msg);
         } catch (\Exception $exception) {
 //            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');

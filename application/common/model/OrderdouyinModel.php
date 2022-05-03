@@ -677,20 +677,23 @@ class OrderdouyinModel extends Model
             logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             foreach ($torderData as $key => $val) {
-                $getCookieRes = $cookieModel->getUseCookie();
-                if ($getCookieRes['code'] != 0) {
-                    $msg = $getCookieRes['msg'];
-                    break;
+                if (!empty($val) && isset($val['order_no'])) {
+
+                    $getCookieRes = $cookieModel->getUseCookie();
+                    if ($getCookieRes['code'] != 0) {
+                        $msg = $getCookieRes['msg'];
+                        break;
+                    }
+                    $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
+                    if ($getUesTOrderRes['code'] == 0) {  //下单成功
+                        $msg = "|" . $amount . "预产成功！" . $successNum++ . "个";
+                        $successNum++;
+                    } else {
+                        $msg = "|" . $amount . "预产失败！" . $successNum++ . "个";
+                        $successNum++;
+                    }
                 }
-                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
-//                $getUesTOrderRes = $this->getUseTOrderNew($val, $getCookieRes['data']);
-                if ($getUesTOrderRes['code'] == 0) {  //下单成功
-                    $msg = "|" . $amount . "预产成功！" . $successNum++ . "个";
-                    $successNum++;
-                } else {
-                    $msg = "|" . $amount . "预产失败！" . $successNum++ . "个";
-                    $successNum++;
-                }
+
             }
             logs(json_encode(['endTime' => date("Y-m-d H:i:s", time()), "info" => $torderData['order_no'], "getRes" => $msg]), 'getUseTOrderNew_log');
 
