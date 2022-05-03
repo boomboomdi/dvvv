@@ -72,10 +72,15 @@
                                 <h5>订单统计</h5>
                             </div>
                             <div class="panel-content">
-                                <h1 class="no-margins">订单总数:{$orderNum}支付单数:{$payOrderNum}</h1>
-                                <div class="stat-percent font-bold text-gray"><i class="fa fa-commenting"></i>回调金额{$payOrderAmount}
-                                </div>
-                                <small>成功率:{$successOrderRate}</small>
+                                <h1 class="no-margins">订单总数:{$orderNum}</h1>
+                                <h1 class="no-margins">支付单数:{$payOrderNum}</h1>
+                                <h1 class="no-margins">手动回调:{$notifyPayOrderNum}</h1>
+                                <h1 class="no-margins">回调金额{$payOrderAmount}</h1>
+<!--                                <div class="stat-percent font-bold text-gray"><i class="fa fa-commenting"></i>回调金额{$payOrderAmount}-->
+<!--                                </div>-->
+
+                                <h1 class="no-margins">成功率:{$successOrderRate}</h1>
+<!--                                <small>成功率:{$successOrderRate}</small>-->
                             </div>
                         </div>
                     </div>
