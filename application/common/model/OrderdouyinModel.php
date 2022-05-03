@@ -774,7 +774,7 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
-                        'order_desc' => "支付成功，回调核销|" . $order_desc
+                        'order_desc' => "支付成功|回调核销|" . $order_desc
                     ]);
                 logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
                 return modelReMsg(-2, "", json_encode($notifyResult));
