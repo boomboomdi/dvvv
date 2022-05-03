@@ -53,7 +53,6 @@ class Timecheckdouyinhuadan extends Command
                 ->order('add_time asc')
                 ->limit(10)
                 ->select();
-//            logs(json_encode(['orderData' => $orderData, 'totalNum' => $totalNum, 'getLastSql' => Db::table('bsa_torder_douyin')->getLastSql()]), 'Timecheckdouyinhuadan_data_log');
 
             $totalNum = count($orderData);
             if ($totalNum > 0) {

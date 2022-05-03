@@ -71,7 +71,7 @@ class Prepare extends Base
 
 //                $can_use_num = +$doPrepareNum;
 
-                $data[$key]['totalNum'] = $db::table("bsa_torder_douyin")->count();
+//                $data[$key]['totalNum'] = $db::table("bsa_torder_douyin")->count();
                 $data[$key]['canUseNum'] = $canUseNum;
                 $data[$key]['doPrepareNum'] = $doPrepareNum;
             }
