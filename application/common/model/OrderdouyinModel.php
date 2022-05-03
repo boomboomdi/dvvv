@@ -105,7 +105,7 @@ class OrderdouyinModel extends Model
                 ->where('total_amount', '=', $where['amount'])
                 ->where('url_status', '=', 1)
                 ->where('order_me', '=', null)
-//                ->where('status', '=', 1)
+                ->where('status', '=', 1)
                 ->where('get_url_time', '>', time() - 180)
                 ->where('get_url_time', '<', time())
                 ->order("get_url_time asc")
