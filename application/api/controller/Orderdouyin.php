@@ -305,7 +305,7 @@ class Orderdouyin extends Controller
             }
 
             if (isset($notifyResult['code']) && $notifyResult['code'] == 0) {
-                if (empty($info['order_id']) || empty($info['ali_url']) || empty($info['order_url'])) {
+                if (empty($notifyResult['order_id']) || empty($notifyResult['ali_url']) || empty($notifyResult['order_url'])) {
                     $db::rollback();
                     logs(json_encode(['message' => $notifyResult, 'order_pay' => "order_pay_no_null"]), 'updatePrepareOrder_log');
                     return "参数错误！";
