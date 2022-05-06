@@ -70,20 +70,14 @@
                 {{#  } else if(d.status == 2) { }}
                 <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>
                 {{#  } }}
-                <!--                {if (buttonAuth('torder/changestatus'))}-->
-                <!--                {{#  if(d.status == 1){ }}-->
-                <!--                <button class="layui-btn layui-btn-success layui-btn-xs" lay-event="changestatus">点击禁用</button>-->
-                <!--                {{#  } else { }}-->
-                <!--                <button class="layui-btn layui-btn-success layui-btn-xs" lay-event="changestatus">点击开启</button>-->
-                <!--                {{#  } }}-->
-                <!--                {/if}-->
 
             </script>
             <script type="text/html" id="getUrlTpl">
                 {{#  if(d.weight == 0){ }}
-                <button class="layui-btn layui-btn-primary layui-btn-xs">停拉</button>
+                <button class="layui-btn layui-btn-primary layui-btn-xs">停止预拉</button>
                 {{#  } else if(d.weight == 1) { }}
-                <button class="layui-btn layui-btn-success layui-btn-xs">预拉</button>
+                <button class="layui-btn layui-btn-success layui-btn-xs">预拉中···</button>
+                {{#  } }}
                 <!--                {{#  } else if(d.weight == 2) { }}-->
                 <!--                <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>-->
                 <!--                {{#  } }}-->
@@ -96,6 +90,15 @@
                 <span class="layui-badge-dot gray"></span>回调失败
                 {{#  } else if(d.notify_status == 0){ }}
                 <span class="layui-badge-dot gray"></span>未回调
+                {{#  } }}
+            </script>
+            <script type="text/html" id="urlStatusTpl">
+                {{#  if(d.url_status == 1){ }}
+                <span class="layui-badge-dot green"></span>已更新
+                {{#  } else if(d.url_status == 2){ }}
+                <span class="layui-badge-dot gray"></span>已禁用
+                {{#  } else if(d.url_status == 0){ }}
+                <span class="layui-badge-dot gray"></span>初始化
                 {{#  } }}
             </script>
             <script type="text/html" id="orderStatusTpl">
@@ -184,15 +187,19 @@
                 field: "add_time",
                 title: "上传时间"
             }, {
+                field: "get_url_time",
+                title: "链接更新时间"
+            }, {
                 field: "weight",
                 title: "预拉状态",
                 templet: '#getUrlTpl'
             }, {
+                field: "url_status",
+                title: "链接状态",
+                templet: '#urlStatusTpl'
+            }, {
                 field: "use_times",
                 title: "预拉次数",
-            }, {
-                field: "get_url_time",
-                title: "链接更新时间"
             }, {
                 field: "account",
                 title: "收款账号",
