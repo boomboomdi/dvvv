@@ -5,7 +5,6 @@ namespace app\api\controller;
 use app\admin\model\CookieModel;
 use app\api\validate\OrderdouyindanValidate;
 use app\api\validate\OrderinfoValidate;
-use app\common\model\DeviceModel;
 use app\common\model\OrderdouyinModel;
 use app\common\model\OrderModel;
 use think\Db;
@@ -50,12 +49,6 @@ class Orderdouyin extends Controller
 
             //$user_id = $message['user_id'];  //用户标识
             // 根据user_id  未付款次数 限制下单 end
-
-//            $cookieModel = new CookieModel();
-//            $getCookie = $cookieModel->where("status", 1)->order("last_use_time asc")->find();
-//            if (empty($getCookie)) {
-//                return apiJsonReturn(10009, "no useful ck！");
-//            }
 
             $orderMe = guid12();
             for ($x = 0; $x <= 3; $x++) {
@@ -117,134 +110,6 @@ class Orderdouyin extends Controller
         }
     }
 
-    public function index()
-    {
-        $data = @file_get_contents('php://input');
-        $message = json_decode($data, true);
-        try {
-            if (!isset($message['merchant_sign']) || empty($message['merchant_sign'])) {
-                return apiJsonReturn('10001', "缺少必要参数:merchant_sign");
-            }
-            if (!isset($message['order_no']) || empty($message['order_no'])) {
-                return apiJsonReturn('10002', "缺少必要参数:order_no");
-            }
-            if (!isset($message['amount']) || empty($message['amount'])) {
-                return apiJsonReturn('10003', "缺少必要参数:amount");
-            }
-            if (!isset($message['user_id']) || empty($message['user_id'])) {
-//                return apiJsonReturn('100001', "缺少必要参数:user_id");
-                $message['user_id'] = guidForSelf();
-            }
-            if (!isset($message['sign']) || empty($message['sign'])) {
-                return apiJsonReturn('10004', "缺少必要参数:sig");
-            }
-            if (!isset($message['time']) || empty($message['time'])) {
-                return apiJsonReturn('10005', "缺少必要参数:time");
-            }
-//            if (isset($message['payrealname'])) {
-//                if (!is_string($message['payrealname']) || strlen($message['payrealname']) >= 50) {
-//                    $message['payrealname'] = "";
-//                }
-//            }
-
-            if (is_int($message['amount'])) {
-                $message['amount'] = $message['amount'] . ".00";
-            }
-            $db = new Db();
-            //验证商户
-            $token = $db::table('bsa_merchant')->where('merchant_sign', '=', $message['merchant_sign'])->find()['token'];
-            if (empty($token)) {
-                return apiJsonReturn('10016', "验签失败！");
-            }
-            $sig = md5($message['merchant_sign'] . $message['order_no'] . $message['amount'] . $message['time'] . $token);
-            if ($sig != $message['sign']) {
-                Log::info("create_order_10006!", $message);
-                return apiJsonReturn('10006', "验签失败！");
-            }
-            $orderFind = $db::table('s_order')->where('order_no', '=', $message['order_no'])->count();
-            if ($orderFind > 0) {
-                return apiJsonReturn('11001', "单号重复！");
-            }
-
-            $user_id = $message['user_id'];  //用户标识
-            // 根据user_id  未付款次数 限制下单 end
-
-            $deviceModel = new DeviceModel();
-            $deviceCount = $db->table("bsa_device")->leftJoin("bsa_studio", "bsa_device.studio=bsa_studio.studio")
-                ->where([
-                    "bsa_device.status" => 1,
-                    "bsa_device.device_status" => 1,
-                    "bsa_studio.status" => 1,
-                ])->count();
-            if ($deviceCount == 0) {
-                return apiJsonReturn('10009', "设备不足，下单失败!");
-            }
-
-            $orderMe = guid12();
-            for ($x = 0; $x <= 3; $x++) {
-                $orderFind = $db::table('bsa_order')->where('order_me', '=', $orderMe)->find();
-                if (empty($orderFind)) {
-                    $orderMe = guid12();
-                    break;
-                } else {
-                    continue;
-                }
-            }
-            //1、入库
-            $insertOrderData['merchant_sign'] = $message['merchant_sign'];  //商户
-            $insertOrderData['order_no'] = $message['order_no'];  //商户订单号
-            $insertOrderData['order_status'] = 3;  //  1、支付成功（下单成功）！2、支付失败（下单成功）！3、下单失败！4、等待支付（下单成功）！5、已手动回调。
-            $insertOrderData['order_me'] = $orderMe; //本平台订单号
-            $insertOrderData['amount'] = $message['amount']; //支付金额
-            $insertOrderData['payable_amount'] = $message['amount'];  //应付金额
-            $insertOrderData['payment'] = $message['payment']; //alipay
-            $insertOrderData['add_time'] = time();  //入库时间
-            $insertOrderData['notify_url'] = $message['notify_url']; //下单回调地址 player_name payrealname
-
-            $orderModel = new \app\common\model\OrderModel();
-            $createOrderOne = $orderModel->addOrder($insertOrderData);
-            if (!isset($createOrderOne['code']) || $createOrderOne['code'] != '10000') {
-                return apiJsonReturn('10008', $createOrderOne['msg']);
-            }
-            //2、分配设备
-
-            $getDeviceQrCode = $deviceModel->getZfbUseDevice($insertOrderData);
-            if (!isset($getDeviceQrCode['code']) || $getDeviceQrCode['code'] != 0) {
-                //修改订单为下单失败状态。
-                $updateOrderStatus['update_time'] = time();
-                if (isset($getDeviceQrCode['data'])) {
-                    if (isset($getDeviceQrCode['data']['account']) && !empty($getDeviceQrCode['data']['account'])) {
-                        $updateOrderStatus['account'] = $getDeviceQrCode['data']['account'];
-                        $updateOrderStatus['qr_url'] = $getDeviceQrCode['data']['qr_url'];
-                    }
-                }
-                $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
-                $lastSql = $orderModel->getLastSql();
-                logs(json_encode(['getDeviceQrCode' => $getDeviceQrCode, 'updateOrderStatus' => $updateOrderStatus, 'lastSql' => $lastSql]), 'create_order_get_url_fail');
-                return apiJsonReturn(10013, $getDeviceQrCode['msg']);
-            }
-
-            if ($createOrderOne['code'] == 0 && $getDeviceQrCode['code'] == 0) {
-
-                $updateOrderStatus['account'] = $getDeviceQrCode['data']['account'];
-                $updateOrderStatus['qr_url'] = $getDeviceQrCode['data']['qr_url'];
-                $orderModel->where('order_no', '=', $insertOrderData['order_no'])->update($updateOrderStatus);
-                $baseurl = request()->root(true);
-                $orderUrl = $baseurl . "/api/zfbpay?orderNo=" . $insertOrderData['order_no'] . '&oid=' . $insertOrderData['order_no'] . "&amount=" . $insertOrderData['amount'];
-                return apiJsonReturn('10000', "下单成功", $orderUrl);
-            } else {
-                return apiJsonReturn('19999', "设备不足，下单失败!!!");
-            }
-        } catch (\Exception $exception) {
-            logs(json_encode(['message' => $message, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'create_order_exception');
-            return apiJsonReturn('20009', "通道异常" . $exception->getMessage());
-        } catch (\Error $error) {
-            logs(json_encode(['message' => $message, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'create_order_error');
-            return apiJsonReturn('20099', "通道异常" . $error->getMessage());
-        }
-    }
-
-
     public function testDouyinOrder()
     {
         $data = @file_get_contents('php://input');
@@ -265,6 +130,10 @@ class Orderdouyin extends Controller
         exit;
     }
 
+    /**
+     * 更新抖音预拉单订单
+     * @return string|void
+     */
     public function updatePrepareOrder0076()
     {
         $data = @file_get_contents('php://input');
@@ -276,22 +145,16 @@ class Orderdouyin extends Controller
         $db::startTrans();
         $notifyResult = $data;
         try {
-//            if (!isset($notifyResult['code']) || !isset($notifyResult['account'])
-//                || !isset($notifyResult['order_id']) || !isset($notifyResult['order_no'])
-//                || !isset($notifyResult['ali_url']) || !isset($notifyResult['order_url'])
-//            ) {
-//                logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
-//                return "缺少必要参数";
-//                return json(msg(-1, '', $validate->getError()));
-//            }
-
             $validate = new OrderdouyindanValidate();
             if (!$validate->check($notifyResult)) {
                 logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
                 return "参数格式有误" . $validate->getError();
                 return json(msg(-1, '', $validate->getError()));
             }
-            logs(json_encode(['postTime' => date("Y-m-d H:i:s", time()), "notifyParam" => $notifyResult]), 'updatePrepareOrder_log');
+            logs(json_encode([
+                    'postTime' => date("Y-m-d H:i:s", time()),
+                    "notifyParam" => $notifyResult]
+            ), 'updatePrepareOrder_log');
 
             $updateWhere['account'] = $notifyResult['account'];
             $updateWhere['order_no'] = (string)$notifyResult['order_no'];
@@ -381,6 +244,9 @@ class Orderdouyin extends Controller
         $orderDYData = $orderDYModel->where($orderDYWhere)->find();
         if (empty($orderDYData)) {
             return apiJsonReturn('-2', "无此推单！");
+        }
+        if ($orderDYData['']) {
+
         }
         try {
             //code==1  支付成功！

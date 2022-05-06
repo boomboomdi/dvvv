@@ -782,9 +782,9 @@ class OrderdouyinModel extends Model
                 $add_order_desc = "|支付成功";
             }
 
-            $do_order_desc = "|手动核销回调|";
+            $do_order_desc = "|核销回调";
             if ($orderStatus == 1) {
-                $do_order_desc = "|自动核销回调|";
+                $do_order_desc = "|核销回调";
             }
             $order_desc = $match_order_desc . $add_order_desc . $do_order_desc . $notifyResult;
             //通知结果不为success
@@ -792,7 +792,7 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
-                        'order_desc' => "fail:" . $order_desc
+                        'order_desc' => $order_desc . ":fail:"
                     ]);
                 logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
                 return modelReMsg(-2, "", json_encode($notifyResult));
