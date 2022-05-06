@@ -67,7 +67,7 @@ class Prepareorder extends Command
                         ->count();
                     $canUseNum = $canUseNum + $doPrepareNum;
                     $doNum = $v['prepare_num'] - $canUseNum;
-                    logs(json_encode(["total" => $v['prepare_num'], 'canUseNum' => $canUseNum, 'doNum' => $doNum, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
+//                    logs(json_encode(["total" => $v['prepare_num'], 'canUseNum' => $canUseNum, 'doNum' => $doNum, 'amount' => $v['order_amount'], "sql" => $db::table("bsa_torder_douyin")->getLastSql()]), 'prepareorderapicreateindex_log');
 
                     if (($doNum > 0) && $v['status'] == 1) {
                         $res = $orderDouYinModel->createOrder($v, $doNum);
