@@ -21,13 +21,11 @@ class Orderdouyin extends Base
         if (request()->isAjax()) {
 
             $limit = input('param.limit');
-//            $apiMerchantOrderNo = input('param.apiMerchantOrderNo');
             $order_no = input('param.order_no');
             $order_me = input('param.order_me');
             $order_pay = input('param.order_pay');
             $account = input('param.account');
             $startTime = input('param.start_time');
-//            $endTime = input('param.end_time');
 
             $where = [];
             if (!empty($order_no)) {
@@ -56,19 +54,6 @@ class Orderdouyin extends Base
             $list = $TorderModel->getTorders($limit, $where);
             $data = empty($list['data']) ? array() : $list['data'];
             foreach ($data as $key => $vo) {
-//                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '1') {
-//                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-success layui-btn-xs">付款成功</button>';
-//                }
-//                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '2') {
-//
-//                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-danger layui-btn-xs">付款失败</button>';
-//                }
-//                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '3') {
-//                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-disabled layui-btn-xs">下单失败</button>';
-//                }
-//                if (!empty($data[$key]['order_status']) && $data[$key]['order_status'] == '4') {
-//                    $data[$key]['order_status'] = '<button class="layui-btn layui-btn-primary layui-btn-xs">等待支付</button>';
-//                }
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
                 $data[$key]['limit_time'] = date('Y-m-d H:i:s', $data[$key]['limit_time_1']);
                 $data[$key]['get_url_time'] = date('Y-m-d H:i:s', $data[$key]['get_url_time']);
@@ -99,43 +84,5 @@ class Orderdouyin extends Base
             return json($res);
         }
     }
-
-    /**
-     * 修改设备状态
-     */
-    public function changestatus()
-    {
-        $t_id = input('param.t_id');
-        $TorderModel = new TorderModel();
-        try {
-            $list = $TorderModel
-                ->where('t_id', '=', $t_id)->find();
-            $torder = session('username');
-            //在线设备可以修改启用与否
-            if ($list['status'] != '4') {
-                return json(msg(0, '', '已使用订单无法操作！'));
-            }
-            if ($list['status'] == '1') {
-                $updateData['status'] = 2;
-                $result = $TorderModel
-                    ->where('t_id', '=', $t_id)
-                    ->update($updateData);
-                if ($result) {
-                    return json(msg(0, '', '修改成功！,已禁用'));
-                }
-            } else {
-                $updateData['status'] = 1;
-                $result = $TorderModel
-                    ->where('t_id', '=', $t_id)
-                    ->update($updateData);
-                if ($result) {
-                    return json(msg(0, '', '修改成功！,已启用'));
-                }
-            }
-        } catch (\Exception $e) {
-            return json(msg(-2, '', $e->getMessage()));
-        }
-    }
-
 
 }

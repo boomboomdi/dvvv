@@ -41,7 +41,6 @@ class Prepareorder extends Command
             $prepareAmountList = $db::table("bsa_prepare_set")
                 ->where("status", "=", 1)
                 ->select();
-//            if (count($prepareAmountList) > 0) {
             if (!is_array($prepareAmountList) || count($prepareAmountList) == 0) {
                 $output->writeln("Prepareorder:无预产任务");
             } else {
@@ -82,13 +81,11 @@ class Prepareorder extends Command
             }
             $output->writeln("Prepareorder:预产单处理成功！" . $msg);
         } catch (\Exception $exception) {
-//            $db::rollback();
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'Prepareorder_exception');
-            $output->writeln("Prepareorder:浴场处理失败！" . $totalNum . "exception" . $exception->getMessage());
+            $output->writeln("Prepareorder:预产处理失败！" . $totalNum . "exception" . $exception->getMessage());
         } catch (\Error $error) {
-//            $db::rollback();
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'Prepareorder_error');
-            $output->writeln("Prepareorder:浴场处理失败！！" . $totalNum . "error");
+            $output->writeln("Prepareorder:预产处理失败！！" . $totalNum . "error");
         }
 
     }

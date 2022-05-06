@@ -298,7 +298,7 @@ class OrderdouyinModel extends Model
         $db::startTrans();
         try {
             $info = $this->where('t_id', '=', $torder['t_id'])->lock(true)->find();
-            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info]), 'getUseTOrderNew_log');
+//            logs(json_encode(['startTime' => date("Y-m-d H:i:s", time()), "info" => $info]), 'getUseTOrderNew_log');
             if (!$info) {
                 $db::rollback();
                 return modelReMsg(-1, '', '此推单暂不可预拉！');
@@ -307,17 +307,7 @@ class OrderdouyinModel extends Model
                 $db::rollback();
                 return modelReMsg(-1, '', '此推单暂不可预拉:2！');
             }
-//            if (isset($info['use_time']) && $info['use_time'] == 0) {
-//
-//            }
-//            if (!empty($info['order_pay']) || !empty($info['pay_url']) || !empty($info['check_url'])) {
-//                $db::rollback();
-//                return modelReMsg(-2, '', '核销单已更新！');
-//            }
 
-//            $update['last_use_time'] = time();
-//            $update['use_times'] = $info['use_times'] + 1;
-//            $update['cookie'] = $cookie['cookie'];
             $update['weight'] = 1;
             $update['last_use_time'] = time();
             $update['ck_account'] = $cookie['account'];
@@ -341,14 +331,18 @@ class OrderdouyinModel extends Model
 //            $notifyResult = json_decode($notifyResult, true);
 //                {"msg":"下单成功","order_url":"https://tp-pay.snssdk.com/cashdesk/?app_id=800095745677&encodeType=base64&merchant_id=1200009574&out_order_no=10000017080988975653278733&return_scheme=&return_url=aHR0cHM6Ly93d3cuZG91eWluLmNvbS9wYXk=&sign=976358abfe82f2e06d576dc22aa2dd05&sign_type=MD5&switch=00&timestamp=1648671358&total_amount=5500&trade_no=SP2022033104154330075991127887&trade_type=H5&uid=8b58441a628f2cee4bd6f629ccd9012a","amount":"55","ali_url":"https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_139e2972e1746412b2bc190190e6ee54&alipay_exterface_invoke_assign_sign=_c_d_j6i_r_hoo%2Bue_vw_hdk_uh_m_cn%2B_t2_e_mi_o_vs_orkqhh_m_o_sjk_i6_yo8gwl9_hy_q%3D%3D","code":0,"order_id":"10000017080988975653278733"}
 
-            logs(json_encode(['createParam' => $createParam, "startTime" => $postStartDate, 'postEndDate' => date("Y-m-d H:i:s", time()), 'notifyResult' => $notifyResult]), 'getUseTOrderNew_log');
+            logs(json_encode([
+                "startTime" => $postStartDate,
+                'postEndDate' => date("Y-m-d H:i:s", time()),
+                'createParam' => $createParam,
+                'prepareOrderResult' => $notifyResult]), 'curlPrepareOrder_log');
             if ($notifyResult == "success") {
                 $db::commit();
                 return modelReMsg(0, $info, $msg);
             } else {
                 $db::rollback();
             }
-            return modelReMsg(-2, $info, "getUseTOrderNew_res预拉失败");
+            return modelReMsg(-2, $info, "预拉失败");
 
         } catch (\Exception $exception) {
             $db::rollback();
@@ -688,7 +682,7 @@ class OrderdouyinModel extends Model
                 ->order("add_time  asc")
                 ->limit($prepareNum)
                 ->select();
-            logs(json_encode(["action" > 'createOrder', 'startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
+//            logs(json_encode(["action" > 'createOrder', 'startTime' => date("Y-m-d H:i:s", time()), "info" => $torderData, "lastSql" => $this->getLastSql()]), 'getUseTOrderNew_log');
 
             if (empty($torderData) || count($torderData) == 0) {
                 return modelReMsg(-8, $successNum, "无可用推单！");
