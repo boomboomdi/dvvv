@@ -246,7 +246,7 @@ class Orderdouyin extends Controller
             return apiJsonReturn('-2', "无此推单！");
         }
         if ($orderDYData['order_status'] == 1) {
-            return apiJsonReturn('-3', "已收到通知！");
+            return apiJsonReturn('-3', "该订单已收到！");
         }
         try {
             //code==1  支付成功！
@@ -276,7 +276,7 @@ class Orderdouyin extends Controller
                     $orderDYUpdate['order_desc'] = "支付成功|待回调";
                     $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 }
-
+                return apiJsonReturn(0, "已收到通知！");
             }
             //支付链接不可用
             if (isset($message['code']) && $message['code'] == 2) {
