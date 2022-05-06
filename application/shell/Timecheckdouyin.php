@@ -34,14 +34,6 @@ class Timecheckdouyin extends Command
             $lockLimit = $now - $limitTime;
             $orderdouyinModel = new OrderdouyinModel();
             $orderModel = new OrderModel();
-//            $notifyLogModel = new NotifylogModel();
-//            $notifyLogWhere['status'] = 2;
-            $LimitStartTime = time() - $limitTime;
-            $LimitEndTime = time() - 10;
-            $where[] = ['add_time', 'between', [$lockLimit, $now - 20]];
-            $where[] = ['order_status', '4'];
-            //查询下单之前280s 到现在之前20s的等待付款订单
-            //一直查询  --等待 回调 code!=0  改为status  =2
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
@@ -50,7 +42,7 @@ class Timecheckdouyin extends Command
 //                ->where('last_use_time', '>', $LimitStartTime - 100)
 //                ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
-            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
+//            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
             $db = new Db();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
