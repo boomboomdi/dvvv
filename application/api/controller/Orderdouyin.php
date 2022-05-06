@@ -251,31 +251,32 @@ class Orderdouyin extends Controller
         try {
             //code==1  支付成功！
             if ($message['code'] == 1) {
+                $orderDYModel->orderDouYinNotifyToWriteOff($orderDYData);
                 $notifyWriteOffRes = $orderDYModel->orderDouYinNotifyToWriteOff($orderDYData);
-                if (!isset($notifyWriteOffRes['code']) || $notifyWriteOffRes['code'] != 0) {
-                    logs(json_encode(['order_pay' => $orderDYData['order_pay'],
-                            'notifyWriteOffRes' => $notifyWriteOffRes,
-                            "time" => date("Y-m-d H:i:s", time())])
-                        , 'callbackOrder0076');
-                } else {
-                    //支付成功
-                    $orderWhere['order_me'] = $orderDYData['order_me'];
-                    $order = Db::table("bsa_order")->where($orderWhere)->find();
-                    $orderModel = new OrderModel();
-                    if ($order) {
-                        $res = $orderModel->orderNotify($order);
-                        if ($res) {
-                            logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
-                        }
+//                if (!isset($notifyWriteOffRes['code']) || $notifyWriteOffRes['code'] != 0) {
+//                    logs(json_encode(['order_pay' => $orderDYData['order_pay'],
+//                            'notifyWriteOffRes' => $notifyWriteOffRes,
+//                            "time" => date("Y-m-d H:i:s", time())])
+//                        , 'callbackOrder0077');
+//                } else {
+                //支付成功
+                $orderWhere['order_me'] = $orderDYData['order_me'];
+                $order = Db::table("bsa_order")->where($orderWhere)->find();
+                $orderModel = new OrderModel();
+                if ($order) {
+                    $res = $orderModel->orderNotify($order);
+                    if ($res) {
+                        logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
                     }
-                    $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
-                    $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
-                    $orderDYUpdate['pay_time'] = time();
-                    $orderDYUpdate['last_use_time'] = time();
-                    $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
-                    $orderDYUpdate['order_desc'] = "支付成功|待回调";
-                    $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 }
+                $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
+                $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
+                $orderDYUpdate['pay_time'] = time();
+                $orderDYUpdate['last_use_time'] = time();
+                $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
+                $orderDYUpdate['order_desc'] = "支付成功|待回调";
+                $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
+//                }
                 return apiJsonReturn(0, "已收到通知！");
             }
             //支付链接不可用
