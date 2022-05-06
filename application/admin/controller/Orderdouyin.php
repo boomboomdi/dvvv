@@ -54,9 +54,12 @@ class Orderdouyin extends Base
             $list = $TorderModel->getTorders($limit, $where);
             $data = empty($list['data']) ? array() : $list['data'];
             foreach ($data as $key => $vo) {
+//                $data[$key]['time'] = date('Y-m-d H:i:s', $data[$key]['add_time']) . "添加时间</br>";
+//                $data[$key]['time'] = $data[$key]['time'] . date('Y-m-d H:i:s', $data[$key]['get_url_time']) . "更新时间:</br>";
+//                $data[$key]['time'] = $data[$key]['time'] . date('Y-m-d H:i:s', $data[$key]['notify_time']);
                 $data[$key]['add_time'] = date('Y-m-d H:i:s', $data[$key]['add_time']);
-                $data[$key]['limit_time'] = date('Y-m-d H:i:s', $data[$key]['limit_time_1']);
                 $data[$key]['get_url_time'] = date('Y-m-d H:i:s', $data[$key]['get_url_time']);
+                $data[$key]['limit_time'] = date('Y-m-d H:i:s', $data[$key]['limit_time_1']);
                 $data[$key]['notify_time'] = date('Y-m-d H:i:s', $data[$key]['notify_time']);
             }
             $list['data'] = $data;

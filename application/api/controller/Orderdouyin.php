@@ -245,8 +245,8 @@ class Orderdouyin extends Controller
         if (empty($orderDYData)) {
             return apiJsonReturn('-2', "无此推单！");
         }
-        if ($orderDYData['']) {
-
+        if ($orderDYData['order_status'] == 1) {
+            return apiJsonReturn('-3', "已收到通知！");
         }
         try {
             //code==1  支付成功！
