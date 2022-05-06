@@ -59,7 +59,6 @@ class Timecheckdouyin extends Command
                     $getResParam['order_url'] = $v['check_url'];
                     $getResParam['ck'] = $v['cookie'];
                     $getOrderStatus = $orderdouyinModel->checkOrderStatus($getResParam);
-                    logs(json_encode(['orderData' => $v, "getOrderStatus" => $getOrderStatus, "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_getOrderStatus_log');
 
                     $torderDouyinWhere['order_me'] = $v['order_me'];
                     $torderDouyinWhere['order_pay'] = $v['order_pay'];
@@ -116,15 +115,6 @@ class Timecheckdouyin extends Command
                             logs(json_encode(['torder_order_no' => $v['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
                         }
                     }
-//                    if (($v['add_time'] - time()) > 1000) {
-//                        $torderDouyinWhere['order_me'] = $v['order_me'];
-//                        $torderDouyinWhere['order_pay'] = $v['order_pay'];
-//                        $torderDouyinUpdate['order_status'] = 2;  ///匹配订单支付超时
-//                        $torderDouyinUpdate['status'] = 2;  ///推单改为最终结束状态 等待自动回调核销支付失败
-//                        $torderDouyinUpdate['order_desc'] = "支付超时|准备回调核销失败";
-//                        $orderdouyinModel->updateNotifyTorder($torderDouyinWhere, $torderDouyinUpdate);
-//                        $orderdouyinModel->orderDouYinNotifyToWriteOff($v);
-//                    }
                 }
 
             }

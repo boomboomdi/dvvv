@@ -470,24 +470,38 @@ class OrderdouyinModel extends Model
         return modelReMsg(0, $info, '匹配订单成功');
     }
 
+    /**
+     * 查询抖音支付状态
+     * @param $orderData
+     * @return array|mixed
+     */
     public function checkOrderStatus($orderData)
     {
-//        Log::write("checkOrderStatus:/n/ start: /n" . json_encode($orderData), "info");
         try {
+            $startTime = date("Y-m-d H:i:s", time());
             $url = "http://127.0.0.1:23946/queryResult";
             $getOrderStatus = curlPostJson($url, $orderData);
-
-//            Log::log('1', "checkOrderStatus order " . json_encode($getOrderStatus));
+            logs(json_encode([
+                'startTime' => $startTime,
+                'endTime' => date("Y-m-d H:i:s", time()),
+                'orderData' => $orderData,
+                "getOrderStatus" => $getOrderStatus,
+                "time" => date("Y-m-d H:i:s", time())]), 'checkOrderStatus_log');
             return json_decode($getOrderStatus, true);
-
-        } catch (\Exception $exception) {
-
-            Log::write("checkOrderStatus:/n  Exception: /n" . $exception->getMessage(), "info");
-            return modelReMsg(-2, '', $exception->getMessage());
         } catch (\Error $error) {
-            Db::rollback();
-            Log::write("checkOrderStatus:/n  Error: /n" . $error->getMessage(), "info");
-            return modelReMsg(-3, '', $error->getMessage());
+            logs(json_encode([
+                'file' => $error->getFile(),
+                'line' => $error->getLine(),
+                'errorMessage' => $error->getMessage()
+            ]), 'checkOrderStatusError');
+            return modelReMsg(-22, "", "checkOrderStatusError");
+        } catch (\Exception $exception) {
+            logs(json_encode([
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'errorMessage' => $exception->getMessage()
+            ]), 'checkOrderStatusException');
+            return modelReMsg(-11, "", "checkOrderStatusException");
         }
     }
 
