@@ -81,19 +81,12 @@
             </script>
             <script type="text/html" id="getUrlTpl">
                 {{#  if(d.weight == 0){ }}
-                <button class="layui-btn layui-btn-primary layui-btn-xs">预拉停用</button>
+                <button class="layui-btn layui-btn-primary layui-btn-xs">停拉</button>
                 {{#  } else if(d.weight == 1) { }}
-                <button class="layui-btn layui-btn-success layui-btn-xs">预拉开启</button>
+                <button class="layui-btn layui-btn-success layui-btn-xs">预拉</button>
                 <!--                {{#  } else if(d.weight == 2) { }}-->
                 <!--                <button class="layui-btn layui-btn-danger layui-btn-xs">已禁用</button>-->
-                {{#  } }}
-                <!--                {if (buttonAuth('torder/changestatus'))}-->
-                <!--                {{#  if(d.status == 1){ }}-->
-                <!--                <button class="layui-btn layui-btn-success layui-btn-xs" lay-event="changestatus">点击禁用</button>-->
-                <!--                {{#  } else { }}-->
-                <!--                <button class="layui-btn layui-btn-success layui-btn-xs" lay-event="changestatus">点击开启</button>-->
                 <!--                {{#  } }}-->
-                <!--                {/if}-->
 
             </script>
             <script type="text/html" id="notifyStatusTpl">
