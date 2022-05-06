@@ -7,6 +7,7 @@ use app\api\validate\OrderdouyindanValidate;
 use app\api\validate\OrderinfoValidate;
 use app\common\model\DeviceModel;
 use app\common\model\OrderdouyinModel;
+use app\common\model\OrderModel;
 use think\Db;
 use think\facade\Log;
 use think\Request;
@@ -360,7 +361,81 @@ class Orderdouyin extends Controller
 
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
-            return  "order exception";
+            return "order exception";
+        }
+    }
+
+    /**
+     * 接受回调数据
+     * @return array|bool|void
+     */
+    public function callbackOrder0077()
+    {
+        $data = @file_get_contents('php://input');
+        $message = json_decode($data, true);
+        if (!isset($message['order_id']) || !isset($message['code'])) {
+            return apiJsonReturn('-1', "格式有误！");
+        }
+        $orderDYModel = new OrderdouyinModel();
+        $orderDYWhere['order_pay'] = $message['order_id'];
+        $orderDYData = $orderDYModel->where($orderDYWhere)->find();
+        if (empty($orderDYData)) {
+            return apiJsonReturn('-2', "无此推单！");
+        }
+        try {
+            //code==1  支付成功！
+            if ($message['code'] == 1) {
+                $notifyWriteOffRes = $orderDYModel->orderDouYinNotifyToWriteOff($orderDYData);
+                if (!isset($notifyWriteOffRes['code']) || $notifyWriteOffRes['code'] != 0) {
+                    logs(json_encode(['order_pay' => $orderDYData['order_pay'],
+                            'notifyWriteOffRes' => $notifyWriteOffRes,
+                            "time" => date("Y-m-d H:i:s", time())])
+                        , 'callbackOrder0076');
+                } else {
+                    //支付成功
+                    $orderWhere['order_me'] = $orderDYData['order_me'];
+                    $order = Db::table("bsa_order")->where($orderWhere)->find();
+                    $orderModel = new OrderModel();
+                    if ($order) {
+                        $res = $orderModel->orderNotify($order);
+                        if ($res) {
+                            logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
+                        }
+                    }
+                    $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
+                    $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
+                    $orderDYUpdate['pay_time'] = time();
+                    $orderDYUpdate['last_use_time'] = time();
+                    $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
+                    $orderDYUpdate['order_desc'] = "支付成功|待回调";
+                    $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
+                }
+
+            }
+            //支付链接不可用
+            if (isset($message['code']) && $message['code'] == 2) {
+                $orderDYUpdate['last_use_time'] = time();
+                $orderDYUpdate['status'] = 2;   //订单终结状态
+                $orderDYUpdate['url_status'] = 2;   //订单已失效 以停止查询
+                $orderDYUpdate['order_desc'] = "下单成功|匹配成功|订单失效";
+                $orderDYModel->updateNotifyTorder($orderDYWhere, $orderDYUpdate);
+//            if ($updateTorderStatus) {
+//                logs(json_encode(['torder_order_no' => $orderDYWhere['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
+//            }
+            }
+        } catch (\Exception $exception) {
+            logs(json_encode(['file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'errorMessage' => $exception->getMessage()]
+            ), 'callbackOrder0077Exception');
+            return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
+        } catch (\Error $error) {
+            logs(json_encode(['file' => $error->getFile(),
+                    'line' => $error->getLine(),
+                    'errorMessage' => $error->getMessage()]
+            ), 'callbackOrder0077Error');
+            return modelReMsg('-22', "", "回调失败" . $error->getMessage());
+
         }
     }
 }

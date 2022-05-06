@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\common\model\OrderdouyinModel;
 use app\common\model\OrderModel;
 use think\Controller;
 use think\Db;
@@ -166,10 +167,7 @@ class Orderinfo extends Controller
     }
 
     //
-    public function callbackformerchant()
-    {
 
-    }
     //订单回调 @todo  //通道触发->四方
     public function callback()
     {
