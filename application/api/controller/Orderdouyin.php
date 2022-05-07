@@ -252,7 +252,7 @@ class Orderdouyin extends Controller
         }
         try {
             //code==1  支付成功！
-            if ($message['code'] == 1) {
+            if (isset($message['code']) && $message['code'] == 1) {
                 $orderWhere['order_me'] = $orderDYData['order_me'];
                 $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
                 $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
@@ -281,7 +281,6 @@ class Orderdouyin extends Controller
                     }
                 } else {
                     logs(json_encode([
-
                             'orderWhere' => $orderWhere,
                             'orderDYUpdate' => $orderDYUpdate,
                             '$orderDYUpdateRes' => $orderDYUpdateRes,
