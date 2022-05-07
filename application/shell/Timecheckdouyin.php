@@ -34,11 +34,13 @@ class Timecheckdouyin extends Command
             $lockLimit = $now - $limitTime;
             $orderdouyinModel = new OrderdouyinModel();
             $orderModel = new OrderModel();
+            //查询订单  1、匹配成功（） 2、未支付3、未禁用（禁用包含订单到limit_time回调给核销、订单链接已失效）
+            //链接失效、到核销限制时间不会再查询
             $orderData = $orderdouyinModel->where('order_status', '<>', 1)
                 ->where('notify_status', '=', 0)
                 ->where('url_status', '=', 1)
                 ->where('order_me', '<>', null)
-//                ->where('status', '=', 1)  //
+                ->where('status', '=', 1)
 //                ->where('last_use_time', '>', $LimitStartTime - 100)
 //                ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
@@ -47,8 +49,8 @@ class Timecheckdouyin extends Command
             if ($totalNum > 0) {
                 logs(json_encode(['orderData' => $orderData,
                     "sql" => Db::table("bsa_torder_douyin")->getLastSql(),
-                    "time" => date("Y-m-d H:i:s", time())]
-                ), 'Timecheckdouyin_log1');
+                    "time" => date("Y-m-d H:i:s", time())
+                ]), 'Timecheckdouyin_log');
                 foreach ($orderData as $k => $v) {
                     $getResParam['order_no'] = (string)$v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
