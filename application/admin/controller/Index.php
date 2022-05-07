@@ -51,6 +51,8 @@ class Index extends Base
         $payOrderAmount = $db::table("bsa_order")->where('order_status', '=', 1)->sum('actual_amount');
         //核销单总量
         $tOrderNum = $db::table("bsa_torder_douyin")->count();
+
+        $payOrderTOrderNum = $db::table("bsa_torder_douyin")->where('order_status', '=', 1)->count();
         //可下单数量
         $canOrderTOrderNum = $db::table("bsa_torder_douyin")
             ->where('url_status', '=', 1)
@@ -73,6 +75,7 @@ class Index extends Base
             'endTime' => date("Y-m-d H:i:s"),
             'orderNum' => $orderNum,
             'payOrderNum' => $payOrderNum,
+            'payOrderTOrderNum' => $payOrderTOrderNum,
             'successOrderRate' => $successOrderRate,
             'notifyPayOrderNum' => $notifyPayOrderNum,
             'payOrderAmount' => $payOrderAmount,
