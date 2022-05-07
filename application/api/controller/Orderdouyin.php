@@ -253,6 +253,14 @@ class Orderdouyin extends Controller
         try {
             //code==1  支付成功！
             if ($message['code'] == 1) {
+                $orderWhere['order_me'] = $orderDYData['order_me'];
+                $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
+                $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
+                $orderDYUpdate['pay_time'] = time();
+                $orderDYUpdate['last_use_time'] = time();
+                $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
+                $orderDYUpdate['order_desc'] = "支付成功|匹配成功|待回调！";
+                $orderDYModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 $notifyWriteOffRes = $orderDYModel->orderDouYinNotifyToWriteOff($orderDYData);
                 if (!isset($notifyWriteOffRes['code']) || $notifyWriteOffRes['code'] != 0) {
                     logs(json_encode(['order_pay' => $orderDYData['order_pay'],
@@ -261,14 +269,7 @@ class Orderdouyin extends Controller
                         , 'callbackOrder0077');
                 } else {
 
-                    $orderWhere['order_me'] = $orderDYData['order_me'];
-                    $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
-                    $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
-                    $orderDYUpdate['pay_time'] = time();
-                    $orderDYUpdate['last_use_time'] = time();
-                    $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
-                    $orderDYUpdate['order_desc'] = "支付成功|回调成功！";
-                    $orderDYModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
+
                     //支付成功
                     $order = Db::table("bsa_order")->where($orderWhere)->find();
                     $orderModel = new OrderModel();
