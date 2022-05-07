@@ -230,7 +230,7 @@ class Orderdouyin extends Controller
 
     /**
      * 接受回调数据
-     * @return array|bool|void
+     * @return array|bool
      */
     public function callbackOrder0077()
     {
