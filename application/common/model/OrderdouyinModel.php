@@ -828,11 +828,11 @@ class OrderdouyinModel extends Model
 
             if (!$res) {
                 logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrderFail_log');
-                return modelReMsg('-1', "", "更新失败");
+                return modelReMsg(-1, "", "更新失败");
             }
             logs(json_encode(['where' => $where,
                 'torderDouyinUpdate' => $torderDouyinUpdate,
-                'res' => $res
+                'updateNotifyTordeRes' => $res
             ]), 'updateNotifyTOrder_log');
 
             return modelReMsg(0, "", "更新成功");
