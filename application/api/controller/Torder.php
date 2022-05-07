@@ -23,16 +23,10 @@ class Torder extends Controller
      */
     public function uploadOrder()
     {
-//        $aa = $request->param();
-//        Log::log('douyin upload order first test!', $aa);
 
         $data = @file_get_contents("php://input");
-//        $data = @file_get_contents('php://input');
         $param = json_decode($data, true);
-//        var_dump($param);exit;
         logs(json_encode(['message' => $param, "time" => date("Y-m-d H:i:s", time())]), 'uploadOrder_log');
-
-//        Log::log('douyin upload order first!', $param);
         try {
             $validate = new OrderdouyinValidate();
             if (!$validate->check($param)) {
@@ -77,7 +71,7 @@ class Torder extends Controller
             if ($res['code'] != 0) {
                 logs(json_encode(['addParam' => $addParam, 'addRes' => $res, "time" => date("Y-m-d H:i:s", time())]), 'uploadOrder_log');
 
-                return json(msg('-4', '', $res['msg']));
+                return json(msg(-4, '', $res['msg']));
             }
             $returnData['code'] = 1;
             $returnData['order_no'] = $param['order_no'];
@@ -86,7 +80,7 @@ class Torder extends Controller
 
         } catch (\Exception $e) {
             Log::error('uploadOrder error!', $param);
-            return json(msg('-11', '', 'saveBase64toImg error!' . $e->getMessage()));
+            return json(msg(-11, '', 'saveBase64toImg error!' . $e->getMessage()));
         }
     }
 
@@ -133,10 +127,10 @@ class Torder extends Controller
 
         } catch (\Exception $exception) {
             logs(json_encode(['param' => $param, 'file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderInfo_exception');
-            return apiJsonReturn('-11', "orderInfo exception!" . $exception->getMessage());
+            return apiJsonReturn(-11, "orderInfo exception!" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['param' => $param, 'file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderInfo_error');
-            return json(msg('-22', '', 'orderInfo error!' . $error->getMessage()));
+            return json(msg(-22, '', 'orderInfo error!' . $error->getMessage()));
         }
     }
 

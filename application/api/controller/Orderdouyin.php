@@ -24,9 +24,8 @@ class Orderdouyin extends Controller
     {
         $data = @file_get_contents('php://input');
         $message = json_decode($data, true);
-        $updateParam = [];
         try {
-            logs(json_encode(['message' => $message, 'line' => $message]), 'douyin_order_fist');
+            logs(json_encode(['message' => $message, 'line' => $message]), 'createOrder_fist');
             $validate = new OrderinfoValidate();
             if (!$validate->check($message)) {
                 return apiJsonReturn(-1, '', $validate->getError());
@@ -102,11 +101,14 @@ class Orderdouyin extends Controller
             return apiJsonReturn(10000, "下单成功", $updateOrderStatus['qr_url']);
 
         } catch (\Error $error) {
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'douyin_order_error');
-            return json(msg('-22', '', 'create order error!' . $error->getMessage() . $error->getLine()));
+            logs(json_encode(['file' => $error->getFile(),
+                'line' => $error->getLine(),
+                'errorMessage' => $error->getMessage()
+            ]), 'createOrderError');
+            return json(msg(-22, '', 'create order error!' . $error->getMessage() . $error->getLine()));
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'douyin_order_exception');
-            return json(msg('-11', '', 'create order Exception!' . $exception->getMessage() . $exception->getFile() . $exception->getLine()));
+            return json(msg(-11, '', 'create order Exception!' . $exception->getMessage() . $exception->getFile() . $exception->getLine()));
         }
     }
 
@@ -274,7 +276,7 @@ class Orderdouyin extends Controller
                     $orderDYUpdate['last_use_time'] = time();
                     $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
                     $orderDYUpdate['order_desc'] = "支付成功|待回调";
-                    $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
+                    $orderDYModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 }
             }
             //支付链接不可用
@@ -284,9 +286,6 @@ class Orderdouyin extends Controller
                 $orderDYUpdate['url_status'] = 2;   //订单已失效 以停止查询
                 $orderDYUpdate['order_desc'] = "下单成功|匹配成功|订单失效";
                 $orderDYModel->updateNotifyTorder($orderDYWhere, $orderDYUpdate);
-//            if ($updateTorderStatus) {
-//                logs(json_encode(['torder_order_no' => $orderDYWhere['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
-//            }
             }
 
             return apiJsonReturn(0, "已收到通知！");

@@ -94,10 +94,7 @@ class OrderdouyinModel extends Model
     {
         $orderWhere['status'] = 1;  //0:未使用1:启用中2:已禁用
         $orderWhere['url_status'] = 1;  //0:未使用1:启用中2:已禁用
-        $orderWhere['total_amount'] = $where['amount'];  //
-        $prepareSetWhere['order_amount'] = $where['amount'];
-        $prepareSetWhere['status'] = 1;
-
+        $orderWhere['total_amount'] = $where['amount'];
         $db = new Db();
         try {
             //有没有
@@ -111,18 +108,11 @@ class OrderdouyinModel extends Model
                 ->order("get_url_time asc")
                 ->find();
             logs(json_encode(['where' => $where, 'info' => $info]), 'getUseTorderUrl_log');
-
             if (!empty($info)) {
-                $prepare = $db::table("bsa_prepare_set")->where($prepareSetWhere)->count();
-                $db::table("bsa_prepare_set")->where($prepareSetWhere)->update(
-                    ['can_use_num' => ($prepare['can_use_num'] - 1)]
-                );
                 if (!empty($orderMe)) {
                     $updateTorderWhere['order_no'] = $info['order_no'];
                     $updateTorder['order_me'] = $orderMe;
-//                    $updateTorder['url_status'] = 2;
                     $updateTorder['last_use_time'] = time();
-//                    $updateTorder['last_use_time'] = time();
                     $updateTorder['order_desc'] = "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe;
                     //绑定推单 通道订单号
                     $bindTorder = $db::table('bsa_torder_douyin')->where($updateTorderWhere)->update($updateTorder);
@@ -134,11 +124,9 @@ class OrderdouyinModel extends Model
                 $db::table('bsa_torder_douyin')->where($orderWhere)
                     ->update([
                         'status' => 1,
-//                        'url_status' => 2,
                         'last_use_time' => time(),
                         'order_desc' => "匹配订单成功|" . date("Y-m-d H:i:s", time()) . "|" . $orderMe
                     ]);
-                logs(json_encode(['info' => $info, 'bindOrderMe' => $orderMe]), 'torderBindTorder');
                 return modelReMsg(0, $info, '匹配订单成功');
             }
             //或者：请求获取话单支付链接  || 范围为为匹配订单
@@ -758,18 +746,23 @@ class OrderdouyinModel extends Model
             $notifyParam['sign'] = md5($md5Sting);
 
             //回调核销  已经收到款项
+            $postStartTime = date("Y-m-d H:i:s", time());
             $notifyResult = curlPostJson($tOrderData['notify_url'], $notifyParam);
-            logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOff_log');
-
-//            Log::log('orderDouYinNotifyToWriteOff!', $notifyParam, $notifyResult);
-//            $result = json_decode($notifyResult, true);
+            logs(json_encode([
+                'writeOrderNo' => $tOrderData['order_no'],
+                'notify_url' => $tOrderData['notify_url'],
+                'notifyParam' => $notifyParam,
+                "notifyResult" => $notifyResult,
+                "writeOrderNoAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']),
+                "postStartTime" => $postStartTime,
+                "postEndTime" => date("Y-m-d H:i:s", time()),
+            ]), 'curlPostJsonToWriteOff_log');
 
             $match_order_desc = "匹配失败|";
             if (!empty($tOrderData['order_me'])) {
                 $match_order_desc = "匹配成功|";
             }
             $add_order_desc = "|支付失败";
-
             $successAmount = $tOrderData['success_amount'];
             if ($tOrderData['order_status'] == 1) {
                 $successAmount = $tOrderData['total_amount'];
@@ -788,7 +781,6 @@ class OrderdouyinModel extends Model
                     ->update([
                         'order_desc' => $order_desc . ":fail:"
                     ]);
-                logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffNoSuccess_log');
                 return modelReMsg(-2, "", json_encode($notifyResult));
 
             } else {
@@ -802,16 +794,21 @@ class OrderdouyinModel extends Model
                         'order_desc' => $order_desc
                     ]);
                 $db::commit();
-//                logs(json_encode(['notify_url' => $tOrderData['notify_url'], 'notifyParam' => $notifyParam, "paramAddTime" => date("Y-m-d H:i:s", $tOrderData['add_time']), "notifyResult" => $notifyResult]), 'curlPostJsonToWriteOffSuccess_log');
             }
             return modelReMsg(0, "", json_encode($notifyResult));
         } catch (\Exception $exception) {
             $db::rollback();
-            logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'orderDouYinNotifyToWriteOffException_log');
+            logs(json_encode(['file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'errorMessage' => $exception->getMessage()
+            ]), 'orderDouYinNotifyToWriteOffException');
             return modelReMsg('-11', "", "回调失败" . $exception->getMessage());
         } catch (\Error $error) {
             $db::rollback();
-            logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'orderDouYinNotifyToWriteOffError_log');
+            logs(json_encode(['file' => $error->getFile(),
+                'line' => $error->getLine(),
+                'errorMessage' => $error->getMessage()
+            ]), 'orderDouYinNotifyToWriteOffError');
             return modelReMsg('-22', "", "回调失败" . $error->getMessage());
 
         }
