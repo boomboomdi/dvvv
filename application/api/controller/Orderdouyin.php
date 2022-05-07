@@ -286,7 +286,7 @@ class Orderdouyin extends Controller
                             'orderDYUpdate' => $orderDYUpdate,
                             '$orderDYUpdateRes' => $orderDYUpdateRes,
                         ]
-                    ), 'orderDouYinNotifyToWriteOffError');
+                    ), 'updateNotifyTorderFail');
                 }
             }
             //支付链接不可用
