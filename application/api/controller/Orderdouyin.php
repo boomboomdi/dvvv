@@ -276,7 +276,6 @@ class Orderdouyin extends Controller
                     $orderDYUpdate['order_desc'] = "支付成功|待回调";
                     $orderModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 }
-                return apiJsonReturn(0, "已收到通知！");
             }
             //支付链接不可用
             if (isset($message['code']) && $message['code'] == 2) {
@@ -289,6 +288,8 @@ class Orderdouyin extends Controller
 //                logs(json_encode(['torder_order_no' => $orderDYWhere['order_no'], 'updateTorderStatus' => $updateTorderStatus, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'orderdouyinModelRes_log2');
 //            }
             }
+
+            return apiJsonReturn(0, "已收到通知！");
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(),
                     'line' => $exception->getLine(),
