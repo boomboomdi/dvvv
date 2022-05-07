@@ -824,22 +824,25 @@ class OrderdouyinModel extends Model
     {
         try {
             $res = $this->where($where)->update($torderDouyinUpdate);
-            logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrder_log');
+//            logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrder_log');
 
             if (!$res) {
                 logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrderFail_log');
                 return modelReMsg('-1', "", "更新失败");
             }
-            logs(json_encode(['where' => $where, 'torderDouyinUpdate' => $torderDouyinUpdate, 'res' => $res]), 'TimecheckdouyinUpdateNotifyTOrder_log');
+            logs(json_encode(['where' => $where,
+                'torderDouyinUpdate' => $torderDouyinUpdate,
+                'res' => $res
+            ]), 'updateNotifyTOrder_log');
 
-            return modelReMsg('0', "", "更新成功");
+            return modelReMsg(0, "", "更新成功");
 
         } catch (\Exception $exception) {
             logs(json_encode(['file' => $exception->getFile(), 'line' => $exception->getLine(), 'errorMessage' => $exception->getMessage()]), 'TimecheckdouyinUpdateNotifyTorderException_log');
-            return modelReMsg('20009', "", "商户回调异常" . $exception->getMessage());
+            return modelReMsg(-11, "", "更新异常" . $exception->getMessage());
         } catch (\Error $error) {
             logs(json_encode(['file' => $error->getFile(), 'line' => $error->getLine(), 'errorMessage' => $error->getMessage()]), 'TimecheckdouyinUpdateNotifyTorderError_log');
-            return modelReMsg('20099', "", "商户回调错误" . $error->getMessage());
+            return modelReMsg(-22, "", "更新错误" . $error->getMessage());
         }
     }
 }

@@ -260,8 +260,16 @@ class Orderdouyin extends Controller
                             "time" => date("Y-m-d H:i:s", time())])
                         , 'callbackOrder0077');
                 } else {
-                    //支付成功
+
                     $orderWhere['order_me'] = $orderDYData['order_me'];
+                    $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
+                    $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
+                    $orderDYUpdate['pay_time'] = time();
+                    $orderDYUpdate['last_use_time'] = time();
+                    $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
+                    $orderDYUpdate['order_desc'] = "支付成功|回调成功！";
+                    $orderDYModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
+                    //支付成功
                     $order = Db::table("bsa_order")->where($orderWhere)->find();
                     $orderModel = new OrderModel();
                     if ($order) {
@@ -270,13 +278,6 @@ class Orderdouyin extends Controller
                             logs(json_encode(['order' => $order, 'orderNotifyRes' => $res, "sql" => Db::table("bsa_order")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_notify_log2');
                         }
                     }
-                    $orderDYUpdate['order_status'] = 1;  //匹配订单支付成功
-                    $orderDYUpdate['status'] = 2;   //推单改为最终结束状态
-                    $orderDYUpdate['pay_time'] = time();
-                    $orderDYUpdate['last_use_time'] = time();
-                    $orderDYUpdate['success_amount'] = $orderDYData['total_amount'];
-                    $orderDYUpdate['order_desc'] = "支付成功|待回调";
-                    $orderDYModel->updateNotifyTorder($orderWhere, $orderDYUpdate);
                 }
             }
             //支付链接不可用
