@@ -268,8 +268,6 @@ class Orderdouyin extends Controller
                             "time" => date("Y-m-d H:i:s", time())])
                         , 'callbackOrder0077');
                 } else {
-
-
                     //支付成功
                     $order = Db::table("bsa_order")->where($orderWhere)->find();
                     $orderModel = new OrderModel();
