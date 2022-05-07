@@ -42,10 +42,13 @@ class Timecheckdouyin extends Command
 //                ->where('last_use_time', '>', $LimitStartTime - 100)
 //                ->where('last_use_time', '<', $LimitEndTime)
                 ->select();
-//            logs(json_encode(['orderData' => $orderData, "sql" => Db::table("bsa_torder_douyin")->getLastSql(), "time" => date("Y-m-d H:i:s", time())]), 'Timecheckdouyin_log1');
             $db = new Db();
             $totalNum = count($orderData);
             if ($totalNum > 0) {
+                logs(json_encode(['orderData' => $orderData,
+                    "sql" => Db::table("bsa_torder_douyin")->getLastSql(),
+                    "time" => date("Y-m-d H:i:s", time())]
+                ), 'Timecheckdouyin_log1');
                 foreach ($orderData as $k => $v) {
                     $getResParam['order_no'] = (string)$v['order_pay'];
                     $getResParam['order_url'] = $v['check_url'];
